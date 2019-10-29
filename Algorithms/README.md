@@ -25,3 +25,9 @@ Coding implementations of programs in *CLRS* can be found under subdirectory **[
 * [15 Dynamic Programming](./Notes/15_Dynamic_Programming.md)
 * [16 Greedy Algorithm](./Notes/16_Greedy_Algorithms.md)
 * [17 Amortized Analysis](./Notes/17_Amortized_Analysis.md)
+
+### Ⅴ Advanced Data Structures
+
+* [18 B-Trees](./Notes/18_B_Trees.md)
+* [19 Binomial Heaps](./Notes/19_Binomial_Heaps.md)
+* ~~[20 Fibonacci Heaps](./Notes/20_Fibonacci_Heaps.md)~~
