@@ -19,3 +19,9 @@ Coding implementations of programs in *CLRS* can be found under subdirectory **[
 * [3 Growth of Functions](./Notes/3_Growth_of_Functions.md)
 * [4 Recurrences](./Notes/4_Recurrences.md)
 * ~~[5 Probabilistic Analysis and Randomized Alogirthms](./Notes/5_Probabilistic_Analysis_and_Randomized_Alogirthms.md)~~
+
+### Ⅳ Advanced Design and Analysis Techniques
+
+* [15 Dynamic Programming](./Notes/15_Dynamic_Programming.md)
+* [16 Greedy Algorithm](./Notes/16_Greedy_Algorithms.md)
+* [17 Amortized Analysis](./Notes/17_Amortized_Analysis.md)
