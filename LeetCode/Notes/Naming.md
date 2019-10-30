@@ -23,8 +23,11 @@ Notes on variables, methods and classes naming issues.
 * slow
 * fast
 * i/idx/index
+* lb/lower_bound
+* ub/upper_bound
 
 ### Auxiliaries
 
 * path
 * used/visited/seen
+* EPS/min_precision
