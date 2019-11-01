@@ -45,6 +45,16 @@ diagonal_lt_rb[x+y]
 diagonal_lb_rt[x-y]
 ```
 
+### Remove Duplicates in Sorted Array
+
+```python
+for x in nums:
+    if i < k or x > nums[i-k]:
+        nums[i] = x
+        i += 1
+return i
+```
+
 ## Binary Search
 
 ### lower_bound
