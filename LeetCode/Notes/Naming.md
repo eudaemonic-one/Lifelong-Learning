@@ -31,3 +31,5 @@ Notes on variables, methods and classes naming issues.
 * path
 * used/visited/seen
 * EPS/min_precision
+* R/r/rows
+* C/c/cols
