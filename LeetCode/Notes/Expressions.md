@@ -37,6 +37,23 @@ b = [0] for _ in range(n)
 a != b
 ```
 
+## Linked List
+
+### Iterate Linked List with Two Pointers
+
+```python
+curr, prev = head, None
+while statement:
+    prev = curr
+    curr = curr.next
+```
+
+### Iterative Link Reversal
+
+```python
+
+```
+
 ## Hashmap
 
 ### defaultdict
