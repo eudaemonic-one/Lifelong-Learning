@@ -37,6 +37,15 @@ b = [0] for _ in range(n)
 a != b
 ```
 
+## Tuple
+
+### Tuple with infinity length
+
+```python
+# tuple of the form (window length, left, right)
+window = float("inf"), None, None
+```
+
 ## Linked List
 
 ### Iterate Linked List with Two Pointers
