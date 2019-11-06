@@ -51,7 +51,11 @@ while statement:
 ### Iterative Link Reversal
 
 ```python
-
+while curr:
+    tmp = head.next
+    curr.next = prev
+    prev = curr
+    curr = tmp
 ```
 
 ## Hashmap
@@ -62,6 +66,13 @@ When key is missing, the factory function will return the default value of the c
 
 ```python
 dict = defaultdict(factory_function)
+```
+
+### Counter
+
+```python
+import collections
+counter = collections.Counter(t)
 ```
 
 ## Bit Manipulation
