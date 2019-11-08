@@ -60,3 +60,41 @@ identifier = letter { letter | unicode_digit }
 ### Other Numeric Types
 
 | byte | rune (same as int32) | unit | int | uintptr |
+
+## Variables
+
+Each variable in Go has a specific type, which determines the size and layout of the variable's memory, the range of values that can be stored within that memory, and the set of operations that can be applied to the variable.
+
+Upper and lowercase letters are distinct because Go is case-sensitive.
+
+### Variable Definition in Go
+
+```go
+var variable_list optional_data_type;
+var i, j, k int;
+i = 1, j = 2;
+```
+
+Variables with static storage duration are implicitly initialized with nil (all bytes have the value 0).
+
+### Static Type Declaration in Go
+
+A static type variable declaration provides assurance to the compiler that there is one variable available with the given type and name so that the compiler can proceed for further compilation without requiring the complete detail of the variable. A variable declaration has its meaning at the time of compilation only, the compiler needs the actual variable declaration at the time of linking of the program.
+
+### Dynamic Type Declaration / Type Inference in Go
+
+A dynamic type variable declaration requires the compiler to interpret the type of the variable based on the value passed to it. The compiler does not require a variable to have type statically as a necessary requirement.
+
+```go
+y := 42
+```
+
+### Mixed Variable Declaration in Go
+
+```go
+var a, b, c = 3, 5, "foo"
+```
+
+### The lvalues and the rvalues in Go
+
+An *lvalue* may appear as either the left-hand or right-hand side of an assignment. An *rvalue* is an expression that cannot have a value assigned to it which means an rvalue may appear on the right- but not left-hand side of an assignment.
