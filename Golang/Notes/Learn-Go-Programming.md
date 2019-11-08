@@ -360,3 +360,55 @@ A string literal holds a valid UTF-8 sequences called runes. A String holds arbi
 ```go
 strings.Join(lists, " ")
 ```
+
+## Arrays
+
+Go programming language provides a data structure called **the array**, which can store a **fixed-size** sequential collection of elements of the same type. An array is used to store a collection of data, but it is often more useful to think of an array as a collection of variables of the same type.
+
+### Declaring Arrays
+
+```go
+var variable_name [SIZE] variable_type
+```
+
+### Initializing Arrays
+
+```go
+var balance = []float32{1000.0, 2.0, 3.4, 7.0, 50.0}
+```
+
+### Multidimensional Arrays in Go
+
+```go
+var variable_name [SIZE1][SIZE2]...[SIZEN] variable_type
+```
+
+#### Initializing Two-Dimensional Arrays
+
+```go
+a = [3][4]int{  
+   {0, 1, 2, 3} ,   /*  initializers for row indexed by 0 */
+   {4, 5, 6, 7} ,   /*  initializers for row indexed by 1 */
+   {8, 9, 10, 11}   /*  initializers for row indexed by 2 */
+}
+```
+
+### Passing arrays to functions
+
+#### Way-1
+
+```go
+void myFunction(param [10]int)
+{
+.
+}
+```
+
+#### Way-2
+
+```go
+void myFunction(param []int)
+{
+.
+}
+```
