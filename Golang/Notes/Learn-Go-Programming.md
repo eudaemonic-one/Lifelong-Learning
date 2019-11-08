@@ -46,3 +46,17 @@ Comments start with /* and terminates with the characters */
 ### Identifiers
 
 identifier = letter { letter | unicode_digit }
+
+## Data Types
+
+### Integer Types
+
+| uint8 | uint16 |  uint32 | uint64 | int8 | int16 | int32 | int64 |
+
+### Floating Types
+
+| float32 | float64 | complex64 (Complex numbers with float32 real and imaginary parts) | complex128 |
+
+### Other Numeric Types
+
+| byte | rune (same as int32) | unit | int | uintptr |
