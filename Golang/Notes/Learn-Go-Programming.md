@@ -250,3 +250,81 @@ It causes the loop to skip the remainder of its body and immediately retest its 
 ### goto statement
 
 It transfers control to the labeled statement.
+
+## Functions
+
+Every Go program has at least one function, which is main().
+
+A function **declaration** tells the compiler about a function name, return type, and parameters. A function **definition** provides the actual body of the function.
+
+### Defining a Function
+
+```go
+func function_name( [parameter list] ) [return_types]
+{
+   body of the function
+}
+```
+
+### Function Arguments
+
+#### Call by value
+
+By default, Go programming language uses **call by value** method to pass arguments.
+
+### Call by reference
+
+The **call by reference** method of passing arguments to a function copies the address of an argument into the formal parameter.
+
+### Function Usage
+
+#### Function as Value
+
+Go programming language provides the flexibility to create functions on the fly and use them as values.
+
+```go
+getSquareRoot := func(x float64) float64 {
+    return math.Sqrt(x)
+}
+```
+
+#### Function Closures
+
+Go programming language supports anonymous functions which can acts as function closures. Anonymous functions are used when we want to define a function inline without passing any name to it.
+
+```go
+func getSequence() func() int {
+   i:=0
+   return func() int {
+      i+=1
+      return i
+   }
+}
+
+func main(){
+   /* nextNumber is now a function with i as 0 */
+   nextNumber := getSequence()
+   /* invoke nextNumber to increase i by 1 and return the same */
+   fmt.Println(nextNumber())
+   fmt.Println(nextNumber())
+   fmt.Println(nextNumber())
+}
+```
+
+When the above code is compiled and executed, it produces the following result −
+
+```text
+1
+2
+3
+```
+
+#### Method
+
+In method declaration syntax, a "receiver" is present to represent the container of the function. This receiver can be used to call a function using "." operator.
+
+```go
+func (variable_name variable_data_type) function_name() [return_type] {
+    /* function body*/
+}
+```
