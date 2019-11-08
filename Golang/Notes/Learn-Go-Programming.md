@@ -98,3 +98,39 @@ var a, b, c = 3, 5, "foo"
 ### The lvalues and the rvalues in Go
 
 An *lvalue* may appear as either the left-hand or right-hand side of an assignment. An *rvalue* is an expression that cannot have a value assigned to it which means an rvalue may appear on the right- but not left-hand side of an assignment.
+
+## Constants
+
+### Integer Literals
+
+An integer literal can have a suffix that is a combination of U(u) and L(l), for unsigned and long, respectively.
+
+```go
+212         /* Legal */
+215u        /* Legal */
+0xFeeL      /* Legal */
+078         /* Illegal: 8 is not an octal digit */
+032UU       /* Illegal: cannot repeat a suffix */
+```
+
+### Floating-point Literals
+
+```go
+3.14159       /* Legal */
+314159E-5L    /* Legal */
+510E          /* Illegal: incomplete exponent */
+210f          /* Illegal: no decimal or exponent */
+.e55          /* Illegal: missing integer or fraction */
+```
+
+### String Literals in Go
+
+String literals or constants are enclosed in double quotes "".
+
+You can break a long line into multiple lines using string literals and separating them using whitespaces.
+
+### The *const* Keyword
+
+```go
+const variable type = value;
+```
