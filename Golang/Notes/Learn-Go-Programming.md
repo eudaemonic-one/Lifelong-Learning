@@ -134,3 +134,29 @@ You can break a long line into multiple lines using string literals and separati
 ```go
 const variable type = value;
 ```
+
+## Operators
+
+### Arithmetic Operation
+
+| + | - | * | / | % | ++ | -- |
+
+### Relational Operators
+
+| == | != | > | < | >= | <= |
+
+### Logical Operators
+
+| && | || | ! |
+
+### Bitwise Operators
+
+| & | | | ^ | ~ | << | >> (Arithmetic Right Shift) |
+
+### Assignment Operators
+
+| = | += | -= | *= | /= | %= | <<= | >>= | &= | ^= | |= |
+
+### Miscellaneous Operators
+
+| & (Return the address of a variable) | * (Pointer to a variable) |
