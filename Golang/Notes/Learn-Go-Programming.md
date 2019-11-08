@@ -412,3 +412,23 @@ void myFunction(param []int)
 .
 }
 ```
+
+## Pointers
+
+Every variable is a memory location and every memory location has its address defined which can be accessed using ampersand (&) operator.
+
+### What Are Pointers
+
+A **pointer** is a variable whose value is the address of another variable, i.e., direct address of the memory location.
+
+```go
+var var_name *var-type
+```
+
+### How to Use Pointers
+
+There are a few important operations: (a) we define pointer variables, (b) assign the address of a variable to a pointer, and (c) access the value at the address stored in the pointer variable.
+
+### Nil Pointers in Go
+
+Go compiler assign a Nil value to a pointer variable in case you do not have exact address to be assigned.
