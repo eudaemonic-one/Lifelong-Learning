@@ -146,3 +146,59 @@ def NSum(nums, target, N, temp_set, final_set):
             start += 1
             end -= 1
 ```
+
+## Binary Tree
+
+### In-order Traversal
+
+Recursive version of in-order traversal:
+
+```python
+def inorder_traverse(root):
+    if not root:
+        return
+    inorder_traverse(root.left)
+    # Do some business
+    inorder_traverse(root.right)
+```
+
+Iterative version of in-order traversal:
+
+```python
+def inorder_traverse(root):
+    while True:
+        while root:
+            stack.append(root)
+            root = root.left
+        if not stack:
+            break
+        node = stack.pop()
+        # Do some business
+        root = node.right
+```
+
+### Morris Traversal
+
+Both recursive and iterative in-order traversal will occupy O(n) space in worst case, in which the tree is like a Linked List.
+
+To reduce the space to constant space, we have to use **Morris-traversal** (*Threaded Binary Tree*).
+
+```python
+def inorder_morris_traverse(root):
+    curr, prev = root, None
+    while curr:
+        if not curr.left:
+            # Do some business
+            curr = curr.right
+        else:
+            prev = curr.left
+            while prev.right and prev.right != curr:
+                prev = prev.right
+            if not prev.right:
+                prev.right = curr
+                curr = curr.left
+            else:
+                prev.right = None
+                # Do some business
+                curr = curr.right
+```
