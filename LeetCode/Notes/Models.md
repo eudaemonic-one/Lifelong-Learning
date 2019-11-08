@@ -202,3 +202,19 @@ def inorder_morris_traverse(root):
                 # Do some business
                 curr = curr.right
 ```
+
+### Breath First Search
+
+```python
+def bfs(root):
+    queue = collections.deque([root])
+    while queue:
+        for _ in range(len(queue)):
+            node = queue.popleft()
+            # Do some business
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+            # Do some business else
+```
