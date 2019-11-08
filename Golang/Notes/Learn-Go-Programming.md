@@ -28,3 +28,21 @@
 * Variables
 * Statements and Expressions
 * Comments
+
+## Basic Syntax
+
+### Tokens in Go
+
+A token is either a keyword, an identifier, a constant, a string literal, or a symbol.
+
+### Line Separator
+
+The Go compiler internally places “;” as the statement terminator to indicate the end of one logical entity.
+
+### Comments
+
+Comments start with /* and terminates with the characters */
+
+### Identifiers
+
+identifier = letter { letter | unicode_digit }
