@@ -328,3 +328,17 @@ func (variable_name variable_data_type) function_name() [return_type] {
     /* function body*/
 }
 ```
+
+## Scope Rules
+
+### Local Variables
+
+Local variables are not known to functions outside their own.
+
+### Global Variables
+
+A program can have the same name for local and global variables but the value of the local variable inside a function takes preference.
+
+### Formal Parameters
+
+Formal parameters are treated as local variables with-in that function and they take preference over the global variables.
