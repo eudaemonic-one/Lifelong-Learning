@@ -342,3 +342,21 @@ A program can have the same name for local and global variables but the value of
 ### Formal Parameters
 
 Formal parameters are treated as local variables with-in that function and they take preference over the global variables.
+
+## Strings
+
+Strings, which are widely used in Go programming, are a readonly slice of bytes. In the Go programming language, strings are **slices**.
+
+### Creating Strings
+
+```go
+var str = "Hello world!"
+```
+
+A string literal holds a valid UTF-8 sequences called runes. A String holds arbitrary bytes.
+
+### Concatenating Strings
+
+```go
+strings.Join(lists, " ")
+```
