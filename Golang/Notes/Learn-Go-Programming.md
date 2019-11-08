@@ -19,3 +19,12 @@
 * Support for pointer arithmetic
 * Support for assertions
 * Support for generic programming
+
+## Program Structure
+
+* Package Declaration
+* Import Packages
+* Functions
+* Variables
+* Statements and Expressions
+* Comments
