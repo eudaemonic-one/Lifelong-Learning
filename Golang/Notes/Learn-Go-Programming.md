@@ -228,3 +228,25 @@ select {
       statement(s);
 }
 ```
+
+## Loops
+
+### for Loop
+
+```go
+for [condition |  ( init; condition; increment ) | Range] {
+   statement(s);
+}
+```
+
+### break statement
+
+It terminates a for loop or switch statement and transfers execution to the statement immediately following the for loop or switch.
+
+### continue statement
+
+It causes the loop to skip the remainder of its body and immediately retest its condition prior to reiterating.
+
+### goto statement
+
+It transfers control to the labeled statement.
