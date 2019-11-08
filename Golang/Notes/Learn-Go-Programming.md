@@ -160,3 +160,71 @@ const variable type = value;
 ### Miscellaneous Operators
 
 | & (Return the address of a variable) | * (Pointer to a variable) |
+
+## Decision Making
+
+### if statement
+
+```go
+if(boolean_expression) {
+   /* statement(s) will execute if the boolean expression is true */
+}
+```
+
+### if...else statement
+
+```go
+if(boolean_expression) {
+   /* statement(s) will execute if the boolean expression is true */
+} else {
+   /* statement(s) will execute if the boolean expression is false */
+}
+```
+
+### The Switch Statement
+
+No **break** is needed in the case statement and default case.
+
+#### Expression Switch
+
+```go
+switch(boolean-expression or integral type){
+   case boolean-expression or integral type :
+      statement(s);
+   case boolean-expression or integral type :
+      statement(s);
+   /* you can have any number of case statements */
+   default : /* Optional */
+      statement(s);
+}
+```
+
+#### Type Switch
+
+```go
+switch x.(type){
+   case type:
+      statement(s);
+   case type:
+      statement(s);
+   /* you can have any number of case statements */
+   default: /* Optional */
+      statement(s);
+}
+```
+
+### The Select Statement
+
+The **type** for a case must be the a communication channel operation.
+
+```go
+select {
+   case communication clause  :
+      statement(s);
+   case communication clause  :
+      statement(s);
+   /* you can have any number of case statements */
+   default : /* Optional */
+      statement(s);
+}
+```
