@@ -432,3 +432,24 @@ There are a few important operations: (a) we define pointer variables, (b) assig
 ### Nil Pointers in Go
 
 Go compiler assign a Nil value to a pointer variable in case you do not have exact address to be assigned.
+
+## Structures
+
+### Defining a Structure
+
+```go
+type struct_variable_type struct {
+   member definition;
+   member definition;
+   ...
+   member definition;
+}
+```
+
+```go
+variable_name := structure_variable_type {value1, value2...valuen}
+```
+
+### Accessing Structure Members
+
+To access any member of a structure, we use the **member access operator (.)**.
