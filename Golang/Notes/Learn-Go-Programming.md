@@ -453,3 +453,34 @@ variable_name := structure_variable_type {value1, value2...valuen}
 ### Accessing Structure Members
 
 To access any member of a structure, we use the **member access operator (.)**.
+
+## Slices
+
+### Defining a slice
+
+To define a slice, you can declare it as an array without specifying its size. Alternatively, you can use make function to create a slice.
+
+```go
+var numbers []int /* a slice of unspecified size */
+/* numbers == []int{0,0,0,0,0}*/
+numbers = make([]int,5,5) /* a slice of length 5 and capacity 5*/
+```
+
+### len() and cap() functions
+
+The len() function returns the elements presents in the slice where cap() function returns the capacity of the slice (i.e., how many elements it can be accommodate).
+
+### Subslicing
+
+Slice allows lower-bound and upper bound to be specified to get the subslice of it using[lower-bound:upper-bound].
+
+### append() and copy() Functions
+
+One can increase the capacity of a slice using the append() function. Using copy()function, the contents of a source slice are copied to a destination slice.
+
+```go
+var src []int
+src = append(src, 0, 1, 2, 3)
+dst := make([]int, len(src), (cap(src)) * 2)
+copy(dst, src)
+```
