@@ -535,3 +535,9 @@ func main() {
    recursion()
 }
 ```
+
+## Type Casting
+
+```go
+type_name(expression)
+```
