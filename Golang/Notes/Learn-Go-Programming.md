@@ -505,3 +505,22 @@ for country,capital := range countryCapitalMap {
    fmt.Println("Capital of",country,"is",capital)
 }
 ```
+
+## Maps
+
+### Defining a Map
+
+```go
+/* declare a variable, by default map will be nil*/
+var map_variable map[key_data_type]value_data_type
+/* define the map as nil map can not be assigned any value*/
+map_variable = make(map[key_data_type]value_data_type)
+```
+
+### Delete
+
+```go
+/* create a map*/
+countryCapitalMap := map[string] string {"France":"Paris","Italy":"Rome","Japan":"Tokyo","India":"New Delhi"}
+delete(countryCapitalMap,"France");
+```
