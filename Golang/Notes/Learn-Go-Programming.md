@@ -524,3 +524,14 @@ map_variable = make(map[key_data_type]value_data_type)
 countryCapitalMap := map[string] string {"France":"Paris","Italy":"Rome","Japan":"Tokyo","India":"New Delhi"}
 delete(countryCapitalMap,"France");
 ```
+
+## Recursion
+
+```go
+func recursion() {
+   recursion() /* function calls itself */
+}
+func main() {
+   recursion()
+}
+```
