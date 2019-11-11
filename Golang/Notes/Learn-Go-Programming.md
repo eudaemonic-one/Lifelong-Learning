@@ -570,3 +570,17 @@ func (struct_name_variable struct_name) method_namen() [return_type] {
    /* method implementation */
 }
 ```
+
+## Error Handling
+
+```go
+type error interface {
+   Error() string
+}
+```
+
+Functions normally return error as last return value. Use errors.New to construct a basic error message as following −
+
+```go
+return 0, errors.New("Cause: xxx")
+```
