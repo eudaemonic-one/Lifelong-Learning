@@ -151,7 +151,7 @@ def NSum(nums, target, N, temp_set, final_set):
 
 ### In-order Traversal
 
-Recursive version of in-order traversal:
+Recursive In-order Traversal:
 
 ```python
 def inorder_traverse(root):
@@ -162,20 +162,23 @@ def inorder_traverse(root):
     inorder_traverse(root.right)
 ```
 
-Iterative version of in-order traversal:
+Iterative In-order Traversal:
 
 ```python
 def inorder_traverse(root):
-    while True:
+    stack = []
+    while root or stack:
         while root:
             stack.append(root)
             root = root.left
         if not stack:
             break
-        node = stack.pop()
+        root = stack.pop()
         # Do some business
-        root = node.right
+        root = root.right
 ```
+
+We can use this model to solve problems such as [Binary Tree Inorder Traversal](https://leetcode.com/problems/binary-tree-inorder-traversal/), [Kth Smallest Element in a BST](https://leetcode.com/problems/kth-smallest-element-in-a-bst/), and [Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/).
 
 ### Morris Traversal
 
@@ -201,6 +204,91 @@ def inorder_morris_traverse(root):
                 prev.right = None
                 # Do some business
                 curr = curr.right
+```
+
+### Pre-order Traversal
+
+Recursive Pre-order Traversal:
+
+```python
+def preorder_traverse(root):
+    if not root:
+        return
+    # Do some business
+    preorder_traverse(root.left)
+    preorder_traverse(root.right)
+```
+
+Iterative Pre-order Traversal:
+
+```python
+def preorder_traverse(root):
+    stack = []
+    while root or stack:
+        while root:
+            # Do some business
+            stack.append(root)
+            root = root.left
+        if not stack:
+            break
+        root = stack.pop()
+        root = root.right
+```
+
+### Post-order Traversal
+
+Recursive Post-order Traversal:
+
+```python
+def postorder_traverse(root):
+    if not root:
+        return
+    postorder_traverse(root.left)
+    postorder_traverse(root.right)
+    # Do some business
+```
+
+Iterative Post-order Traversal (Using two stacks):
+
+```python
+def postorder_traverse(root):
+    stack1, stack2 = [root], []
+    while stack1:
+        node = stack1.pop()
+        stack2.append(node)
+        if node.left:
+            stack1.append(node.left)
+        if node.right:
+            stack1.append(node.right)
+    while stack2:
+        node = stack2.pop()
+        # Do some business
+```
+
+*Post-order traversal sequence* is the same as **reversed** *Pre-order traversal sequence*, **except that the right child is visited before left child**.
+
+Iterative Post-order Traversal (Using one stack):
+
+```python
+if not root:
+    return
+stack = []
+while True:
+    while root:
+        if root.right:
+            stack.append(root.right)
+        stack.append(root)
+        root = root.left
+    root = stack.pop()
+    if root.right and stack[-1] == root.right:
+        stack.pop()
+        stack.append(root)
+        root = root.right
+    else:
+        # Do some business
+        root = None
+    if not stack:
+        break
 ```
 
 ### Breath First Search
