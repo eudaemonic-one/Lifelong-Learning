@@ -37,6 +37,15 @@ b = [0] for _ in range(n)
 a != b
 ```
 
+### Create a 2-dimension slice in Golang
+
+```go
+array := make([][]int, m)
+for i := 0; i < m; i++ {
+    array[i] = make([]int, n)
+}
+```
+
 ## Tuple
 
 ### Tuple with infinity length
