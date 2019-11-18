@@ -55,6 +55,30 @@ for x in nums:
 return i
 ```
 
+## Linked List
+
+### Floyd's Cycle Detection Algorithm
+
+```python
+def detectCycle(self, head):
+    if head == None:
+        return None
+    hare, turtle= head, head
+    while hare != None:
+        turtle = turtle.next
+        hare = hare.next
+        if hare == None:
+            return None
+        hare = hare.next
+        if hare == turtle:
+            turtle = head
+            while turtle != hare:
+                hare = hare.next
+                turtle = turtle.next
+            return hare
+    return None
+```
+
 ## Binary Search
 
 ### lower_bound
