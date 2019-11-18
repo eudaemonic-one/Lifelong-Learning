@@ -79,6 +79,24 @@ def detectCycle(self, head):
     return None
 ```
 
+### Reverse Singly Linked List
+
+```go
+var prev, next *ListNode
+for cur != nil {
+    next = cur.Next
+    cur.Next = prev
+    prev = cur
+    cur = next
+}
+```
+
+e.g. [Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/)
+
+e.g. [Reverse Linked List II](https://leetcode.com/problems/reverse-linked-list-ii/)
+
+e.g. [Reorder List](https://leetcode.com/problems/reorder-list/)
+
 ## Binary Search
 
 ### lower_bound
