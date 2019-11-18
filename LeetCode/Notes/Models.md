@@ -97,6 +97,43 @@ e.g. [Reverse Linked List II](https://leetcode.com/problems/reverse-linked-list-
 
 e.g. [Reorder List](https://leetcode.com/problems/reorder-list/)
 
+### Merge Sorting List
+
+```go
+func merge(l, r *ListNode) *ListNode {
+    if (l == nil) {
+        return r
+    } else if (r == nil) {
+        return l
+    }
+    // Let the head be the lesser node between l and r
+    if (l.Val > r.Val) {
+        l, r = r, l
+    }
+    head := l
+    prev := head
+    l = l.Next
+    // Merge until either pointer reaches nil pointer
+    for l != nil && r != nil {
+        if (l.Val < r.Val) {
+            prev.Next = l
+            l = l.Next
+        } else {
+            prev.Next = r
+            r = r.Next
+        }
+        prev = prev.Next
+    }
+    // Concatenate the last nonempty list
+    if (l == nil) {
+        prev.Next = r
+    } else if (r == nil) {
+        prev.Next = l
+    }
+    return head
+}
+```
+
 ## Binary Search
 
 ### lower_bound
