@@ -134,6 +134,16 @@ func merge(l, r *ListNode) *ListNode {
 }
 ```
 
+### Convert the Linked List into an Array
+
+```go
+nums := make([]int, 0)
+for head != nil {
+    nums = append(nums, head.Val)
+    head = head.Next
+}
+```
+
 ## Stack
 
 ### Use Stack to Store Array Indices
