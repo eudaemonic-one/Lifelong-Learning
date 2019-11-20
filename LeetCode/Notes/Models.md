@@ -152,6 +152,18 @@ e.g. [Next Greater Element I](https://leetcode.com/problems/next-greater-element
 
 e.g. [Next Greater Node In Linked List](https://leetcode.com/problems/next-greater-node-in-linked-list/)
 
+## Hashmap
+
+### Sum Problems
+
+In the first pass, we can scan the array/linked list, accumulate the value of nodes as *prefix* sum. Simultaneously, we need an important hashmap and let prefix sum as the key and the related index/node as the value.
+
+In the second pass, we can accumulate the prefix again and check if it exists in the hashmap.
+
+e.g. [Two Sum](https://leetcode.com/problems/two-sum/)
+
+e.g. [Remove Zero Sum Consecutive Nodes from Linked List](https://leetcode.com/problems/remove-zero-sum-consecutive-nodes-from-linked-list/)
+
 ## Binary Search
 
 ### lower_bound
