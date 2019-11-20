@@ -134,6 +134,14 @@ func merge(l, r *ListNode) *ListNode {
 }
 ```
 
+## Stack
+
+### Use Stack to Store Array Indices
+
+e.g. [Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/)
+
+e.g. [Next Greater Node In Linked List](https://leetcode.com/problems/next-greater-node-in-linked-list/)
+
 ## Binary Search
 
 ### lower_bound
