@@ -46,6 +46,16 @@ for i := 0; i < m; i++ {
 }
 ```
 
+## Slice
+
+### Remove Element from Slice by Index
+
+```go
+tmp := make([]string, len(slice)-1)
+copy(tmp, append(slice[:index],slice[index+1:]))
+path = slice
+```
+
 ## Tuple
 
 ### Tuple with infinity length
