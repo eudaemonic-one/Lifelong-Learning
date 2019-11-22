@@ -144,6 +144,24 @@ for head != nil {
 }
 ```
 
+## String
+
+### Dynamic Programming for Palindrome Problems
+
+```go
+dp := make([][]bool, len(s))
+for i := 0; i < len(s); i++ {
+    dp[i] = make([]bool, len(s))
+}
+for j := 0; j < len(s); j++ {
+    for i := 0; i <= j; i++ {
+        if (s[i] == s[j] && (i+1 > j-1 || dp[i+1][j-1])) {
+            dp[i][j] = true
+        }
+    }
+}
+```
+
 ## Stack
 
 ### Use Stack to Store Array Indices
