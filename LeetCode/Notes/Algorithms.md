@@ -20,3 +20,5 @@ Usually, solving and fully understanding a dynamic programming problem is a 4 st
 (e.g. [Unique Binary Search Trees](https://leetcode.com/problems/unique-binary-search-trees/discuss/31666/DP-Solution-in-6-lines-with-explanation.-F(i-n)-G(i-1)-*-G(n-i)))
 
 (e.g. [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/))
+
+(e.g. [Dungeon Game](https://leetcode.com/problems/dungeon-game/))
