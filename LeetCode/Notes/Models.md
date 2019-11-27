@@ -55,6 +55,12 @@ for x in nums:
 return i
 ```
 
+### Maximum Gap (Buckets)
+
+**The Pigeonhole Principle** states that if nn items are put into *m* containers, with *n > m*, then at least one container must contain more than one item.
+
+For n elements of the array, there are n-1 gaps, each of width, say, *t*. *t=(max−min)/(n−1)*. Since the gaps within the same bucket would only be *≤t*, we could deduce that the maximal gap would indeed occur **only between two adjacent buckets**. Hence by setting bucket size *b* to be *1<b≤(max−min)/(n−1)*, we can ensure that at least one of the gaps between adjacent buckets would serve as the **maximal gap**.
+
 ## Linked List
 
 ### Floyd's Cycle Detection Algorithm
