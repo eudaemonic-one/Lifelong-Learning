@@ -169,6 +169,12 @@ My solutions to LeetCode algorithms problems, mostly in Python3, Golang and C++.
 
 ### Two Pointers
 
+We could keep 2 pointers, one for the start and another for the end of the current subarray, and make optimal moves so as to keep the sum greater than s as well as maintain the lowest size possible.
+
+e.g. [209. Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/)
+
+In above example, we could also use Binary Search to crack the problem. We could create an array called sum, and define sums[i] as the sum of first i elements. Then, use Lower Bound method to find the index in sums such that value at that index is not lower than the s+sums[i-1]. If we find the value in sums, compare it with the minimum subarray size and update the result value.
+
 ### Sliding Window
 
 ### Math
