@@ -89,6 +89,44 @@ My solutions to LeetCode algorithms problems, mostly in Python3, Golang and C++.
 
 ### Trie
 
+A **Trie** is a special form of a **Nary tree**. Typically, a trie is used to store strings. Each Trie node represents a string (a prefix). Each node might have several children nodes while the paths to different children nodes represent different characters.
+
+e.g. [208. Implement Trie (Prefix Tree)](https://leetcode.com/problems/implement-trie-prefix-tree/)
+
+Backtracking (or DFS) is the powerful way to exhaust every possible ways. However, we need to do **pruning** when the current condition shall not exist in the result set. Thus, Trie is a good way to do pruning to search for word/words.
+
+e.g. [212. Word Search II](https://leetcode.com/problems/word-search-ii/)
+
+#### How to represent a Trie
+
+1. First Solution - Array.
+2. Second Solution - Map.
+
+#### Insertion in Trie
+
+```text
+1. Initialize: cur = root
+2. for each char c in target string S:
+3.      if cur does not have a child c:
+4.          cur.children[c] = new Trie node
+5.      cur = cur.children[c]
+6. cur is the node which represents the string S
+```
+
+#### Search Prefix/Word
+
+```text
+1. Initialize: cur = root
+2. for each char c in target string S:
+3.      if cur does not have a child c:
+4.          search fails
+5.      cur = cur.children[c]
+6. search successes
+```
+
+1. If search fails which means that no words start with the target word, the target word is definitely not in the Trie.
+2. If search succeeds, we need to check if the target word is only a prefix of words in Trie or it is exactly a word. To solve this problem, you might want to modify the node structure a little bit. *Hint: A boolean flag in each node might work.*
+
 ### Segment Tree
 
 ### Binary Indexed Tree
