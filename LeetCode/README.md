@@ -86,6 +86,12 @@ At the end of all of the inputs, the candidate will be the majority value if a m
 
 e.g. [229. Majority Element II](https://leetcode.com/problems/majority-element-ii/)
 
+#### Two Pass/Round Trip
+
+To solve Array questions in O(n) time complexity and with constant space complexity. The best way is to iterate the array from left to right and update the status in the first pass. In the second pass, we can set a helper variable initially set to a specific value and then iterate from right to left and update the status correspondingly again.
+
+e.g. [238. Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/)
+
 ### Linked List
 
 ### Stack
