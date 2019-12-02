@@ -71,6 +71,21 @@ My solutions to LeetCode algorithms problems, mostly in Python3, Golang and C++.
 
 ### Array/String
 
+#### Boyer-Moore Majority Voting Algorithm
+
+The algorithm uses O(1) extra space and O(N) time. It requires exactly 2 passes over the input list.
+
+In the first pass, we need 2 values:
+
+1. A candidate value, initially set to any value.
+2. A count, initially set to 0.
+
+For each element in our input list, we first examine the count value. If the count is equal to 0, we set the candidate to the value at the current element. Next, first compare the element's value to the current candidate value. If they are the same, we increment count by 1. If they are different, we decrement count by 1.
+
+At the end of all of the inputs, the candidate will be the majority value if a majority value exists. A second O(N) pass can verify that the candidate is the majority element.
+
+e.g. [229. Majority Element II](https://leetcode.com/problems/majority-element-ii/)
+
 ### Linked List
 
 ### Stack
