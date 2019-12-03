@@ -100,6 +100,14 @@ e.g. [238. Product of Array Except Self](https://leetcode.com/problems/product-o
 
 ### Double-ended Queue
 
+*Deque* (*double-ended queue*) pops from/pushes to either side with the same O(1) performance.
+
+It's more handy to **store in the deque indexes instead of elements** since both are used during an array parsing.
+
+e.g. [239. Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/solution/)
+
+In above example, we can see *deque* is a proper data structure to deal with *Sliding Window* problems (Also, in this case, we can use *Heap* to update the maximum value in the sliding window dynamically). While sliding through the array, each element is processed exactly twice - it's index added and then removed from the deque. Thus, the time complexity of using *deque* is O(n).
+
 ### Tree
 
 ## Advanced Data Strutures
