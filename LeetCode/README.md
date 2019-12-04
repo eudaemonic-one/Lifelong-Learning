@@ -114,6 +114,12 @@ In above example, we can see *deque* is a proper data structure to deal with *Sl
 
 ### Priority Queue
 
+A **heap** is a tree with the property that each node is the minimum-valued node in its subtree. The minimum element in the tree is the root, at index 0.
+
+[Heap's implementation in Golang](https://golang.google.cn/pkg/container/heap/).
+
+e.e. [215. Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/)
+
 ### Graph
 
 ### Trie
