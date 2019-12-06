@@ -291,6 +291,10 @@ e.g. [261. Graph Valid Tree](https://leetcode.com/problems/graph-valid-tree/)
 
 ### Alien Dictionary
 
+The key of this problem is that a **Topological Sorting** is possible if and only if the graph contains no directed cycles. Thus, we can *build a graph* (including vertices and edges) and perform a *Depth First Search* (including 4 states: NONEXIST, UNVISITED, VISITING, VISITED).
+
+e.g. [269. Alien Dictionary](https://leetcode.com/problems/alien-dictionary/)
+
 ### Basic Calculator
 
 ### Regular Expression Matching
