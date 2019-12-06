@@ -256,6 +256,27 @@ In above example, we could also use Binary Search to crack the problem. We could
 
 ### Union Find
 
+**Union Find** algorithm is an algorithm that performs two useful operations on **Disjoint Set**:
+
+* Find: Determine which subset a particular element is in. This can be used for determining if two elements are in the same subset.
+* Union: Join two subsets into a single subset.
+
+```text
+Initialize:
+1. set nums[i] as -1 for all elements
+
+Find:
+1. if nums[i] is -1 then return i
+2. return find(nums, nums[i])
+
+Union:
+1. nums[x] = y
+```
+
+Union-Find Algorithm can be used to check whether an undirected graph contains cycle or not.
+
+e.g. [261. Graph Valid Tree](https://leetcode.com/problems/graph-valid-tree/)
+
 ## Trending Interview Questions
 
 ### Longest Substring Without Repeating Characters
