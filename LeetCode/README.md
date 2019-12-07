@@ -28,6 +28,7 @@ My solutions to LeetCode algorithms problems, mostly in Python3, Golang and C++.
   * [Merge Sort](#merge-sort)
   * [Quick Sort](#quick-sort)
   * [Topological Sort](#topological-sort)
+  * [Counting Sort](#counting-sort)
   * [Radix Sort](#radix-sort)
   * [Buckets and The Pigeonhole Principle](#buckets-and-the-pigeonhole-principle)
 * [Recursion &amp; Backtrack](#recursion--backtrack)
@@ -177,6 +178,14 @@ e.g. [212. Word Search II](https://leetcode.com/problems/word-search-ii/)
 ### Quick Sort
 
 ### Topological Sort
+
+### Counting Sort
+
+Counting sort operates by counting the number of objects that have each distinct key value, and using arithmetic on those tallies to determine the positions of each key value in the output sequence. Its running time is linear in the number of items and the difference between the maximum and minimum keys, so it is only suitable for direct use in situations where the variation in keys is not significantly greater than the number of items.
+
+e.g. [274. H-Index](https://leetcode.com/problems/h-index/)
+
+In above example, we can see that comparison sorting algorithm has a lower bound of O(nlogn). To achieve better performance, we need non-comparison based sorting algorithms.
 
 ### Radix Sort
 
