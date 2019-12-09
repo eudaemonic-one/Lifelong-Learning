@@ -95,6 +95,38 @@ e.g. [238. Product of Array Except Self](https://leetcode.com/problems/product-o
 
 ### Linked List
 
+#### Floyd's Tortoise and Hare
+
+Floyd's algorithm is separated into two distinct phases. In the first phase, it determines whether a cycle is present in the list. If no cycle is present, it returns null immediately, as it is impossible to find the entrance to a nonexistant cycle. Otherwise, it uses the located "intersection node" to find the entrance to the cycle.
+
+Implementation of Floyd's Tortoise and Hare in Python3:
+
+```python
+def detectCycle(self, head):
+    if head == None:
+        return None
+    hare, turtle= head, head
+    while hare != None:
+        turtle = turtle.next
+        hare = hare.next
+        if hare == None:
+            return None
+        hare = hare.next
+        if hare == turtle:
+            turtle = head
+            while turtle != hare:
+                hare = hare.next
+                turtle = turtle.next
+            return hare
+    return None
+```
+
+e.g. [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/)
+
+e.g. [287. Find the Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/)
+
+In above example, if we interpret nums such that for each pair of index i and value vi and the next value vj is at index vi, we can reduce this problem to cycle detection, which can be solved by (Floyd's Tortoise and Hare*.
+
 ### Stack
 
 ### Queue
