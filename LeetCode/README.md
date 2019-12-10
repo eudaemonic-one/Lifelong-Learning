@@ -318,6 +318,38 @@ Union-Find Algorithm can be used to check whether an undirected graph contains c
 
 e.g. [261. Graph Valid Tree](https://leetcode.com/problems/graph-valid-tree/)
 
+### [Combinatorial Game Theory](https://www.geeksforgeeks.org/introduction-to-combinatorial-game-theory/)
+
+Combinatorial games are two-person games with perfect information and no chance moves (no randomization like coin toss is involved that can effect the game).
+
+The difference between them is that in **Impartial Games** all the possible moves from any position of game are the same for the players, whereas in **Partisan Games** the moves for all the players are not the same.
+
+#### Game of Nim
+
+Given a number of piles in which each pile contains some numbers of stones/coins. In each turn, a player can choose only one pile and remove any number of stones (at least one) from that pile. The player who cannot move is considered to lose the game (i.e., one who take the last stone is the winner).
+
+We can conclude that this game depends on two factors:
+
+* The player who starts first.
+* The initial configuration of the piles/heaps.
+
+**Nim-Sum**: The cumulative XOR value of the number of coins/stones in each piles/heaps at any point of the game is called Nim-Sum at that point.
+
+****Sprague-Grundy Theorem****: If both A and B play optimally , then the player starting first is guaranteed to win if the Nim-Sum at the beginning of the game is non-zero. Otherwise, if the Nim-Sum evaluates to zero, then player A will lose definitely.
+
+**Grundy Numbers** or **Nimbers** determine how any Impartial Game can be solved once we have calculated the Grundy Numbers associated with that game using Sprague-Grundy Theorem.
+
+**Mex**: ‘Minimum excludant’ a.k.a ‘Mex’ of a set of numbers is the smallest non-negative number not present in the set.
+
+We can apply **Sprague-Grundy Theorem** in any impartial game and solve it as follows:
+
+1. Break the composite game into sub-games.
+2. Then for each sub-game, calculate the Grundy Number at that position.
+3. Then calculate the XOR of all the calculated Grundy Numbers.
+4. If the XOR value is non-zero, then the player who is going to make the turn (First Player) will win else he is destined to lose, no matter what.
+
+e.g. [294. Flip Game II](https://leetcode.com/problems/flip-game-ii/)
+
 ## Trending Interview Questions
 
 ### Longest Substring Without Repeating Characters
