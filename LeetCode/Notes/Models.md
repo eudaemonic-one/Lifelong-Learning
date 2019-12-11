@@ -262,6 +262,24 @@ for l <= r {
 return -1 // if not found
 ```
 
+### Patience Sorting
+
+We scan the array from left to right and call binarySearch each time find the insertion position of the new element to make the array *nums* an consecutive increasing sequence.
+
+```go
+func binarySearch(nums []int, l, r, key int) int {
+    for l < r {
+        m := (l+r) / 2
+        if nums[m] < key {
+            l = m + 1
+        } else {
+            r = m
+        }
+    }
+    return l
+}
+```
+
 ## Math
 
 ### N Sum (Two Pointers)
