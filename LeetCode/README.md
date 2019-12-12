@@ -197,6 +197,78 @@ e.g. [212. Word Search II](https://leetcode.com/problems/word-search-ii/)
 
 ### Segment Tree
 
+**Segment tree** is used to solve numerous *range query problems* like finding minimum, maximum, sum, greatest common divisor, least common denominator in array in *logarithmic* time.
+
+The segment tree for array a a[0,1,…,n−1] is a binary tree in which each node contains aggregate information (min, max, sum, etc.) for a subrange [i…j] of the array, as its left and right child hold information for range [i…(i+j)/2] and [(i+j)/2+1,j].
+
+Segment Tree can be broken down to the three following steps:
+
+1. Pre-processing step which builds the segment tree from a given array.
+2. Update the segment tree when an element is modified.
+3. Calculate the Range Sum Query using the segment tree.
+
+e.g. [307. Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/)
+
+e.g. [308. Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/)
+
+#### Build segment tree
+
+We begin from the leaves, initialize them with input array elements a[0,1,…,n−1]. Then we move upward to the higher level to calculate the parents' sum till we get to the root of the segment tree.
+
+```go
+func buildTree(nums []int, n int, tree []int) {
+    for i := 0; i < n; i++ {
+        tree[i+n] = nums[i]
+    }
+    for i := n-1; i >= 0; i-- {
+        tree[i] = tree[i*2] + tree[i*2+1]
+    }
+}
+```
+
+#### Update segment tree
+
+When we update the array at some index ii we need to rebuild the segment tree, because there are tree nodes which contain the sum of the modified element. Again we will use a bottom-up approach. We update the leaf node that stores a[i]. From there we will follow the path up to the root updating the value of each parent as a sum of its children values.
+
+```go
+func (this *NumArray) Update(i int, val int)  {
+    pos := i + this.n
+    this.tree[pos] = val
+    for pos > 0 {
+        left, right := pos, pos
+        if pos % 2 == 0 {
+            right++
+        } else {
+            left--
+        }
+        this.tree[pos/2] = this.tree[left] + this.tree[right]
+        pos /= 2
+    }
+}
+```
+
+#### Range Sum Query
+
+l≤r and sum of [L…l] and [r…R] has been calculated, where l and r are the left and right boundary of calculated sum. Initially we set l with left leaf L and r with right leaf R. Range [l,r] shrinks on each iteration till range borders meets after approximately logn iterations of the algorithm.
+
+```go
+func (this *NumArray) SumRange(i int, j int) int {
+    sum, l, r := 0, i + this.n, j + this.n
+    for l <= r {
+        if l % 2 == 1 { // l is right child of its parent P
+            sum += this.tree[l] // add l to sum without its parent P
+            l++ // set l to point to the right of P on the upper level
+        }
+        if r % 2 == 0 { // r is left child of its parent P
+            sum += this.tree[r] // add r to sum without its parent P
+            r-- // set r to point to the left of P on the upper level
+        }
+        l, r = l/2, r/2
+    }
+    return sum
+}
+```
+
 ### Binary Indexed Tree
 
 ## Sort
