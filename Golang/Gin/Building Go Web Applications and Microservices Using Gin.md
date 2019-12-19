@@ -478,3 +478,47 @@ The new files added in this section are as follows:
 └── templates
     └── article.html
 ```
+
+## Responding With JSON/XML
+
+In this section, we will refactor the application a bit so that, depending on the request headers, our application can respond in HTML, JSON or XML format.
+
+### Creating a Reusable Function
+
+So far, we’ve been using the HTML method of Gin’s context to render directly from route handlers. This is fine when we always want to render HTML. However, if we want to change the format of the response based on the request, we should refactor this part out into a single function that takes care of rendering. By doing this, we can let the route handler focus on validation and data fetching.
+
+A route handler has to do the same kind of validation, data fetching and data processing irrespective of the desired response format. Once this part is done, this data can be used to generate the response in the desired format. If we need an HTML response, we can pass this data to the HTML template and generate the page. If wee need a JSON response, we can convert this data to JSON and send it back. Likewise for XML.
+
+We’ll create a render function in main.go that will be used by all the route handlers. This function will take care of rendering in the right format based on the request’s Accept header.
+
+In Gin, the Context passed to a route handler contains a field named Request. This field contains the Header field which contains all the request headers. We can use the Get method on Header to extract the Accept header as follows:
+
+```go
+// c is the Gin Context
+c.Request.Header.Get("Accept")
+```
+
+* If this is set to application/json, the function will render JSON,
+* If this is set to application/xml, the function will render XML, and
+* If this is set to anything else or is empty, the function will render HTML.
+
+The complete render function is as follows:
+
+```go
+// Render one of HTML, JSON or CSV based on the 'Accept' header of the request
+// If the header doesn't specify this, HTML is rendered, provided that
+// the template name is present
+func render(c *gin.Context, data gin.H, templateName string) {
+  switch c.Request.Header.Get("Accept") {
+  case "application/json":
+    // Respond with JSON
+    c.JSON(http.StatusOK, data["payload"])
+  case "application/xml":
+    // Respond with XML
+    c.XML(http.StatusOK, data["payload"])
+  default:
+    // Respond with HTML
+    c.HTML(http.StatusOK, templateName, data)
+  }
+}
+```
