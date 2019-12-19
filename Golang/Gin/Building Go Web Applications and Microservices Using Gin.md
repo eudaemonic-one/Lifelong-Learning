@@ -522,3 +522,12 @@ func render(c *gin.Context, data gin.H, templateName string) {
   }
 }
 ```
+
+## Modifying the Requirement for the Route Handlers With a Unit Test
+
+Since we are now expecting JSON and XML responses if the respective headers are set, we should add tests to the handlers.article_test.go file to test these conditions. We will add tests to:
+
+1. Test that the application returns a JSON list of articles when the Accept header is set to application/json
+2. Test the the application returns an article in XML format when the Accept header is set to application/xml
+
+These will be added as functions named TestArticleListJSON and TestArticleXML.
