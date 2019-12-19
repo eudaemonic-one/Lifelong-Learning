@@ -75,3 +75,77 @@ The template for the index page makes use of the header and the footer and displ
 <!--Embed the footer.html template at this location-->
 {{ template "footer.html" .}}
 ```
+
+## Completing and Validating the Setup
+
+Once you have created the templates, it’s time to create the entry file for your application. We’ll create the main.go file for this with the simplest possible web application that will use the index template. We can do this using Gin in four steps:
+
+### Create the router
+
+```go
+    router := gin.Default()
+```
+
+This creates a router which can be used to define the build of the application.
+
+### Load the templates
+
+```go
+router.LoadHTMLGlob("templates/*")
+```
+
+This loads all the template files located in the templates folder. Once loaded, these don’t have to be read again on every request making Gin web applications very fast.
+
+### Define the route handler
+
+At the heart of Gin is how you divide the application into various routes and define handlers for each route. We will create a route for the index page and an inline route handler.
+
+```go
+router.GET("/", func(c *gin.Context) {
+  // Call the HTML method of the Context to render a template
+  c.HTML(
+      // Set the HTTP status to 200 (OK)
+      http.StatusOK,
+      // Use the index.html template
+      "index.html",
+      // Pass the data that the page uses (in this case, 'title')
+      gin.H{
+          "title": "Home Page",
+      },
+  )
+})
+```
+
+The router.GET method is used to define a route handler for a GET request. It takes in as parameters the route (/) and one or more route handlers which are just functions.
+
+The route handler has a pointer to the context (gin.Context) as its parameter. This context contains all the information about the request that the handler might need to process it. For example, it includes information about the headers, cookies, etc.
+
+The Context also has methods to render a response in HTML, text, JSON and XML formats. In this case, we use the context.HTML method to render an HTML template (index.html). The call to this method includes additional data in which the value of title is set to Home Page. This is a value that the HTML template can make use of. In this case, we use this value in the \<title\> tag in the header’s template.
+
+### Start the application
+
+```go
+router.Run()
+```
+
+This starts the application on localhost and serves on the 8080 port by default.
+
+To execute the application from the command line, go to your application directory and execute the following command:
+
+```shell
+go build -o app
+./app
+```
+
+If all goes well, you should be able to access your application at [http://localhost:8080](http://localhost:8080).
+
+The directory structure of your application at this stage should be as follows:
+
+```text
+├── main.go
+└── templates
+    ├── footer.html
+    ├── header.html
+    ├── index.html
+    └── menu.html
+```
