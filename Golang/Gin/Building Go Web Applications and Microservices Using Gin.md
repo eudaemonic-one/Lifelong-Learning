@@ -149,3 +149,18 @@ The directory structure of your application at this stage should be as follows:
     ├── index.html
     └── menu.html
 ```
+
+## Setting Up the Route
+
+In the previous section, we created the route and the route definition in the main.go file itself. As the application grows, it would make sense to move the routes definitions in its own file. We’ll create a function initializeRoutes() in the routes.go file and call this function from the main() function to set up all the routes. Instead of defining the route handler inline, we’ll define them as separate functions.
+
+```go
+// routes.go
+
+package main
+
+func initializeRoutes() {
+  // Handle the index route
+  router.GET("/", showIndexPage)
+}
+```
