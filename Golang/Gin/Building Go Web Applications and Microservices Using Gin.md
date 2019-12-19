@@ -246,3 +246,21 @@ func getAllArticles() []article {
   return articleList
 }
 ```
+
+## Creating the View Template
+
+We assume that the list of articles will be passed to the template in a variable named payload. With this assumption, the following snippet should show the list of all articles:
+
+```html
+  {{range .payload }}
+    <!--Create the link for the article based on its ID-->
+    <a href="/article/view/{{.ID}}">
+      <!--Display the title of the article -->
+      <h2>{{.Title}}</h2>
+    </a>
+    <!--Display the content of the article-->
+    <p>{{.Content}}</p>
+  {{end}}
+```
+
+The above snippet will also link to each article. However, since we have not yet defined route handlers for displaying individual articles, these links won’t work as expected.
