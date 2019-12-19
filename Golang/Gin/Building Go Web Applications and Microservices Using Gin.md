@@ -264,3 +264,155 @@ We assume that the list of articles will be passed to the template in a variable
 ```
 
 The above snippet will also link to each article. However, since we have not yet defined route handlers for displaying individual articles, these links won’t work as expected.
+
+## Specifying the Requirement for the Route Handler With a Unit Test
+
+Before we create the handler for the index route, we will create a test to define the expected behavior of this route handler. This test will check for the following conditions:
+
+1. The handler responds with an HTTP status code of 200,
+2. The returned HTML contains a title tag containing the text Home Page.
+
+The code for the test will be placed in the TestShowIndexPageUnauthenticated function in the handlers.article_test.go file. We will place helper functions used by this function in the common_test.go file.
+
+```go
+// handlers.article_test.go
+
+package main
+
+import (
+  "io/ioutil"
+  "net/http"
+  "net/http/httptest"
+  "strings"
+  "testing"
+)
+
+// Test that a GET request to the home page returns the home page with
+// the HTTP code 200 for an unauthenticated user
+func TestShowIndexPageUnauthenticated(t *testing.T) {
+  r := getRouter(true)
+
+  r.GET("/", showIndexPage)
+
+  // Create a request to send to the above route
+  req, _ := http.NewRequest("GET", "/", nil)
+
+  testHTTPResponse(t, r, req, func(w *httptest.ResponseRecorder) bool {
+    // Test that the http status code is 200
+    statusOK := w.Code == http.StatusOK
+
+    // Test that the page title is "Home Page"
+    // You can carry out a lot more detailed tests using libraries that can
+    // parse and process HTML pages
+    p, err := ioutil.ReadAll(w.Body)
+    pageOK := err == nil && strings.Index(string(p), "<title>Home Page</title>") > 0
+
+    return statusOK && pageOK
+  })
+}
+```
+
+```go
+The content of common_test.go is as follows:
+
+package main
+
+import (
+  "net/http"
+  "net/http/httptest"
+  "os"
+  "testing"
+
+  "github.com/gin-gonic/gin"
+)
+
+var tmpArticleList []article
+
+// This function is used for setup before executing the test functions
+func TestMain(m *testing.M) {
+  //Set Gin to Test Mode
+  gin.SetMode(gin.TestMode)
+
+  // Run the other tests
+  os.Exit(m.Run())
+}
+
+// Helper function to create a router during testing
+func getRouter(withTemplates bool) *gin.Engine {
+  r := gin.Default()
+  if withTemplates {
+    r.LoadHTMLGlob("templates/*")
+  }
+  return r
+}
+
+// Helper function to process a request and test its response
+func testHTTPResponse(t *testing.T, r *gin.Engine, req *http.Request, f func(w *httptest.ResponseRecorder) bool) {
+
+  // Create a response recorder
+  w := httptest.NewRecorder()
+
+  // Create the service and process the above request.
+  r.ServeHTTP(w, req)
+
+  if !f(w) {
+    t.Fail()
+  }
+}
+
+// This function is used to store the main lists into the temporary one
+// for testing
+func saveLists() {
+  tmpArticleList = articleList
+}
+
+// This function is used to restore the main lists from the temporary one
+func restoreLists() {
+  articleList = tmpArticleList
+}
+```
+
+To implement this test, we have written some helper functions. These will also help us reduce boilerplate code when we write additional tests to test similar functionality.
+
+To check the HTTP code and the returned HTML, we’ll do the following:
+
+1. Create a new router,
+2. Define a route to use the same handler that the main app uses (showIndexPage),
+3. Create a new request to access this route,
+4. Create a function that processes the response to test the HTTP code and HTML, and
+5. Call testHTTPResponse() with this new function to complete the test.
+
+## Creating the Route Handler
+
+### Fetches the list of articles
+
+```go
+articles := getAllArticles()
+```
+
+### Renders the index.html template passing it the article list
+
+```go
+c.HTML(
+    // Set the HTTP status to 200 (OK)
+    http.StatusOK,
+    // Use the index.html template
+    "index.html",
+    // Pass the data that the page uses
+    gin.H{
+        "title":   "Home Page",
+        "payload": articles,
+    },
+)
+```
+
+These are the new files added in this section:
+
+```text
+├── common_test.go
+├── handlers.article.go
+├── handlers.article_test.go
+├── models.article.go
+├── models.article_test.go
+└── routes.go
+```
