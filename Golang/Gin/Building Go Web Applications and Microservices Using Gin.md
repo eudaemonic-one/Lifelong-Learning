@@ -49,3 +49,7 @@ Group user-related routes under the /u route,
   * Serve the article creation page at /article/create (HTTP GET request),
   * Process the submitted article at /article/create (HTTP POST request), and
   * Serve the article page at /article/view/:article_id (HTTP GET request). Take note of the :article_id part in this route. The : at the beginning indicates that this is a dynamic route. This means that :article_id can contain any value and Gin will make this value available in the route handler.
+
+## Rendering
+
+A web application can render a response in various formats like HTML, text, JSON, XML or other formats. API endpoints and microservices typically respond with data, commonly in JSON format but also in any other desired format.
