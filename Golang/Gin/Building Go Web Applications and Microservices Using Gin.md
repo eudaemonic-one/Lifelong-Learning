@@ -164,3 +164,85 @@ func initializeRoutes() {
   router.GET("/", showIndexPage)
 }
 ```
+
+## Designing the Article Model
+
+We will keep the article structure simple with just three fields – Id, Title and Content. This can be represented with a struct as follows:
+
+```go
+type article struct {
+  ID      int    json:"id"
+  Title   string json:"title"
+  Content string json:"content"
+}
+```
+
+Most applications will use a database to persist the data. To keep things simple, we will keep the list of articles in memory and will initialize the list with two hard-coded articles as follows:
+
+```go
+var articleList = []article{
+  article{ID: 1, Title: "Article 1", Content: "Article 1 body"},
+  article{ID: 2, Title: "Article 2", Content: "Article 2 body"},
+}
+```
+
+We will place the above code in a new file named models.article.go. At this stage, we need a function that will return the list of all articles. We will name this function getAllArticles() and place it in the same file. We will also write a test for it. This test will be named TestGetAllArticles and will be placed in the models.article_test.go file.
+
+Let’s start by creating the unit test (TestGetAllArticles) for the getAllArticles() function. After creating this unit test, the models.article_test.go file should contain the following code:
+
+```go
+// models.article_test.go
+
+package main
+
+import "testing"
+
+// Test the function that fetches all articles
+func TestGetAllArticles(t *testing.T) {
+  alist := getAllArticles()
+
+  // Check that the length of the list of articles returned is the
+  // same as the length of the global variable holding the list
+  if len(alist) != len(articleList) {
+    t.Fail()
+  }
+
+  // Check that each member is identical
+  for i, v := range alist {
+    if v.Content != articleList[i].Content ||
+      v.ID != articleList[i].ID ||
+      v.Title != articleList[i].Title {
+
+      t.Fail()
+      break
+    }
+  }
+}
+```
+
+Once we have written the test, we can proceed to write the actual code. The models.article.go file should contain the following code:
+
+```go
+// models.article.go
+
+package main
+
+type article struct {
+  ID      int    json:"id"
+  Title   string json:"title"
+  Content string json:"content"
+}
+
+// For this demo, we're storing the article list in memory
+// In a real application, this list will most likely be fetched
+// from a database or from static files
+var articleList = []article{
+  article{ID: 1, Title: "Article 1", Content: "Article 1 body"},
+  article{ID: 2, Title: "Article 2", Content: "Article 2 body"},
+}
+
+// Return a list of all the articles
+func getAllArticles() []article {
+  return articleList
+}
+```
