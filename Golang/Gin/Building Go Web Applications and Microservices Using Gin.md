@@ -598,3 +598,7 @@ ok    github.com/demo-apps/go-gin-app 0.084s
 ```
 
 As can be seen in this output, this command runs all the tests that we have written and, in this case, indicates that our application is working as we intend it to. If you take a close look at the output, you’ll notice that Go made HTTP requests in the course of testing the route handlers.
+
+## Conclusion
+
+We created a new web application using Gin and gradually added more functionality. We used tests to build robust route handlers and saw how we can reuse the same code to render a response in multiple formats with minimal effort.
