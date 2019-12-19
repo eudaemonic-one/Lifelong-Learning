@@ -33,3 +33,19 @@ To achieve this, we will make use of the following functionalities offered by Gi
 * Middleware — to implement authentication.
 
 We’ll also write tests to validate that all the features work as intended.
+
+## Routing
+
+In our application, we will:
+
+* Serve the index page at route / (HTTP GET request),
+Group user-related routes under the /u route,
+* Serve the login page at /u/login (HTTP GET request),
+  * Process the login credentials at /u/login (HTTP POST request),
+  * Log out at /u/logout (HTTP GET request),
+  * Serve the registration page at /u/register (HTTP GET request),
+  * Process the registration information at /u/register (HTTP POST request) ,
+* Group article related routes under the /article route,
+  * Serve the article creation page at /article/create (HTTP GET request),
+  * Process the submitted article at /article/create (HTTP POST request), and
+  * Serve the article page at /article/view/:article_id (HTTP GET request). Take note of the :article_id part in this route. The : at the beginning indicates that this is a dynamic route. This means that :article_id can contain any value and Gin will make this value available in the route handler.
