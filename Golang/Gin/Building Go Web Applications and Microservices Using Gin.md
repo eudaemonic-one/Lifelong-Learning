@@ -57,3 +57,21 @@ A web application can render a response in various formats like HTML, text, JSON
 ## Middleware
 
 In the context of a Go web application, middleware is a piece of code that can be executed at any stage while handling an HTTP request. It is typically used to encapsulate common functionality that you want to apply to multiple routes. We can use middleware before and/or after an HTTP request is handled. Some common uses of middleware include authorization, validation, etc.
+
+## Creating Reusable Templates
+
+Our application will display a web page using its template. However, there will be several parts such as the header, menu, sidebar, and footer, which will be common across all pages. Go allows us to create reusable template snippets that can be imported in other templates.
+
+The template for the index page makes use of the header and the footer and displays a simple Hello Gin message:
+
+```html
+<!--index.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+  <h1>Hello Gin!</h1>
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}
+```
