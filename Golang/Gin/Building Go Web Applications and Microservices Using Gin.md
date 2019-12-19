@@ -565,3 +565,36 @@ curl -X GET -H "Accept: application/xml" http://localhost:8080/article/view/1
 ```text
 <article><ID>1</ID><Title>Article 1</Title><Content>Article 1 body</Content></article>
 ```
+
+## Testing the Application
+
+Since we’ve been using tests to create specifications for our route handlers and models, we should constantly be running them to ensure that the functions work as expected. In your project directory, execute the following command:
+
+```shell
+go test -v
+```
+
+Executing this command should result in something similar to this:
+
+```text
+=== RUN   TestShowIndexPageUnauthenticated
+[GIN] 2016/06/14 - 19:07:26 | 200 |     183.315µs |  |   GET     /
+--- PASS: TestShowIndexPageUnauthenticated (0.00s)
+=== RUN   TestArticleUnauthenticated
+[GIN] 2016/06/14 - 19:07:26 | 200 |     143.789µs |  |   GET     /article/view/1
+--- PASS: TestArticleUnauthenticated (0.00s)
+=== RUN   TestArticleListJSON
+[GIN] 2016/06/14 - 19:07:26 | 200 |      51.087µs |  |   GET     /
+--- PASS: TestArticleListJSON (0.00s)
+=== RUN   TestArticleXML
+[GIN] 2016/06/14 - 19:07:26 | 200 |      38.656µs |  |   GET     /article/view/1
+--- PASS: TestArticleXML (0.00s)
+=== RUN   TestGetAllArticles
+--- PASS: TestGetAllArticles (0.00s)
+=== RUN   TestGetArticleByID
+--- PASS: TestGetArticleByID (0.00s)
+PASS
+ok    github.com/demo-apps/go-gin-app 0.084s
+```
+
+As can be seen in this output, this command runs all the tests that we have written and, in this case, indicates that our application is working as we intend it to. If you take a close look at the output, you’ll notice that Go made HTTP requests in the course of testing the route handlers.
