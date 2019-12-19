@@ -426,3 +426,55 @@ router.GET("/article/view/:article_id", getArticle)
 ```
 
 This route will match all requests matching the above path and will store the value of the last part of the route in the route parameter named article_id which we can access in the route handler. For this route, we will define the handler in a function named getArticle.
+
+## Creating the Route Handler for a Single Article
+
+### Extracts the ID of the article to display
+
+```go
+c.Param("article_id")
+```
+
+where c is the Gin Context which is a parameter to any route handler when using Gin.
+
+### Fetches the article
+
+```go
+article, err := getArticleByID(articleID)
+```
+
+```go
+func getArticleByID(id int) (*article, error) {
+  for _, a := range articleList {
+    if a.ID == id {
+      return &a, nil
+    }
+  }
+  return nil, errors.New("Article not found")
+}
+```
+
+This function loops through the article list and returns the article whose ID matches the ID passed in. If no matching article is found it returns an error indicating the same.
+
+### Renders the article.html template passing it the article
+
+```go
+c.HTML(
+    // Set the HTTP status to 200 (OK)
+    http.StatusOK,
+    // Use the article.html template
+    "article.html",
+    // Pass the data that the page uses
+    gin.H{
+        "title":   article.Title,
+        "payload": article,
+    },
+)
+```
+
+The new files added in this section are as follows:
+
+```text
+└── templates
+    └── article.html
+```
