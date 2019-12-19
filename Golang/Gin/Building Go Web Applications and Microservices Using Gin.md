@@ -416,3 +416,13 @@ These are the new files added in this section:
 ├── models.article_test.go
 └── routes.go
 ```
+
+## Setting Up the Route for a Single Article
+
+We can set up a new route to handle requests for a single article in the same manner as in the previous route. However, we need to account for the fact that while the handler for all articles would be the same, the URL for each article would be different. Gin allows us to handle such conditions by defining route parameters as follows:
+
+```go
+router.GET("/article/view/:article_id", getArticle)
+```
+
+This route will match all requests matching the above path and will store the value of the last part of the route in the route parameter named article_id which we can access in the route handler. For this route, we will define the handler in a function named getArticle.
