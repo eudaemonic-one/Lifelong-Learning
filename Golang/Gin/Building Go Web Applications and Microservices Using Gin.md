@@ -531,3 +531,37 @@ Since we are now expecting JSON and XML responses if the respective headers are 
 2. Test the the application returns an article in XML format when the Accept header is set to application/xml
 
 These will be added as functions named TestArticleListJSON and TestArticleXML.
+
+## Updating the Route Handlers
+
+The route handlers don’t really need to change much as the logic for rendering in any format is pretty much the same. All that needs to be done is use the render function instead of rendering using the c.HTML methods.
+
+```go
+func showIndexPage(c *gin.Context) {
+  articles := getAllArticles()
+  // Call the render function with the name of the template to render
+  render(c, gin.H{
+    "title":   "Home Page",
+    "payload": articles}, "index.html")
+}
+```
+
+### Retrieving the List of Articles in JSON Format
+
+```shell
+curl -X GET -H "Accept: application/json" http://localhost:8080/
+```
+
+```text
+[{"id":1,"title":"Article 1","content":"Article 1 body"},{"id":2,"title":"Article 2","content":"Article 2 body"}]
+```
+
+### Retrieving an Article in XML Format
+
+```shell
+curl -X GET -H "Accept: application/xml" http://localhost:8080/article/view/1
+```
+
+```text
+<article><ID>1</ID><Title>Article 1</Title><Content>Article 1 body</Content></article>
+```
