@@ -8,3 +8,7 @@ Gin is a high-performance micro-framework that can be used to build web applicat
 
 * built-in net/http library that allows you to create an HTTP server effortlessly.
 * a set of commonly used functionalities, e.g. routing, middleware support, rendering, that reduce boilerplate code and make writing web applications simpler.
+
+## Designing the Application
+
+Request -> Route Parser -> [Optional Middleware] -> Route Handler -> [Optional Middleware] -> Response
