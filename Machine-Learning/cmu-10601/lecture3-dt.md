@@ -121,3 +121,42 @@ Classifier on A and C
 
 * G(y, Xm; D) = G(y; D) - (P(Xm=0)G(y; D_Xm=0) + P(Xm=1)G(y; D_Xm=1))
 * Indistinguishable with Mutual Information
+
+### Mutual Information
+
+Let x be a random variable x ∈ X => attribute
+
+Let y be a random variable y ∈ Y => class
+
+* Entrophy
+  * H(Y) = -Σ_y∈Y P(Y=y)log_2 P(Y=y)
+* Specific Conditional Entrophy
+  * H(Y|X=x) = -Σ_y∈Y P(Y=y|X=x)log_2 P(Y=y|X=x)
+* Conditional Entrophy
+  * H(Y|X) = H(Y) = Σ_x∈X P(X=x)H(Y|X=x)
+* Mutual Information
+  * I(Y;X) = H(Y) - H(Y|X) = H(X) - H(X|Y)
+
+Entrophy measures the expected number of bits to code one random draw from X.
+
+For a decision tree, we want to reduce the entrophy of the random variable we are trying to predict.
+
+Mutual Information => If we know X, how much does this reduce our uncertainty about Y.
+
+Gini gain and Mutual information are statisically indistinguishable.
+
+## Decision Tree Learning as Search
+
+* Search space: all possible decision trees
+* Node: single decision tree
+* Edge: connects a child to a parent from which it could have been created with 1 attribute addition.
+* Decision Tree Learning = greedy search, maximizing splitting criterion at each step
+* Edge weight: negative of the splitting criterion
+
+Big question: How is it that your ML algorithms can generalize the unseen examples?
+
+**ID3** = Decision Tree Learning with Mutual Information as the splitting criterion
+
+We say that the **inductive bias** of a ML algorithm is the principal by which it generalizes to unseen examples.
+
+Inductive bias of ID3 is the smallest tree that matches the data with high mutual information attributes near the top.
