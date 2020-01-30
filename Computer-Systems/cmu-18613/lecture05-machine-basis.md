@@ -74,3 +74,41 @@
 * Normal (R) Mem[Reg[R]]
 * Displacement D(R) Mem[Reg[R]+D]
 * Most general form D(Rb, Ri, S) Mem[Reg[Rb]+S*Reg[Ri]+D]
+
+## Arithmetic & Logical Operations
+
+* leaq Src, Dst
+  * Src is address mode expression
+  * Set Dst to address denoted by expression
+* addq
+* subq
+* imulq
+* shlq
+* sarq
+* shrq
+* xorq
+* andq
+* orq
+* **Watch out for argument order! Src, Dest**
+* Warning: Intel docs use "op Dest, Src"
+* incq
+* decq
+* negq
+* notq
+
+## C, Assemble, Machine Code
+
+### Turning C into Object Code
+
+* Code in files `p1.c` `p2.c`
+* Compile with command: `gcc -Og p1.c p2.c -o p`
+  * Use basic optimizations (`-Og`)
+  * Put resulting binary in file
+
+Text C program --Compiler (`gcc -Og -S`)-> text Asm program (`p1.s` `p2.s`) --(Assembler (`gcc` or `as`))-> binary Object program (`p1.o` `p2.o`) --(Linker (`gcc` or `ld`))-> binary Executable program (`p`) <- Static libraries (`.a`)
+
+### Disassembling Object Code
+
+* `objdump -d sum`
+  * Can be run on either a.out (complete executable) or .o file
+* gdb dump disassemble sumstore
