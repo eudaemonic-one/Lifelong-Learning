@@ -1,4 +1,4 @@
-# Review (General) Phase I
+Review (General) Phase I
 
 ## Introduction
 
@@ -98,3 +98,70 @@ class HelloWorld {
 | Deque     | ArrayDeque                            |
 | Stack     | ArrayDeque                            |
 | Map       | HashMap/LinkedHashMap/TreeMap/EnumMap |
+
+## Object-Oriented Programming in Java
+
+### Objects / Classes / Interfaces/ Implementations
+
+* An **object** is a bundle of **state ** (fields) and **behavior** (methods), which are collectively known as **memebers**
+* Class defines both **type** and **implementation**
+* Loosely speaking, the methods of a class are its **Application Programming Interface (API)**
+* Multiple implementations of API can coexist
+  * **Multiple classes can implement the same API with different performance and behavior**
+* In Java, an API is specified by *interface* or *class*
+  * Interface provides only an API
+  * Class provides an API and an implementation
+  * A class can implement multiple interfaces
+* Prefer interfaces to classes as types
+
+### Information Hiding
+
+* Information Hiding or Encapsulation
+  * Cleanly separates API from implementation
+  * Modules communicate *only* through APIs
+* Benefits of Information Hiding
+  * **Decouples** the classes that comprise a system
+  * **Speeds up system development**
+  * **Eases burden of maintenance**
+  * **Enables effective performance tuning**
+  * **Increases software reuse**
+* Information hiding with interfaces
+  * Declare variables using interface types
+  * Client can use only interface methods
+  * Fields not accessible from client code
+* **Visibility modifiers for members**
+  * private – Accessible *only* from declaring class
+  * package-private – Accessible from any class in the package where it is declared
+  * protected – Accessible from subclasses of declaring class (and within package)
+  * public – Accessible from anywhere
+
+### Exceptions
+
+* Inform caller of problem by transfer of control
+* Semantics
+  * Propagates up stack until main method is reached (terminates program), or exception is caught
+* Sources
+  * Program can throw explicitly
+  * Underlying virtual machine (JVM) can generate
+* **Checked vs. Unchecked Exceptions**
+  * **Checked exception**
+    * Must be caught or propagated, or program won’t compile
+    * Exceptional condition that programmer must deal with
+  * **Unchecked exception**
+    * No action is required for program to compile
+    * Usually indicates a programming error
+  * **Error**
+    * Special unchecked exception thrown by JVM
+    * Recovery is impossible
+* Design choice
+  * try-with-resources that automatically closes resources
+
+### References
+
+* https://www.geeksforgeeks.org/classes-objects-java/
+* https://www.geeksforgeeks.org/inheritance-in-java/
+* https://www.geeksforgeeks.org/interfaces-in-java/
+* https://www.geeksforgeeks.org/difference-between-abstract-class-and-interface-in-java/
+* https://www.geeksforgeeks.org/access-modifiers-java/
+* https://www.geeksforgeeks.org/checked-vs-unchecked-exceptions-in-java/
+
