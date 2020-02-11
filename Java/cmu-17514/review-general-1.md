@@ -223,3 +223,79 @@ class HelloWorld {
 * No need to override equals and hashCode if you want identity semantics
 * For primitives must use ==
 * For object reference types, the == operator provides *identity semantics*, exactly as implemented by Object.equals
+
+## Design for Reuse: Delegation and Inheritance
+
+### Miscs
+
+| Primitive             | Latency: ns | Latency: us | Latency: ms |
+| --------------------- | ----------- | ----------- | ----------- |
+| L1 cache reference    | 0.5         |             |             |
+| L2 cache reference    | 7           |             |             |
+| Main memory reference | 100         |             |             |
+| Send packet           | 150,000,000 | 150,000     | 150         |
+
+### Behavioral Subtyping
+
+* **Liskov Substitution Principle**
+  * **Let q(x) be a property provable about objects x of type T. Then q(y) should be provable for objects y of type S where S is a subtype of T.**
+* Compiler-enforced rules in Java
+  * Subtypes can add, but not remove methods
+  * Concrete class must implement all undefined methods
+  * Overriding method must return same type or subtype
+  * Overriding method must accept the same parameter types
+  * Overriding method may not throw additional exceptions
+* **Subtypes must have**:
+  * **Same or stronger invariants**
+  * **Same or stronger postconditions for all methods**
+  * **Same or weaker preconditions for all methods**
+
+### Delegation
+
+* Delegation is simply when one object relies on another object for some subset of its functionality
+
+* Judicious delegation enables code reuse
+
+* Delegation and design
+
+  * Small interfaces with clear contracts
+  * Classes to encapsulate algorithms, behaviors
+
+* **Subtype Polymorphism**
+
+  * Different kinds of objects can be treated uniformly by client code
+  * Each object behaves according to its type
+
+* Benefits of inheritance
+
+  * Reuse of code
+  * Modeling flexibility
+
+* **Inherance and subtyping**
+
+  * **Inheritance is for polymorphism and code reuse**
+
+    * Write code once and only once
+
+    * Superclass features implicitly available in
+
+      subclass
+
+  * **Subtyping is for polymorphism**
+
+    * Accessing objects the same way, but getting different behavior
+    * Subtype is substitutable for supertype
+
+* **Interfaces and Classes**
+
+  * An interface defines expectations / commitments for clients
+  * A class fulfills the expectations of an interface
+
+* **Delegation vs. Inheritance**
+
+  * Inheritance can improve modeling flexibility
+  * Favor composition/delegation over inheritance\
+    * Inheritance violates information hiding
+    * Delegation supports information hiding
+  * Design and document for inheritance, or prohibit it
+    * Document requirements for overriding any method
