@@ -351,3 +351,35 @@ class HelloWorld {
 * Strategy pattern uses delegation to vary the entire algorithm
   * Strategy objects are reusable across multiple classes
   * Multiple strategy objects are possible per class
+
+## Design Patterns for Reuse Part 2
+
+### Iterator Pattern
+
+* Problem: Clients need uniform strategy to access all elements in a container, independent of the container type
+* Solution: A strategy pattern for iteration
+* Consequences:
+  * Hides internal implementation of underlying container
+  * Easy to change container type
+  * Facilitates communication between parts of the program
+
+### Decorator Pattern
+
+* Problem: You need arbitrary or dynamically composable extensions to individual objects
+* Solutions: Implement a common interface as the object you are extending, add functionality, but delegate primary responsibility to an underlying object
+* Consequences:
+  * More flexible than static inheritance
+  * Customizable, cohesive extension
+  * Breaks object identity, self references
+* Composition and forwarding
+
+### Design Principles: Heuristics to achieve design goals
+
+* Low coupling
+  * each component should depend on as few other components as possible
+  * to increase understandability, reuse
+* Low representational gap
+  * to increase understandability, maintainability
+* High cohesion
+  * each component should have a small set of closely-related responsibilities
+  * increase understandability
