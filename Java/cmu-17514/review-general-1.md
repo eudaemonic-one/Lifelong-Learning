@@ -299,3 +299,55 @@ class HelloWorld {
     * Delegation supports information hiding
   * Design and document for inheritance, or prohibit it
     * Document requirements for overriding any method
+
+## Introduction to Design Patterns Part 1: Designing Classes
+
+### Dynamic method dispatch
+
+* (Compile time) Determine which class to look in
+* (Compile time) Determine method signature to be executed
+* (Runtime) Determine dynamic class of the receiver
+* (Runtime) From dynamic class, determine method to invoke
+
+### UML
+
+* Interfaces vs. Classes
+* Fields vs. Methods
+* Relationships:
+  * **Extends** (inheritance) - triangle (connects superclasses) with solid line
+  * **Implement** (Realization) - triangle (connects interface) with dot line
+  * **Has a** (aggregation) - diamond (connects host) with solid line
+  * **non-specific association** - solid line
+* Visibility: **+** (public) **-** (private) **#** (protected)
+
+### Strategy Pattern
+
+* Problem: Clients need different variants of an algorithm
+* Solution: Create an interface for the algorithm, with an implementing class for each variant of the algorithm
+* Consequences:
+  * Easily extensible for new algorithm implementations
+  * Separates algorithm from client context
+  * Introduces an extra interface and many classes
+
+### Command Pattern
+
+* Problem: Clients need to execute some (possibly flexible) operation without knowing the details of the operation
+* Solution: Create an interface for the operation, with a class (or classes) that actually executes the operation
+* Consequences:
+  * Separates operation from client context
+  * Can specify, queue, and execute commands at different times
+  * Introduces an extra interface and classes
+
+### Template Method Pattern
+
+* Problem: An algorithm consists of customizable parts and invariant parts
+* Solution: Implement the invariant parts of the algorithm in an abstract class, with abstract (unimplemented) primitive operations representing the customizable parts of the algorithms. Subclasses customize the primitive operations
+* Consequences:
+  * Code reuse for the invariant parts of algorithm
+  * Customization is restricted to the primitive operations
+  * Inverted (Hollywood-style) control for customization
+* Template method uses inheritance to vary part of an algorithm
+  * Template method implemented in supertype, primitive operations implemented in subtypes
+* Strategy pattern uses delegation to vary the entire algorithm
+  * Strategy objects are reusable across multiple classes
+  * Multiple strategy objects are possible per class
