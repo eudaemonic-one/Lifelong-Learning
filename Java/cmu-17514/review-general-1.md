@@ -165,3 +165,61 @@ class HelloWorld {
 * https://www.geeksforgeeks.org/access-modifiers-java/
 * https://www.geeksforgeeks.org/checked-vs-unchecked-exceptions-in-java/
 
+## Testing and Object Methods in Java
+
+### Contracts
+
+* Agreement between an object and its user
+* Includes
+  * Method signature (type specifications)
+  * Functionality and correctness expectations
+  * Performance expectations
+* **What** the method does, not **how** it does it
+  * **Interface** (API), not **implementation**
+* Method contract structure
+  * Preconditions
+  * Postconditions
+  * Exceptional behavior
+* Formal contract specification - **Java Modelling Language (JML)**
+* Textual specification - **Javadoc**
+
+### Testing Correctness - Junit and Friends
+
+* Semantic correctness
+  * Compiler ensures types are correct
+  * Static analysis tools recognize many common problems
+* Formal verification (such as mathematical proof)
+* Testing
+  * Executing the program with selected inputs in a controlled environment
+  * Reveal bugs and assess quality
+  * **Executes tests regularly - After every change**
+* Unit tests
+  * Unit tests for small units: methods, classes, subsystems
+  * JUnit - Popular unit-testing framework for Java
+* Write tests based on the specification
+  * Representative cases
+  * Invalid cases
+  * Boundary conditions
+* Stress tests - automatically generate huge numbers of test cases
+* **Think about testing when writing code**
+* Test-Driven Development (TDD)
+  * write tests before you write the code
+
+### Overriding Object Methods
+
+* **equals** - returns true if the two objects are equal
+  * Reflexive
+  * Symmetric
+  * Transitive
+  * Consistent
+  * Non-null
+* **hashCode** - returns an int that must be equal for equal objects, and is likely to differ on unequal objects
+  * Equal objects must have equal hash codes
+  * If override equals must override hashCode
+  * Unequal objects should have different hash codes
+  * Hash code must not change unless object mutated
+* **toString** - returns a printable string representation
+* Always override toString
+* No need to override equals and hashCode if you want identity semantics
+* For primitives must use ==
+* For object reference types, the == operator provides *identity semantics*, exactly as implemented by Object.equals
