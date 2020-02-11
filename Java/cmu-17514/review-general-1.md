@@ -383,3 +383,38 @@ class HelloWorld {
 * High cohesion
   * each component should have a small set of closely-related responsibilities
   * increase understandability
+
+## A Formal Design Process: Domain Modeling
+
+### Visualizing Dynamic Behavior: Interaction Diagrams
+
+* An *interaction diagram* is a picture that shows, for a single scenario of use, the events that occur across the system’s boundary or between subsystems
+* Clarifies interactions:
+  * Between the program and its environment
+  * Between major parts of the program
+* Sequence Diagram
+
+### Artifacts of Design Process
+
+* Model / diagram the problem, define objects
+  * Domain model (aka. conceptual model)
+* Define system behaviors
+  * System sequence diagram
+    * A *system sequence diagram* is a model that shows, for one scenario of use, the sequence of events that occur on the system’s boundary
+    * Design goal: Identify and define the interface of the system
+    * Input: Domain description and one use case
+    * Output: A sequence diagram of system-level operations
+* Assign object responsibilities, define interactions
+  * Object interaction diagrams
+* Model / diagram a potential solution
+  * Object model
+
+### Modeling a Problem Domain
+
+* Identify key concepts of the domain description
+  * Identify nouns, verbs, and relationships between concepts
+  * Distinguish operations and concepts
+  * Brainstorm with a domain expert
+* Visualize as a UML class diagram, a *domain model*
+  * Show class and attribute concepts
+  * No operations/methods
