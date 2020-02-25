@@ -90,6 +90,13 @@
     * y ~ Categorical(**φ**)
   * Learning by MLE
     * Negative Conditional Log-likelihood
+      * l(**θ**) = log[Π^N\_{i=1} P(y^(i)|x^(i), **θ**)] =  Σ^N_{i=1} log P(...)
+      * J(**θ**) = -1/N l(**θ**) convex
+      * **θ** = argmin J(**θ**) can use GD or SGD
     * Compute derivatives
   * Optimization with SGD
+    * Gradient dJ^(i)(**θ**)/d**θ**km = d/d**θ**km(-log p(y^(i)|x^(i),**θ**) = -(Π(y^(i)=k) - P(y^(i)|x^(i),**θ**))x^(i)_m
+    * Π(y^(i)=k) = 1 if y^(i)=k; 0 otherwise
+    * dJ^(i)(**θ**)/d**θ**k = ▽**θ**kJ^(i)(θ) =  -(Π(y^(i)=k) - P(y^(i)|x^(i),**θ**))x^(i)
+      * = [d·/d**θ**k1, d·/d**θ**k2, d·/d**θ**km] compute for each k
   * Predict most probable class
