@@ -102,3 +102,11 @@
   * Document thread safety
   * If class is mutable, document state space
   * If API spans packages, JavaDoc is not sufficient
+
+## Miscs
+
+* Don‘t let your output become your de facto API
+* Avoid float and double where exact answers are required
+* use BigDecimal(String), int, long instead
+* BigDecimal.valueOf(double) is better, but not perfect
+  * Use it for non-constant values
