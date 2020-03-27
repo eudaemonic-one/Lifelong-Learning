@@ -45,6 +45,15 @@
 
 ## PAC
 
+### Two Types of Error
+
+* True Error (aka. **expected risk**)
+  * Always unknown
+* Train Error (aka. **empirical risk**)
+  * We can measure this on the training data
+
+### PAC Learning
+
 * Can we bound R(h) (Unknown) in terms of R^(h) (known)? Yes
 * PAC stands for Probably Approximately Correct
 * PAC Learner yiedls hypothesis h ∈ H which is approximately correct (R(h)≈0) with high probability (P(R(h)≈0)≈1)
