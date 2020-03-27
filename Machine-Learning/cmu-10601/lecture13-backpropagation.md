@@ -2,19 +2,35 @@
 
 ## Activation Functions
 
-* Sigmoid
+* Sigmoid / Logistic Function
+  * 1 / (1 + exp(-α))
 * Tanh
+  * Like logistic function but shifted to range [-1, +1]
 * reLU often used in vision tasks
+  * rectified linear unit
+  * Linear with cutoff at zero
+  * max(0, wx+b)
+  * Soft version: log(exp(x) + 1)
 
 ## Objective Function
 
 * Quadratic Loss
   * the same objective as Linear Regression
   * i.e. MSE
-* Cross-Entropy
+* Cross Entropy
   * the same objective as Logistic Regression
   * i.e. negative log likelihood
+  * this requires probabilities, so we add an additional "softmax" layer at the end of our network
   * steeper
+
+|               | Forward                         | Backward                        |
+| ------------- | ------------------------------- | ------------------------------- |
+| Quadratic     | J = 1/2 (y - y\*)^2             | dJ/dy = y - y\*                 |
+| Cross Entropy | J = y\*log(y) + (1-y\*)log(1-y) | dJ/dy = y\*1/y + (1-y\*)1/(y-1) |
+
+## Multi-class Output
+
+* Softmax: y_k = exp(b_k) / Σ_{l=1}^{K} exp(b_l)
 
 ## Chain Rule
 
