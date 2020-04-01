@@ -5,32 +5,30 @@
 | Function Approximation                                       | Probabilistic Learning                                       |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Previously, we assumed that our output was generated using a deterministic target function | Today, we assume that our output is sampled from a conditional probability distribution |
-| x^(i) ~ p*(·)                                                | x^(i) ~ p*(·)                                                |
-| y^(i) ~ c*(x^(i))                                            | y^(i) ~ p*(·\|x^(i))                                         |
-| Our goal was to learn a hypothesis h(x) that best approximates c*(x) | Our goal is to learn a probability distribution p(y\|x)      |
+| $x^{(i)} \sim p^*(·)$                                        | $x^{(i)} \sim p^*(·)$                                        |
+| $y^{(i)} \sim c^*(x^{(i)})$                                  | $y^{(i)} \sim p^*(·|x^{(i)})$                                |
+| Our goal was to learn a hypothesis h(x) that best approximates $c^*(x)$ | Our goal is to learn a probability distribution $p(y|x)$     |
 
 ### Probabilistics
 
-* Discrete Random Variable X
-* Probability Mass Function (pmf) p(x)
-* Continuous Random Variable X
+* Discrete Random Variable $X$
+* Probability Mass Function (pmf) $p(x)$
+* Continuous Random Variable $X$
 * Probability Density Function (pdf)
-  * P(a<=X<=b) = ∫f(x)dx
+  * $P(a \leq X \leq b) = \int f(x)dx$
 * Cumulative Distribution Function
-  * F(x) = P(X<=x) = 
-    * Σp(x')
-    * ∫f(x')dx'
-* P(A|B) = P(A,B) / P(B)
+  * $F(x) = P(X \leq x) = \sum p(x') = \int f(x')dx'$
+* $P(A|B) = \frac{P(A,B)}{P(B)}$
 * Beta Distribution
-  * pdf: f(Φ|α,β) = (1/B(α,β)) x^(α-1) (1-x)^(β-1)
+  * pdf: $f(\Phi|\alpha,\beta) = \frac{1}{B(\alpha,\beta)} x^{\alpha-1} (1-x)^{\beta-1}$
 * Dirichlet Distribution
-  * pdf: p(Φ|α) = (1/B(α)) ∏_{k=1}^K  Φ_k^{α_k-1}
+  * pdf: $p(\Phi|\alpha) = \frac{1}{B(\alpha)} \prod_{k=1}^K  \Phi_k^{\alpha_k-1}$ where $B(\alpha) = \frac{\prod_{k=1}^K \Gamma(\alpha_k)}{\Gamma(\sum_{k=1}^K \alpha_k)}$
 * Expectation
-  * E[X] = Σxp(x)
-  * E[X] = ∫xf(x)dx
+  * $E[X] = \sum xp(x)$
+  * $E[X] = \sum xf(x)dx$
 * Variance
-  * Var(X) = E[(X-E[X])^2] = E[X^2] - E[X]^2
-  * μ = E[X]
+  * $Var(X) = E[(X-E[X])^2] = E[X^2] - E[X]^2$
+  * $\mu = E[X]$
 
 ## Likelihood Function
 
