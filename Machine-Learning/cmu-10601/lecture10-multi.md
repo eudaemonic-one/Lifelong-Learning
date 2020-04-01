@@ -15,13 +15,14 @@
 
 ## Logistic Regression
 
-* Data: Inputs are continuous vectors of length M. Outputs are discrete D = {x^(i), y^(i)}^N_i=1 where x ∈ R^M and y ∈ {0, 1}
+* Data: Inputs are continuous vectors of length M. Outputs are discrete.
+  * $D = \{x^{(i)}, y^{(i)}\}_{i=1}^N$ where $x \in R^M$ and $y \in \{0,1\}$
 * Model: Logistic function applied to dot product of parameters with input vector.
-  * p**θ**(y=1|x)  = 1 / (1 + exp(-**θ**^Tx)) = sigmoid(**θ**^Tx)
+  * $p_\theta(y=1|x) = \frac{1}{1+\exp{-\theta^Tx}}$
 * Learning: Finds the parameters that minimize some objective function.
-  * **θ*** = argmin J(**θ**)
+  * $\theta^* = argmin_\theta J(\theta)$
 * Prediction: Output is the most probable class
-  * y^ = argmax{y ∈ {0, 1}} p**θ**(y|x) 
+  * $\hat{y} = argmax_{y \in \{0, 1\}} p_\theta(y|x)$ 
 
 ## Binary Logistic Regression
 
@@ -54,12 +55,17 @@
 
 ### Maximum Conditional Likelihood Estimation
 
-* Gradient Descent
-  * take larger - more certain - steps opposite the gradient
-* Stochastic Gradient Descent
-  * take many small steps opposite the gradient
-* Newton's Method
-  * use second derivatives to better follow curvature
+* Learning: finds the parameters that minimize some objective function.
+  * $\theta^* = argmin_\theta J(\theta)$
+* We minimize the negative log conditional likelihood:
+  * $J(\theta) = - \log{\prod_{i=1}^N p_\theta(y^{(i)}|x^{(i)})}$
+* Approaches
+  * Gradient Descent
+    * take larger - more certain - steps opposite the gradient
+  * Stochastic Gradient Descent
+    * take many small steps opposite the gradient
+  * Newton's Method
+    * use second derivatives to better follow curvature
 
 ### Mini-Batch SGD
 
