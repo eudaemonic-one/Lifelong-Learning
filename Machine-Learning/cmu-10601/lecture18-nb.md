@@ -23,7 +23,7 @@
     * Count Variables:
       * $N_{y=1} = \Sigma_{i=1}^{N} I_A(y^{(i)}=1)$
       * $N_{y=0} = \Sigma_{i=1}^{N} I_A(y^{(i)}=0)$
-      * $N_{y=0,x_m=1} = \Sigma_{i=1}^{N} I_A(y^{(i)}=1 \wedge x_m^{(i)}=1)$
+      * $N_{y=0,x_m=1} = \Sigma_{i=1}^{N} I_A(y^{(i)}=0 \wedge x_m^{(i)}=1)$
     * **MLE estimators**:
       * $\Phi = \frac{N_{y=1}}{N}$
       * $\theta_{0,m} = \frac{N_{y=0,x_m=1}}{N_{y=0}}$
@@ -79,18 +79,18 @@
 * Training: Find the **class-conditional** MLE parameters
   * For P(Y), we find the MLE using all the data. For each $P(X_k|Y)$ we condition on the data with the corresponding
 * Classification: Find the class that maximizes the posterior
-  * $\hat{y} = argmax_y p(y|x) (posterior) \\ = argmax_y \frac{p(x,y)p(y)}{p(x)} (by \space Bayes's \space rule) \\ = argmax_y p(x|y)p(y)$
+  * $\hat{y} = argmax_y p(y|x) (posterior) \\ = argmax_y \frac{p(x|y)p(y)}{p(x)} (by \space Bayes's \space rule) \\ = argmax_y p(x|y)p(y)$
 
 ## Discriminative and Generative Classifiers
 
 * **Generative Classifiers**
   * Ex: Naive Bayes
-  * Define a joint model of the observations x and the labels y: p(x,y)
-  * Learning maimizes (joint) likelihood
-  * Use Bayes's Rule to classify based on the posterior: p(y|x) = p(x|y)p(y)/p(x)
+  * Define a joint model of the observations x and the labels y: $p(x,y)$
+  * Learning maximizes (joint) likelihood
+  * Use Bayes's Rule to classify based on the posterior: $p(y|x) = p(x|y)p(y)/p(x)$
 * **Discriminative Classifiers**
   * Ex: Logistic Regression
-  * Directly model the conditional: p(y|x)
+  * Directly model the conditional: $p(y|x)$
   * Learning maximizes conditional likelihood
 
 |      | Generative                                    | Discriminative                                |
@@ -118,7 +118,12 @@
 
 ## Structured Prediction
 
+* Most of the models we’ve seen so far were for classification
+  * Given observations: $x=(x_1,x_2,\cdots,x_k)$
+  * Predict a label: $y$
 * Many real-world problems require structured prediction
   * Given observations: $x=(x_1,x_2,\cdots,x_k)$
-  * Predict a structure: $y=(y_1,y_2,\cdots,x_k)$
-* $\hat{y} = argmax_y p(y|x)$ where $y \in Y$ and |Y| is very large
+  * Predict a structure: $y=(y_1,y_2,\cdots,y_J)$
+* $\hat{\vec{y}} = argmax_{\vec{y}} p(\vec{y}|\vec{x})$ where $\vec{y} \in Y$ and $|Y|$ is very large
+* Some classification problems benefit from **latent structure**
+
