@@ -8,6 +8,8 @@
 * $p(y_t|y_{t-1},y_{t-2},\cdots,y_1) = p(y_t|y_{t-1})$
   * => $y_t ⫫ y_i | y_{t-1}$
   * => $p(y_1,\cdots,y_t) \\ = \prod_{i=1}^T p(y_t|y_{t-1},\cdots,y_1) \space (by \space Chain \space Rule) \\ = \prod_{t=1}^T p(y_t|y_{t-1}) \space (by \space 1st \space order \space Markov \space assumption)$
+* 1st order Markov Model can be viewed as Finite State Machine
+* A HMM provides a joint distribution over the tunnel states/travel times with an assumption of dependence between adjacent tunnel states
 
 ## From Mixture Model to HMM
 
@@ -51,7 +53,7 @@
   * N = # of sentences T = sentence length
 * Likelihood:
   * $\ell(A,B,C) = \Sigma_{i=1}^N \log{p(\vec{x}^{(i)},\vec{y}^{(i)}|A,B,C)} \\ = \Sigma_{i=1}^N [\log{p(y_1^{(i)}|C)} + \Sigma_{t=2}^T \log{p(y_t^{(i)}|y_{t-1}^{(i)},B)} + \Sigma_{t=1}^T \log{p(x_t^{(i)}|y_t^{(i)},A)}]$
-  * = initial + transition + emission
+  * = $\Sigma_{i=1}^N initial + transition + emission$
 * MLE:
   * $\hat{A},\hat{B},\hat{C} = argmax_{A,B,C} \ell(A,B,C)$
   * =>
@@ -63,8 +65,17 @@
   * $\hat{B}_{jk} = \frac{\#(y_t^{(i)}=k \and y_{t-1}^{(i)}=j)}{\#(y_{t-1}^{(i)}=j)}$
   * $\hat{A}_{jk} = \frac{\#(x_t^{(i)}=k \and y_t^{(i)}=j)}{\#(y_t^{(i)}=j)}$
 
+### Supervised Learning for HMMs
+
+* Learning an HMM decomposes into solving two independent Mixture Models
+* Each can be solved in closed form
+
 ### Unsupervised Learning for HMMs
 
 * Unlike discriminative models $p(y|x)$, generative models $p(x,y)$ can maximize the likelihood of the data $D = \{x^{(i)},x^{(2)},\cdots,x^{(N)}\}$
-* This unsupervised learning setting can be ahieved by finding parameters that maximize the marginal likelihood
+* This unsupervised learning setting can be achieved by finding parameters that maximize the marginal likelihood
+  * Since we don't observe y, we define the marginal probability:
+    * $p_\theta(x) = \sum_{y \in Y} p_\theta(x,y)$
+    * The log-likelihood of the data is thus:
+    * $\ell(\theta) = \log{\prod_{i=1}^N p_\theta(x^{(i)})} = \sum{i=1}^N \log{\sum{y \in Y} p_\theta(x^{(i)},y)}$
 * We optimize using the Expectation-Maximization algorithm
