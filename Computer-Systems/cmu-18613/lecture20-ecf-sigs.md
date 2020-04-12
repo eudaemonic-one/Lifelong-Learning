@@ -129,3 +129,19 @@ Sigprocmask(SIG_SETMASK, &prev_mask, NULL);
   * Handles restricted class of `printf` format strings
   * Recognizes: %c %s %d %u %x %%
   * Size designators ‘l’ and ‘z’
+
+## Nonlocal Jumps: setjmp/longjmp
+
+* Powerful (but dangerous) user-level mechanism for transferring control to an arbitrary location
+* `int setjmp(jmp_buf j)`
+  * Must be called before longjmp
+  * Identifies a return site for a subsequent longjmp
+  * Called once, returns one or more times
+  * storing the current register context, stackpointer, and PC value in jmp_buf
+* `void longjmp(jmp_buf j, int i)`
+  * return from the setjmp remembered by jump buffer j again
+  * this time returning i instead of 0
+  * Called once, but never returns
+  * Restore register context (stack pointer, base pointer, PC value) from jump buffer j
+  * Set %eax (the return value) to i
+  * Jump to the location indicated by the PC stored in jump buf j
