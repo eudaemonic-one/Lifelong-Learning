@@ -108,3 +108,32 @@
 
 ![approximate_the_q_function_with_a_linear_model.png](images/lecture24-qlearn/approximate_the_q_function_with_a_linear_model.png)
 
+### Deep Q-Learning Algorithm
+
+* Initialize $\theta^{(0)}$
+* Do forever: $t=1,2,3,\cdots$
+  * Receive example <s,a,r,s'>
+  * Define squared error loss
+    * $\ell(\theta^{(t)},\theta^{(t-1)}) = (([r+\gamma max_{a'} Q(s',a';\theta^{(t-1)}])-Q(s,a;\theta^{(t)}))^2$
+    * the first term is y = target (TD-target) and we want $Q(s,a;\theta)$ to be this value (same as RHS of Q-Learning updating rule)
+      * $Q(s,a;\theta) \larr r + \gamma max_{a'} Q(s',a';\theta)$
+      * which is impossible
+    * the second term is current NN estimate of table entry
+  * Take step opposite the gradient
+    * $\theta^{(t)} \larr \theta^{(t-1)} - \nabla_{\theta^{(t)}} \ell(\theta^{(t)},\theta^{(t-1)})$
+    * where $\nabla_{\theta^{(t)}}\ell(\theta^{(t)},\theta^{(t-1)}) = -2 (y-Q(s,a;\theta^{(t)}))\nabla_{\theta^{(t)}} Q(s,a;\theta^{(t)})$
+    * the second term is TD-error
+    * the third term is computed by backpropagation
+
+### Experience Replay
+
+* Problems with online updates for deep q-learning
+  * not i.i.d. as SGD would assume
+  * Quickly forget rare experiences that might later be useful to learn from
+* Uniform Experience Replay
+  * Keep a replay memory $D=\{e_1,e_2,\cdots,e_N\}$ of N most recent experiences $e_t = <s_t,a_t,r_t,s_{t+1}>$
+  * Alternate two steps:
+    * Repeat T times: randomly sample $e_i$ from D and apply a Q-Learning update to $e_i$
+    * Agent selects an action using $\epsilon$-greedy policy to receive new experience that is added to $D$
+* Prioritized Experience Replay
+  * similar to Uniform ER, but sample so as to prioritize experiences with high error
