@@ -121,3 +121,27 @@
 * Response headers: <header name>: <header data>
   * Content-Type: MIME type of content in response body
   * Content-Length: Length of content in response body
+
+## Common Gateway Interface (CGI)
+
+* **CGI** defines a simple standard for transferring information between the client (browser), the server, and the child process
+* CGI is the original standard for generating dynamic content
+  * Has been largely replaced by other, faster techniques:
+    * E.g., fastCGI, Apache modules, Java servlets, Rails controllers
+    * Avoid having to create process on the fly (expensive and slow).
+
+### Serving Dynamic Content With GET
+
+* **How does the client pass arguments to the server?**
+  * The arguments are appended to the URI
+    * http://add.com/cgi-bin/adder?15213&18213
+    * adder is the CGI program on the server that will do the addition.
+    * argument list starts with “?”
+    * arguments separated by “&”
+    * spaces represented by “+” or “%20”
+* **How does the server pass these arguments to the child?**
+  * In environment variable QUERY_STRING
+    * A single string containing everything after the “?”
+* **How does the server capture the content produced by the child?**
+  * The child generates its output on stdout and server uses `dup2` to redirect stdout to its connected socket
+* **Notice that only the CGI child process knows the content type and length, so it must generate those headers**
