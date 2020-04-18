@@ -143,3 +143,15 @@ ssize_t write(int fd, void *buffer, size_t max_count);
 * Stopping conditions
   * `maxlen` bytes read
   * EOF encountered
+
+## Choose I/O Functions
+
+* General rule: use the highest-level I/O functions you can
+* When to use standard I/O
+  * When working with disk or terminal files
+* When to use raw Unix I/O
+  * Inside signal handlers, because Unix I/O is async-signal-safe
+  * In rare cases when you need absolute highest performance
+* When to use RIO
+  * When you are reading and writing network sockets
+  * Avoid using standard I/O on sockets
