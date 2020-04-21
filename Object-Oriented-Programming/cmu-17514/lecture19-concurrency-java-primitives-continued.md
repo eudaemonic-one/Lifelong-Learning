@@ -206,4 +206,3 @@ public class BankAccount {
   * This confuses is-a and has-a relationships
   * Thread's `runnable` should have been private
 * Thread violates the "Minimize accessibility" principle
-
