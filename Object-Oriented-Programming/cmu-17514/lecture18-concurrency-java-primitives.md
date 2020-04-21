@@ -1,8 +1,17 @@
 # Lecture 18 Concurrency: Java Primitives
 
-## Concurrency
+## Concurrency Then And Now
+
+* In the past, multi-threading just a convenient abstraction
+  * GUI design: event dispatch thread
+  * Server design: isolate each client's work
+  * Workflow design: isolate producers and consumers
+* Now: required for scalability and performance
+
+## Java Concurrency
 
 * Java is inherently multithreaded
+* To utilize modern processors, we must write multithreaded code
 * Excellent libraries exist (e.g. java.util.concurrent)
 
 ### Basic Concurrency in Java
@@ -36,8 +45,8 @@ public class Thread {
 
 ### Java's intrinsic locks
 
-* synchronized (lock)
-  * Synchronizes entire block on object lock; cannot forget to unlock
+* `synchronized` (lock)
+  * Synchronizes entire block on object `lock`; cannot forget to unlock
   * exclusive: One thread at a time holds the lock
   * reentrant: A thread can repeatedly get same lock
 * synchronized on instance methods for entire method
@@ -80,6 +89,11 @@ public class SerialNumber {
   * Store data into variable i again
 
 ### Volatile
+
+* Java `volatile` keyword is used to mark a Java variable as "**being stored in main memory**"
+* More precisely that means, that every read of a volatile variable will be read from the computer's main memory, and not from the CPU cache
+* In a multithreaded application where the threads operate on non-volatile variables, each thread may copy variables from main memory into a CPU cache while working on them, for performance reasons
+* With non-volatile variables there are no guarantees about when the Java Virtual Machine (JVM) reads data from main memory into CPU caches, or writes data from CPU caches to main memory
 
 ```java
 public class StopThread {
