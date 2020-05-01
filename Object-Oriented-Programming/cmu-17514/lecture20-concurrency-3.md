@@ -54,7 +54,13 @@
   * Waiting thread can wake up without a notify(!)
     * Known as a spurious wakeup
 
-## A Toy Example: Read-write Locks
+## Defining Thread-safe Objects
+
+* Identify variables that represent the object's state
+* Identify invariants that constrain the state variables
+* Establish a policy for maintaining invariants
+
+### A Toy Example: Read-write Locks
 
 ```java
 @ThreadSafe public class RwLock {
@@ -92,9 +98,9 @@
 }
 ```
 
-## Advice for Building Thread-safe Objects
+### Advice for Building Thread-safe Objects
 
-* Do as little as possible in synchronized region: get in, get out
+* **Do as little as possible in synchronized region: get in, get out**
   * Obtain lock
   * Examine shared data
   * Transform as necessary
@@ -103,11 +109,11 @@
 * Generally, avoid `wait`/`notify`
   * `java.util.concurrent` provides better alternatives
 
-### Documentation
+#### Documentation
 
 * Document a class’s thread safety guarantees for its clients
 * Document a class’s synchronization policy for its maintainers
-* Use @ThreadSafe, @GuardedBy annotations
+* Use `@ThreadSafe`, `@GuardedBy` annotations
 
 ## Java libraries for concurrency (`java.util.concurrent`)
 
@@ -128,27 +134,27 @@
 
 ### Overview of `java.util.concurrent.atomic`
 
-* Atomic{Boolean,Integer,Long}
+* `Atomic{Boolean,Integer,Long}`
   * Boxed primitives that can be updated atomically
-* AtomicReference<T>
+* `AtomicReference<T>`
   * Object reference that can be updated atomically
-* Atomic{Integer,Long,Reference}Array
+* `Atomic{Integer,Long,Reference}Array`
   * Array whose elements may be updated atomically
-* Atomic{Integer,Long,Reference}FieldUpdate
+* `Atomic{Integer,Long,Reference}FieldUpdater`
   * Reflection-based utility enabling atomic updates to volatile fields
-* LongAdder,DoubleAdder
+* `LongAdder`,`DoubleAdder`
   * Highlyconcurrentsums
-* LongAccumulator, DoubleAccumulator
+* `LongAccumulator`, `DoubleAccumulator`
 * Generalization of adder to arbitrary functions (max, min, etc.)
 
 ### Concurrent collections
 
-| Unsynchronized | Concurrent            |
-| -------------- | --------------------- |
-| HashMap        | ConcurrentHashMap     |
-| HashSet        | ConcurrentHashSet     |
-| TreeMap        | ConcurrentSkipListMap |
-| TreeSet        | ConcurrentSkipListSet |
+| Unsynchronized | Concurrent              |
+| -------------- | ----------------------- |
+| `HashMap`      | `ConcurrentHashMap`     |
+| `HashSet`      | `ConcurrentHashSet`     |
+| `TreeMap`      | `ConcurrentSkipListMap` |
+| `TreeSet`      | `ConcurrentSkipListSet` |
 
 * You **can’t** prevent concurrent use of a concurrent collection
 
@@ -172,12 +178,25 @@
     V putIfAbsent(K key, V value);
     boolean remove(Object key, Object value);
     V replace(K key, V value);
-    boolean replace(K key, V oldValue, V newValue); • V compute(K key, BiFunction<...> remappingFn);
+    boolean replace(K key, V oldValue, V newValue);
+    V compute(K key, BiFunction<...> remappingFn);
     V computeIfAbsent(K key, Function<...> mappingFn);
-    V computeIfPresent (K key, BiFunction<...> remapFn); • V merge(K key, V value, BiFunction<...> remapFn);
+    V computeIfPresent (K key, BiFunction<...> remapFn);
+    V merge(K key, V value, BiFunction<...> remapFn);
     ```
 
-* `java.util.concurrent.ConcurrentHashMap`
+* Concurrent collection example: canonicalizing map
+
+  * ```java
+    private final ConcurrentMap<T,T> map = new ConcurrentHashMap<>();
+    
+    public T intern(T t) {
+    	String previousValue = map.putIfAbsent(t, t);
+      return previousValue == null ? t : previousValue;
+    }
+    ```
+
+* java.util.concurrent.ConcurrentHashMap`
 
   * Uses **many** techniques used to achieve high concurrency
   * The simplest of these is *lock striping*
