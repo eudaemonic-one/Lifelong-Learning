@@ -80,20 +80,113 @@ public class SerialNumber {
 }
 ```
 
+* A better one with using `java.util.concurrent`
+
+```java
+public class SerialNumber {
+	private static AtomicLong nextSerialNumber = new AtomicLong();
+  
+  public static long generateSerialNumber() {
+		return nextSerialNumber.getAndIncrement();
+  }
+
+  public static void main(String[] args) throws InterruptedException{ 
+    Thread threads[] = new Thread[5];
+		for (int i = 0; i < threads.length; i++) {
+			threads[i] = new Thread(() -> {
+				for (int j = 0; j < 1_000_000; j++)
+          generateSerialNumber();
+				});
+				threads[i].start();
+    }
+    for(Thread thread : threads) thread.join();
+		System.out.println(generateSerialNumber()); 
+  }
+}
+```
+
 ### Atomicity
 
 * An action is atomic if it is indivisible
-* In java, integer increment is not atomic.
+* In java, integer increment is not atomic
   * Load data from variable i
   * Increment value
   * Store data into variable i again
+* Reading an `int` is atomic
+* Writing an `int` is atomic
+
+![some_simple_actions_are_not_atomic](images/lecture18-concurrency-java-primitives/some_simple_actions_are_not_atomic.png)
+
+### Cooperative Thread Termination
+
+```java
+public class StopThread {
+  private static boolean stopRequested;
+
+  public static void main(String[] args) throws Exception {
+    Thread backgroundThread = new Thread(() -> {
+      while (!stopRequested)
+        /* Do something */ ;
+		});
+    backgroundThread.start();
+    
+		TimeUnit.SECONDS.sleep(1);
+		stopRequested = true;
+  }
+}
+```
+
+* In the absence of synchronization, there is no guarantee as to when, **if ever**, one thread will see changes made by another
+
+* **JVMs can and do perform this optimization (“hoisting”):**
+
+  * ```java
+    while (!done)
+      /* do something */ ;
+    ```
+
+* **becomes:**
+
+  * ```java
+    if (!done)
+      while (true)
+        /* do something */ ;
+    ```
+  
+* A possible fix with using `synchronized`:
+
+  * You **must** lock write and read!
+  
+  * *Otherwise, locking accomplishes* **nothing**
+  
+  * ```java
+    public class StopThread {
+    	private static boolean stopRequested;
+      
+    	private static synchronized void requestStop() {
+    		stopRequested = true;
+      }
+      private static synchronized boolean stopRequested() {
+        return stopRequested;
+    	}
+    	public static void main(String[] args) throws Exception {
+        Thread backgroundThread = new Thread(() -> {
+          while (!stopRequested())
+            /* Do something */ ;
+    		});
+        backgroundThread.start();
+        
+    		TimeUnit.SECONDS.sleep(10);
+        requestStop();
+      }
+    }
+    ```
 
 ### Volatile
 
 * Java `volatile` keyword is used to mark a Java variable as "**being stored in main memory**"
-* More precisely that means, that every read of a volatile variable will be read from the computer's main memory, and not from the CPU cache
+* `volatile` is synchronization without mutual exclusion
 * In a multithreaded application where the threads operate on non-volatile variables, each thread may copy variables from main memory into a CPU cache while working on them, for performance reasons
-* With non-volatile variables there are no guarantees about when the Java Virtual Machine (JVM) reads data from main memory into CPU caches, or writes data from CPU caches to main memory
 
 ```java
 public class StopThread {
@@ -116,4 +209,4 @@ public class StopThread {
 
 * Avoid shared mutable state
 * Even atomic oprations require synchronization
-* Some things that look atomic aren't (e.g. i++)
+* Some things that look atomic aren't (e.g., `i++`)
