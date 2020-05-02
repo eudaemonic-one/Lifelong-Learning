@@ -20,7 +20,7 @@
 | (parameter declarations) -> expression | `(double x, double y) -> Math.sqrt(x\*x + y\*y)`             |
 | (parameter declarations) -> block      | `(int i, int j) -> { int res = 1; for (int k = i; k < j; k++) res \*= k; return res;}` |
 
-### Functional Interfaces
+## Functional Interfaces
 
 * **Java has no functional types, only functional interfaces**
   * **Interfaces with only one explicit abstract method**
@@ -35,6 +35,15 @@
     * `ActionListener`
   * Many more in package `java.util.function`
 
+| Interface           | Function Signature    | Example                      |
+| ------------------- | --------------------- | ---------------------------- |
+| `UnaryOperator<T>`  | `T apply(T t)`        | `s -> s.toLowerCase()`       |
+| `BinaryOperator<T>` | `T apply(T t1, T t2)` | `(i, j) -> i.add(j)`         |
+| `Predicate<T>`      | `boolean test(T t)`   | `c -> c.isEmpty()`           |
+| `Function<T,R>`     | `R apply(T t)`        | `a -> Arrays.asList(a)`      |
+| `Supplier<T>`       | `T get()`             | `Instant.now()`              |
+| `Consumer<T>`       | `void accept(T t)`    | `o -> System.out.println(o)` |
+
 ### Subtle Difference Between Lambdas & Anonymous Classes
 
 ```java
@@ -42,15 +51,24 @@ class Enclosing {
   Supplier<Object> lambda() {
     return () -> this;
   }
+  
   Supplier<Object> anon() {
     return new Supplier<Object>() {
       public Object get() {return this;}
     }
   }
+  
+	public static void main(String[] args) {
+		Enclosing enclosing = new Enclosing();
+		Object lambdaThis = enclosing.lambda().get();
+		Object anonThis = enclosing.anon().get();
+    System.out.println(anonThis == enclosing); // false
+    System.out.println(lambdaThis == enclosing); // true
+	}
 }
 ```
 
-### Method References
+## Method References
 
 * **A more succinct alternative to lambdas**
 * Lambdas are succint
