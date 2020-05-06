@@ -1,11 +1,11 @@
 # Lecture 03 Bits, Bytes & Integers II
 
-## Addition, negation, multiplication
+## Addition, Negation, Multiplication
 
 ### Unsigned Addition
 
 * Ignores carry output
-* $s = UAdd_w(u, v) = u + v mod 2^w$
+* $s = UAdd_w(u, v) = u + v \space mod 2^w$
 
 ### Two's Complement Addition
 
@@ -23,7 +23,7 @@
 #### Unsigned Multiplication in C
 
 * Ignores high order w bits
-* $UMult_w(u, v) = u · v mod 2^w$
+* $UMult_w(u, v) = u · v \space mod 2^w$
 
 #### Signed Multiplication in C
 
@@ -33,12 +33,12 @@
 
 #### Power-of-2 Multiply with Shift
 
-* u << k gives $u * 2^k$
+* `u << k` gives $u * 2^k$
 * Both signed and unsigned
 
 #### Unsigned Power-of-2 Divide with Shift
 
-* u >> k gives lower $(u / 2^k)$
+* `u >> k` gives lower $(u / 2^k)$
 * Uses logical shift
 
 #### Signed Power-of-2 Divide with Shift
@@ -50,12 +50,12 @@
 #### Correct Power-of-2 Divide
 
 * Compute as lower $((x+2^k-1) / 2^k)$
-* In C: (x + (1<<k) - 1) >> k
+* In C: `(x + (1<<k) - 1) >> k`
 
 ### Negation
 
 * Negate through complement and increase
-  * ~x + 1 = -x
+  * `~x + 1 = -x`
 * $x = 0$ => $-x = 0$
 * $x = TMin$ => $-x = TMin$
 
