@@ -1,6 +1,6 @@
 # Lecture 02 Bits, Bytes, & Integers I
 
-## Representing information as bits
+## Representing Information As Bits
 
 * Each bit is 0 or 1
 * By encoding/interpreting sets of bits in various ways
@@ -15,11 +15,11 @@
 
 ### Boolean Algebra
 
-* Encode "True" as 1 and "False" as 0.
-* And A&B=1 when both A=1 and B=1
-* Or A|B=1 when either A=1 or B=1
-* Not ~A=1 when A = 0
-* Exclusive-Or (Xor) A^B=1 when either A=1 or B=1, but not both
+* Encode "True" as `1` and "False" as `0`.
+* And `A & B = 1` when both `A = 1` and `B = 1`
+* Or `A | B = 1` when either `A = 1` or `B = 1`
+* Not `~A = 1` when `A = 0`
+* Exclusive-Or (Xor) `A ^ B = 1` when either `A = 1` or `B = 1`, but not both
 
 ### Operate on Bit Vectors
 
@@ -29,29 +29,29 @@
 
 * Width w bit vector represents subsets of $\{0,\cdots,w-1\}$
 * $a_j=1$ if $j \in A$
-* & Intersection
-* | Union
-* ^ Symmetric difference
-* ~ Complement
+* `&` Intersection
+* `|` Union
+* `^` Symmetric difference
+* `~` Complement
 
 ### Logic Operations
 
-* View 0 as "Fasle"
+* View `0` as "Fasle"
 * Anything nonzero as "True"
-* Always return 0 or 1
+* Always return `0` or `1`
 * Early termination
-* Aside: p & *p (avoid null pointer access)
+* Aside: `p & *p` (avoid null pointer access)
 
 ### Shift Operations
 
-* Left Shift: x << y
+* Left Shift: `x << y`
 
   * Shift bit-vector x right y positions
     * Throw away extra bits on left
 
   * Fill with 0's on right
 
-* Right Shift: x >> y
+* Right Shift: `x >> y`
 
   * Shift bit-vector x right y positions
     * Throw away extra bits on right
@@ -66,7 +66,7 @@
 
 ## Integers
 
-### Representation: unsigned and signed
+### Representation: `unsigned` and `signed`
 
 * C does not mandate using two's complement
 
@@ -76,17 +76,17 @@
     * 1 for negative
 
 * Unsigned Values
-  * UMin = 0
-  * UMax = 2^w-1
+  * $UMin = 0$
+  * $UMax = 2^w-1$
 
 * Two's Complement Values
-  * TMin = -2^{w-1}
-  * TMax = 2^{2-1}-1
-  * Minus 1 = 111...1
-  * |TMin|=|TMax|+1
-  * UMax=2*TMax+1
+  * $TMin = -2^{w-1}$
+  * $TMax = 2^{w-1}-1$
+  * $Minus 1 = 111...1$
+  * $|TMin| = TMax + 1$
+  * $UMax = 2 * TMax + 1$
 
-### Conversion, casting
+### Conversion, Casting
 
 * Mappings between unsigned and two's complement numbers: **Keep bits representations and reinterpret**
 * Constants
@@ -98,7 +98,7 @@
   * Implicit casting
   * Expression Evaluation
     * If there is a mix of unsigned and signed in single expression, **signed values implicitly cast to unsigned**
-    * Including comparison operations <, >, ==, <=, >=
+    * Including comparison operations `<`, `>`, `==`, `<=`, `>=`
 
 ### Expanding, Truncating
 
