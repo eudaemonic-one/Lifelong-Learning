@@ -11,17 +11,20 @@
 * Architecture: (a.k.a. instruction set architecture)
   * Machine code: The byte-level programs that a processor executes
   * Assembly code: A text representation of machine code
-* Microarchitecture: Implementation of the architectur
+* Microarchitecture: Implementation of the architecture
+
+![assembly_machine_code_view](images/lecture05-machine-basis/assembly_machine_code_view.png)
+
 * Programmer-Visible State
-  * PC: Program counter
+  * **PC: Program counter**
     * Address of next instruction
     * Called "RIP" (x86-64)
-  * Register file
+  * **Register file**
     * Heavily used program data
-  * Condition codes
+  * **Condition codes**
     * Stores status information about most recent arithmetic or logical operation
     * Used for conditional branching
-  * Memory
+  * **Memory**
     * Byte addressable array
     * Code and user data
     * Stack to support procedures
@@ -36,32 +39,9 @@
 
 ### Registers
 
-* rax
-* rbx
-* rcx
-* rdx
-* rsi
-* rdi
-* rsp
-* rbp
-* r8
-* r9
-* r10
-* r11
-* r11
-* r12
-* r13
-* r14
-* r15
+![x86_64_integer_registers](images/lecture05-machine-basis/x86_64_integer_registers.png)
 
-* eax accumulate
-* ecx counter
-* edx data
-* ebx base
-* esi source index
-* edi destination index
-* esp stack pointer
-* ebp base pointer
+![ia32_registers](images/lecture05-machine-basis/ia32_registers.png)
 
 ### Operations
 
@@ -71,30 +51,19 @@
 
 ### Memory
 
-* Normal (R) Mem[Reg[R]]
-* Displacement D(R) Mem[Reg[R]+D]
-* Most general form D(Rb, Ri, S) Mem[Reg[Rb]+S*Reg[Ri]+D]
+* Normal `(R)`: `Mem[Reg[R]]`
+* Displacement `D(R)`: `Mem[Reg[R]+D]`
+* Most general form `D(Rb, Ri, S)`: `Mem[Reg[Rb]+S*Reg[Ri]+D]`
 
 ## Arithmetic & Logical Operations
 
-* leaq Src, Dst
-  * Src is address mode expression
-  * Set Dst to address denoted by expression
-* addq
-* subq
-* imulq
-* shlq
-* sarq
-* shrq
-* xorq
-* andq
-* orq
-* **Watch out for argument order! Src, Dest**
-* Warning: Intel docs use "op Dest, Src"
-* incq
-* decq
-* negq
-* notq
+* `leaq Src, Dst`
+  * `Src` is address mode expression
+  * Set `Dst` to address denoted by expression
+
+![two_operand_instructions](images/lecture05-machine-basis/two_operand_instructions.png)
+
+![one_operand_instructions](images/lecture05-machine-basis/one_operand_instructions.png)
 
 ## C, Assemble, Machine Code
 
@@ -105,10 +74,14 @@
   * Use basic optimizations (`-Og`)
   * Put resulting binary in file
 
-Text C program --Compiler (`gcc -Og -S`)-> text Asm program (`p1.s` `p2.s`) --(Assembler (`gcc` or `as`))-> binary Object program (`p1.o` `p2.o`) --(Linker (`gcc` or `ld`))-> binary Executable program (`p`) <- Static libraries (`.a`)
+![turning_c_into_object_code](images/lecture05-machine-basis/turning_c_into_object_code.png)
 
 ### Disassembling Object Code
 
 * `objdump -d sum`
-  * Can be run on either a.out (complete executable) or .o file
-* gdb dump disassemble sumstore
+  * Can be run on either `a.out` (complete executable) or `.o` file
+* With `gdb` debugger
+  * `gdb sum`
+  * `disassemble sumstore`
+  * `x/14xb sumstore`
+
