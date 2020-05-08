@@ -46,38 +46,38 @@
 * Three "kinds" of floating point numbers
 
   * Normalized
-    * When: **exp ≠ 0 and exp ≠ 11...11**
-    * Exponent coded as a biased value: **E = exp - Bias**
-      * **Bias = $2^{(k-1)} - 1$**, where k is number of exponent bits
-        * Single precision: 127
-        * Double precision: 1023
-    * Significand coded with implied leading 1: **M = 1.xxx...x**
-      * Minimum when frac = 000...0 (M = 1.0)
-      * Maximum when frac = 111...1 (M = 2.0 - ε)
+    * When: $exp ≠ 0$ and $exp \neq 11...11$
+    * Exponent coded as a biased value: $E = exp - Bias$
+      * $Bias = 2^{(k-1)} - 1$, where k is number of exponent bits
+        * Single precision: $127$
+        * Double precision: $1023$
+    * Significand coded with implied leading 1: $M = 1.xxx...x$
+      * Minimum when $frac = 000...0$ ($M = 1.0$)
+      * Maximum when $frac = 111...1$ ($M = 2.0 - \epsilon$)
       * Get extra leading bit for free
   * Denormalized
-    * exp = **00...00**
-    * Exponent value: **E = 1 - bias**
-    * Significand coded with implied leading 0: **M = 0.xxx...x**
+    * exp = $00...00$
+    * Exponent value: $E = 1 - bias$
+    * Significand coded with implied leading 0: $M = 0.xxx...x$
     * Cases
-      * exp = 000...0 frac = 000...0
+      * $exp = 000...0$ $frac = 000...0$
         * zero value
-        * distinct values: +0 or -0
-      * exp = 000...0 frac ≠ 000...0
-        * numbers closest to 0.0
+        * distinct values: $+0$ or $-0$
+      * $exp = 000...0$ $frac ≠ 000...0$
+        * numbers closest to $0.0$
         * equi-spaced
   * Special
-    * exp = **11...11**
+    * $exp = 11...11$
     * Cases
-      * exp = 111...1 frac = 000...0
+      * $exp = 111...1$ $frac = 000...0$
         * Infinity
         * Operation that overflows
         * Both negative and positive
-        * E.g. 1.0/0.0=-1.0/-0.0 = +∞, 1.0/-0.0 = -∞
-      * exp = 111...1 frac 000...0
+        * E.g. $1.0/0.0 = -1.0/-0.0 = +\infin, 1.0/-0.0 = -\infin$
+      * $exp = 111...1$ $frac 000...0$
         * Not-a-Number (NaN)
         * Represents case when no numeric value can be determined
-        * E.g. sqrt(-1), ∞-∞, ∞×0
+        * E.g. $sqrt(-1)$, $\infin - \infin$, $\infin \times 0$
 
 ## Rounding, addition, multiplication
 
@@ -88,7 +88,7 @@
 * Round up
 * Nearest Even (Default)
   * Round to nearest, but if half-way in-between then round to nearest even
-  * 1.BBGRXXX
+  * $1.BBGRXXX$
     * **G**: Guard bit: LSB of result
     * **R**: Round bit: 1st bit removed
     * **X**: Sticky bit: OR of remaining bits
@@ -97,24 +97,24 @@
 
 * $(-1)^{s_1} M_1 2^{E_1} \times (-1)^{s_2} M_2 2^{E_2}$
 * Exact result: $(-1)^S M 2^E$
-  * Sign s: s1 ^ s2
-  * Significand M: M1 × M2
-  * Exponent E: E1 + E2
+  * Sign $s$: $s1 \and s2$
+  * Significand $M$: $M1 \times M2$
+  * Exponent $E$: $E1 + E2$
 * Fixing
-  * If M >= 2, shift M right, increment E
-  * If E out of range, overflow
-  * Round M to fit frac precision
+  * If $M \geq 2$, shift $M$ right, increment $E$
+  * If $E$ out of range, overflow
+  * Round $M$ to fit frac precision
 
 ### Floating Point Addition
 
 * $(-1)^{s_1} M_1 2^{E_1} + (-1)^{s_2} M_2 2^{E_2}$
-  * Assume E1 > E2
+  * Assume $E1 > E2$
 * Exact result: $(-1)^S M 2^E$
-  * Sign s, significand M:
+  * Sign $s$, significand $M$:
     * Result of signed align & add
-  * Exponent E: E1
+  * Exponent $E$: $E$
 * Fixing
-  * If M >= 2, shift M right, increment
-  * If M < 1, shift M left k positions, decrement E by k
-  * Overflow if E out of range
-  * Round M to fit frac precision
+  * If $M \geq 2$, shift $M$ right, increment
+  * If $M < 1$, shift $M$ left k positions, decrement $E$ by k
+  * Overflow if $E$ out of range
+  * Round $M$ to fit frac precision
