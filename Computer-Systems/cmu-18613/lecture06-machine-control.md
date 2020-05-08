@@ -3,26 +3,26 @@
 ## Conditional Codes
 
 * **CF**: Carry flag
-  * for unsigned
+  * for `unsigned`
   * set if carry/borrow out from most significant bit
 * **SF**: Sign flag
-  * for signed
-  * set if (a-b) < 0
+  * for `signed`
+  * set if `(a-b) < 0`
 * **ZF**: Zero flag
-  * set if a == b
+  * set if `a == b`
 * **OF**: Overflow flag
-  * for signed
-  * (a > 0 && b < 0 && (a-b) < 0) || (a<0 && b > 0 && (a-b) > 0)
+  * for `signed`
+  * `(a > 0 && b < 0 && (a-b) < 0) || (a<0 && b > 0 && (a-b) > 0)`
 
 * Compare
   * `cmpq Src2, Src1`
-  * like computing a-b without setting destination
+  * like computing `a - b` without setting destination
 * Test
   * `testq Src2, Src1`
-  * like computing a & b without setting destination
+  * like computing `a & b` without setting destination
   * Very often: `tests %rax, %rax`
 * Set
-  * `setX Dest`: set low-order byte of destination Dest to 0 or 1 based on combinations of condition codes
+  * `setX Dest`: set low-order byte of destination `Dest` to 0 or 1 based on combinations of condition codes
   * Does not alter remaining 7 bytes of Dest
 
 ## Conditional Branches
@@ -64,3 +64,11 @@ while (Test) {
 	Update;
 }
 ```
+
+## Switch
+
+![jump_table_structure](images/lecture06-machine-control/jump_table_structure.png)
+
+* Jumping
+  * Direct: `jmp .L8`
+  * Indirect: `jmp *.L4(,%rdi,8)`
