@@ -12,6 +12,8 @@ My personal notes on everything, from coding to philosophy.
 * [Cookbook](./Cookbook/): Notes on how to cook delicious food and cookbooks.
 * [Data Structures](./Data-Structures/): Implementations of basic and advanced data structures and related algorithms.
 * [Golang](./Golang/): Notes on Golang tutorials and Gin framework.
+  * [Golang go-to Guide](./Golang/Go-go-to-Guide/): Notes on Golang Tutorials on YourBasic website.
+  * [Gin](./Golang/Gin): Notes on web framework Gin in Golang.
 * [LeetCode](./LeetCode/): Solution set of LeetCode algorithms problems and notes on common expressions, tricks, and models.
 * [Machine Learning](./Machine-Learning/): Notes on machine learning theory and implementations of related algorithms.
   * [CMU Course 10301/601 Introduction to Machine Learning (Master's)](./Machine-Learning/cmu-10601/)
@@ -27,3 +29,5 @@ My personal notes on everything, from coding to philosophy.
 * 200 commits: Dec 9, 2019
 * 300 commits: Jan 14, 2020
 * 400 commits: Apr 18, 2020
+* 500 commits: May 18, 2020
+
