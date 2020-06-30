@@ -199,3 +199,18 @@
   * Storage efficiency: Read-Solomon (1.5x) instead of Replicas (3x)
   * Reduces block size to be between 1-8 MB
   * Few detailed public
+
+## GFS and HDFS
+
+![apache_hadoop_dfs](images/lecture15-gfs/apache_hadoop_dfs.png)
+
+| GFS                                                          | HDFS (Apache Hadoop Distributed File System)                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Master                                                       | NameNode                                                     |
+| Chunk server                                                 | DataNode                                                     |
+| Operation log                                                | Journal, edit log                                            |
+| Chunk                                                        | Block                                                        |
+| Random file writes possible                                  | Only append is possible                                      |
+| Multiple writer, multiple reader model                       | Single writer, multiple reader model                         |
+| Chunk: 32 bit checksum over 64 KB data pieces (1024 per chunk) | per HDFS block, two files created on a DataNode: data file & metadata file (checksums, timestamp) |
+| Default block size: 64 MB                                    | Default block size: 128 MB                                   |
