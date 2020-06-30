@@ -141,3 +141,25 @@
 * **Bound stale state by N steps** can help
 
 ![bounded_delay_bsp_for_distributed_ml](images/lecture17-spark/bounded_delay_bsp_for_distributed_ml.png)
+
+## Cache Update Propagation Mechanisms
+
+### Cache Update Propagation Techniques
+
+![cache_update_propagation_techniques](images/lecture17-spark/cache_update_propagation_techniques.png)
+
+* Enforce Read-Only (Immutable Objects)
+* Broadcast Invalidations
+  * Every potential caching site notified on every update
+  * Wasted traffic if no readers
+  * Usage: CDNs
+* Check on use
+  * Reader checks master copy before each use
+  * Usage: AFS-1, HTTP (Cache-control: must-revalidate)
+* Callbacks
+* TTLs (Faith-based caching)
+  * Assume cached data is valid for a while
+    * Check after timer expires: Time-to-live (TTL) field
+    * No communication during trust (TTL) period
+  * No server state (no need to know caching node)
+  * Usage: CDNs, DNS, HTTP (Cache-control: max-age=30)
