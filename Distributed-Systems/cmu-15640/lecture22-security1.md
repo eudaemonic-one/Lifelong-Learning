@@ -139,3 +139,33 @@
 * KDC can expose our session keys to others
 * **Centralized trust** and point of failure
 * In practice, the KDC model is mostly used **within single organization** (e.g., Kerberos) but not more widely
+
+### The Dreaded PKI
+
+* **Public Key Infrastructure (PKI)**
+  * A system in which roots of trust authoritatively bind public keys to real-world identities
+  * A significant stumbling block in deploying many next generation secure Internet protocol or applications
+
+### Certification Authorities
+
+* **Certification authority (CA)**: binds public key to particular entity, E
+* An entity E registers its public key with CA
+  * E provides proof of identity to CA
+  * CA creates certificate binding E to its public key
+  * Certificate contains E's public key and the CA's signature of E's public key
+
+![certification_authority_registration](images/lecture22-security1/certification_authority_registration.png)
+
+* When Alice wants Bob's public key:
+  * Get Bob's certificate (Bob or elsewhere)
+  * Use CA's public key to verify the signature within Bob's certificate, then accepts public key
+
+![certification_authority_validation](images/lecture22-security1/certification_authority_validation.png)
+
+#### Certificate Content
+
+* Info algorithm and key value itself
+* Cert owner
+* Cert issuer
+* Valid dates
+* Fingerprint of signature
