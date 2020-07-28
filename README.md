@@ -11,6 +11,11 @@ My personal notes on everything, from coding to philosophy.
   * [CMU Course 15213/15513/18213/18613 Foundations of Computer Systems](./Computer-Systems/cmu-18613/)
 * [Cookbook](./Cookbook/): Notes on how to cook delicious food and cookbooks.
 * [Data Structures](./Data-Structures/): Implementations of basic and advanced data structures and related algorithms.
+* [Database](./Database/): Notes on Database theory and MySQL.
+  * [CMU Course 15445/645 Database Systems](./Database/cmu-15645/)
+  * [MySQL](./Database/MySQL/): Notes on MySQL and InnoDB.
+* [Distributed Systems](./Distributed-Systems/): Notes on distributed systems.
+  * [CMU Course 15440/640 Distributed Systems](./Distributed-Systems/cmu-15640/)
 * [Golang](./Golang/): Notes on Golang tutorials and Gin framework.
   * [Golang go-to Guide](./Golang/Go-go-to-Guide/): Notes on Golang Tutorials on YourBasic website.
   * [Gin](./Golang/Gin): Notes on web framework Gin in Golang.
