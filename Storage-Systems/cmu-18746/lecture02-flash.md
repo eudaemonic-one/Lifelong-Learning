@@ -49,3 +49,60 @@
   * Wear leveling
 
 ![nand_flash_ssd_is_a_little_computer](images/lecture02-ssd/nand_flash_ssd_is_a_little_computer.png)
+
+## SSD Performance
+
+### Performance is really interesting
+
+* Single-page random reads
+  * Much, much **lower average latency** than mechanical disk
+  * orders of magnitude **higher throughput** than mechanical disks
+    * only if exploit device parallelism
+* Peak bandwidth
+  * depends on **interface speed** and **chip parallelism**
+  * varies widely across products
+* Write performance is much more complicated
+
+### Write Amplification
+
+* Read-erase-modify-write
+* Application worst for small, random writes
+* Strategy: freely remap between host & NAND addresses
+  * Write LBAs to some place other than where they were before
+    * Map granularity **depends** on available DRAM for holding map
+    * Read-modify-write
+  * Group bunch of different small writes into full blocks
+  * Leaves holes in other blocks (where old data was)
+  * Rate of cleaning depends on amount of unallocated space
+    * Controller reserves X% hidden space or assume host does not use all the space
+
+### Storage Device Interface
+
+* Storage exposed as linear array of logical blocks (LBAs)
+  * Common block sizes: sector (0.5-4KB), memory page (4KB), bigger (8-16KB)
+
+### Block Cleaning
+
+* Move remaining valid pages so block can be erased
+* Efficiency: Choose blocks to minimize page traffic
+* Over-provisioning
+* Have host provide "delete" notifications (a.k.a. TRIM)
+  * By using TRIM, host reduces cleaning costs and need for over-provisioning
+
+## Media Wearout
+
+### Wear Leveling: spread writing evenly in SSD
+
+* Floating gate insulator degrades, accumulating charge that interferes, even when just reading
+* Blocks not written for a long time need to be **rewritten**
+  * Read-erase-write or read-move/clean-erase
+* Each block can only survive a given number of **erase/program cycles**
+* Each block wears **independently**, so a heavily written block can wear out long before a mostly-read block
+* **Wear leveling** is remapping of addresses to better balance the number of erase/program cycles seen by each block
+* Simple algorithm: if remaining(block-A) >= migrate-threshold, then clean block-A
+
+### Increased Density through more bits per cell
+
+* Smaller feature size (Moore's law)
+* More bits (more distinct drain current levels)
+* More bits per cell generally means lower cost-per-bit, but also lower endurance and lower performance
