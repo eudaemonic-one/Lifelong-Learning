@@ -51,3 +51,34 @@
 * Each write of a single **logical-disk block address** (LBA) corresponds to a write of a different flash page, even the simplest SSD must maintain some **mapping** between logical block address and physical flash location
 * We assume that the logical block map is head in **volatile** memory and **reconstructed** from stable storage at startup time
 
+#### Allocation Pool
+
+* **Static map**
+  * A portion of each LBA constitues a fixed mapping to a specific allocation pool
+* **Dynamic map**
+  * The non-static portion of a LBA is the lookup key for a mapping within a pool
+* **Logical page size**
+  * The size for the referent of a mapping entry **varies**
+* **Page span**
+  * A logical page might span related pages on different flash packages thus creating the potential for accessing sections of the page in parallel
+
+#### Constraints
+
+* **Load balancing**
+  * **I/O operations** should be evenly balanced between allocation pools
+* **Parallel access**
+  * The assignment of LBAs to physical addresses should interfere as **little** as possible with the ability to access those LBAs in parallel
+* **Block erasure**
+  * Flash pages cannot be re-written without first being erased
+  * Only fixed-size blocks of contiguous pages can be erased
+* RAID systems stripe logically contiguous chunks of data to distribute load and to arrange that consecutive pages will be placed on different packages that can be accessed in parallel
+
+### Cleaning
+
+* At any given time, a pool can have one or more **active blocks** to hold incoming writes
+* We need a **garbage collector** to enumerate previously used blocks that **must be** erased and recycled
+* When a page write is complete, the previously mapped page location is **superseded** since its contents are now out-of-date
+* When recycling a candidate block, all non-superseded pages in the candidate **must** be written elsewhere prior to erasure
+* Cleaning efficiency is the ratio of superseded pages to total pages during block cleaning
+* Using striping to enhance parallel access for sequential addresses works **against** the clustering of superseded pages
+* For each allocation pool, we maintain a **free block list** that we populate with recycled blocks
