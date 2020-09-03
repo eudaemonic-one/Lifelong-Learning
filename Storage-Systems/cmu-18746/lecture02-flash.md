@@ -65,14 +65,17 @@
 
 ### Write Amplification
 
-* Read-erase-modify-write
-* Application worst for small, random writes
+* If host writes 1 page, while device writes 2 pages, then write amplification is 2
+* Read-erase-modify-write costs > 32X write amplification
+  * Copy pages into DRAM except for specific pages to modify -> Erase Block -> Update specific pages -> Copy back from DRAM to flash
+* Application **worst** for small, random writes
 * Strategy: freely remap between host & NAND addresses
   * Write LBAs to some place other than where they were before
     * Map granularity **depends** on available DRAM for holding map
     * Read-modify-write
   * Group bunch of different small writes into full blocks
   * Leaves holes in other blocks (where old data was)
+    * Holes refer to stale values of the newly-written pages
   * Rate of cleaning depends on amount of unallocated space
     * Controller reserves X% hidden space or assume host does not use all the space
 
@@ -99,7 +102,10 @@
 * Each block can only survive a given number of **erase/program cycles**
 * Each block wears **independently**, so a heavily written block can wear out long before a mostly-read block
 * **Wear leveling** is remapping of addresses to better balance the number of erase/program cycles seen by each block
-* Simple algorithm: if remaining(block-A) >= migrate-threshold, then clean block-A
+* Simple algorithm:
+  * If remaining(block-A) >= Migrate-Threshold, then clean block-A
+  * If remaining(block-A) < Migrate-Threshold, clean A, but migrate cold data into block-A
+  * If remaining(block-A) < Throttle-Threshold, reduce probability of cleaning block-A
 
 ### Increased Density through more bits per cell
 
