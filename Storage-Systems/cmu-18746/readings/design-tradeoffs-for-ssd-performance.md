@@ -29,6 +29,8 @@
 
 ![figure_2_interleaved_page_copying](images/design-tradeoffs-for-ssd-performance/figure_2_interleaved_page_copying.png)
 
+* The serial interface over which flash packages receive commands and transmit data is a primary bottleneck for SSD performance
+* Interleaving the serial transfer time and the program operation doubles the overall bandwidth
 * Interleaving can provide considerable speedups when the operation latency is greater than the serial access latency
 * Operations on the same flash plane cannot be interleaved
 
@@ -77,8 +79,91 @@
 
 * At any given time, a pool can have one or more **active blocks** to hold incoming writes
 * We need a **garbage collector** to enumerate previously used blocks that **must be** erased and recycled
-* When a page write is complete, the previously mapped page location is **superseded** since its contents are now out-of-date
-* When recycling a candidate block, all non-superseded pages in the candidate **must** be written elsewhere prior to erasure
-* Cleaning efficiency is the ratio of superseded pages to total pages during block cleaning
-* Using striping to enhance parallel access for sequential addresses works **against** the clustering of superseded pages
+* Cleaning can be summarized as follows
+  * When a page write is complete, the previously mapped page location is **superseded** since its contents are now out-of-date
+  * When recycling a candidate block, all non-superseded pages in the candidate **must** be written elsewhere prior to erasure
+* **Cleaning efficiency** is the ratio of superseded pages to total pages during block cleaning
+* Using **striping** to enhance parallel access for sequential addresses works **against** the clustering of superseded pages
 * For each allocation pool, we maintain a **free block list** that we populate with recycled blocks
+* There **must** be enough spare blocks to allow writes and cleaning to proceed, and to allow for block replacement if a block fails
+* An SSD can be substantially **overprovisioned** with spare capacity in order to reduce the demand for cleaning blocks in foreground
+* If an active block and cleaning state per plane is maintained, then cleaning operations within the same plane can be arranged with high probability
+
+### Parallelism and Interconnect Density
+
+* Handle I/O requests on multiple flash packages in parallel
+* Make use of the addtional serial connections to their pins
+* **Parallel requests**
+  * Each flash package is an independent entity and can therefore accept a separate flow of requests
+  * Maintain a queue per element
+* **Ganging**
+  * A gang of flash packages can be utilized in synchrony to optimize a multi-page request
+  * Allow multiple packages to be used in parallel without the complexity of multiple queues
+* **Interleaving**
+  * Interleaving can be used to improve the bandwidth and hide the latency of costly operations
+* **Background cleaning**
+  * Cleaning would be performed continuously in the background on otherwise idle components
+  * The use of operations that don't require data to cross the serial interface, such as internal copy-back, can help hide the cost of cleaning
+
+![figure_4_shared_bus_gang_figure_5_shared_control_gang](images/design-tradeoffs-for-ssd-performance/figure_4_shared_bus_gang_figure_5_shared_control_gang.png)
+
+* The situation becomes more interesting when full connectivity to the flash packages is not possible
+  * Two choices for organizing a gang of flash packages
+  * the packages are connected to a serial bus where a controller dynamically selects the target of each command
+  * each package has separate data path to the controller, but the control pins are connected in a single broadcast bus
+* Interleaving can play a role within a gang
+* Intra-plane copy-back can be used to implement block cleaning in background
+* Cleaning can take place with lower latency if pages are streamed at maximum speed between two chips
+  * This benefit comes at the expense of **occupying** two sets of controller pins
+
+### Persistence
+
+* Flash memory is by definition **persistent storage**
+* To recover SSD state, it is essential to **rebuild** the logical block map and all related data structures
+* The recovery must also reconstruct knowledge of **failed blocks** so that they are not re-introduced into active use
+* Dedicated area (128 bytes) of metadata can be used to store the logical block address that maps to a given flash page
+* **Error detection and correction** must be provided by application firmware, but not flash parts
+  * The page metadata can hold an error-detection code to determine which pages are valid and which blocks are failure-free, and an error-correction code to recover from the single-bit errors that are expected with NAND flash
+* The problem of recovering SSD state can be bypassed by holding the logical block map in **Phase-Change RAM** or Magnetoresistive RAM
+  * These non-volatile memories are writable at byte granularity and don't have the block-erasure constraints of NAND flash
+  * Backup power might be enough to flush teh necessary recovery state to flash on demand
+
+### Industry Trends
+
+* **Consumer portable storage**
+  * Inexpensive units with one or two packages and a simple controller
+* **Laptop disk replacements**
+  * Provide substantial bandwidth to SATA disks they replace
+  * Random read performance is far superior, while random write is comparable to that of rotating media
+* **Enterprise/database accelerators**
+  * Very fast sequential performance, random read performance superior to that of a high-end RAID array, and very strong random write performance
+
+## Design Details and Evaluation
+
+| Technique             | Positives        | Negatives           |
+| --------------------- | ---------------- | ------------------- |
+| Large allocation pool | Load balancing   | Few intra-chips     |
+| Large page size       | Small page table | Read-modify-writes  |
+| Overprovisioning      | Less cleaning    | Reduced capacity    |
+| Ganging               | Sparser wiring   | Reduced parallelism |
+| Striping              | Concurrency      | Loss of locality    |
+
+## Wear-leveling
+
+* Objective is to design a block management algorithm so as to **delay** the expiry time of any single block
+* Track the average lifetime remaining over all blocks
+  * The remaining lifetime of any block should be within **ageVariance** of the average remaining lifetime
+  * Maintain some notion of **block erase count** in persistent storage
+  * Instead of freezing the recycling of worn out blocks, we can rate-limit their usage
+    * Use **Random Early Discard** in which the probability of recycling drops linearly from 1 to 0 as a blocks' remaining lifetime drops from say 80% to 0% of the average
+  * Migrate cold data into old blocks
+* One method to identify cold data is to look for blocks that have exceeded specified parameters for remaining lifetime and time since last erasure
+  * It is important that temperature metadata travel with the content as it is moved to a new physical block
+  * Cleaning can group pages of different temperatures in the same block
+  * The resultant block temperature needs to reflect that of the aggregate
+* **Modified Algorithm**:
+  * If the remaining lifetime in the chosen block is below **retirementAge** of the average remaining lifetime then migrate cold data into this block from a migration-candidate queue, and recycle the head block of the queue
+  * Populate the queue with blocks exceeding parametric thresholds for remaining lifetime and duration, or alternatively, choose migration candidates by tracking content temperature
+  * Otherwise, if the remaining lifetime in the chosen is below **ageVariance**, then restrict recycling of the block with a probability that increases linearly as the remaining lifetime drops to 0
+* Cleaning load can be reduced if an SSD has knowledge of **content volatility**
+* Localization of warm data will lead to better cleaning efficiency
