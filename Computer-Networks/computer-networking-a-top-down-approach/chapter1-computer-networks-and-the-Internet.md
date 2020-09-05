@@ -144,3 +144,62 @@
 * If the file consists of *F* bits and the transfer takes *T* seconds for Host B to receive all *F* bits, then the **average throughput** of the file transfer is *F/T* bits/sec
 * The rate at which bits can flow from source to destination is again the minimum of $R_s$ and $R_c$, that is, throughput = $min\{R_s, R_c\}$
 
+## Protocol Layers and Their Service Models
+
+### Layered Architecture
+
+* **As long as the layer provides the same service to the layer above it, and uses the same services from the layer below it, the remainder of the system remains unchanged when a layer’s implementation is changed**
+
+![figure_1_23_the_internet_protocol_stack_and_osi_reference_model](images/chapter1-computer-networks-and-the-Internet/figure_1_23_the_internet_protocol_stack_and_osi_reference_model.png)
+
+* **Protocol Layering**
+  * To provide structure to the design of network protocols, network designers organize protocols—and the network hardware and software that implement the protocols—in **layers**
+  * We are interested in the **services** that a layer offers to the layer above—the so-called **service model** of a layer
+    * Performing certain actions within that layer
+    * Using the services of the layer directly below it
+  * Application-layer protocols—such as HTTP and SMTP—are almost always implemented in software in the end systems; so are transport-layer protocols
+  * Because the physical layer and data link layers are responsible for handling communication over a specific link, they are typically implemented in a network interface card associated with a given link
+* **Application Layer**
+  * HTTP/SMTP/FTP/DNS
+  * Distributed over multiple end systems, with the application in one end system using the protocol to exchange packets of information with another
+  * **Message**
+* **Transport Layer**
+  * Transports application-layer messages between application endpoints
+  * TCP/UDP
+  * **Segment**
+* **Network Layer**
+  * Responsible for moving network-layer packets known as **datagrams** from one host to another
+  * IP
+  * The Internet’s network layer also contains routing protocols that determine the routes that datagrams take between sources and destinations
+* **Link Layer**
+  * Routes a datagram through a series of routers between the source and destination
+  * At each node, the network layer passes the datagram down to the link layer, which delivers the datagram to the next node along the route
+  * A datagram may be handled by different link-layer protocols at different links along its route
+  * **Frames**
+* **Physical Layer**
+  * Moves the individual bits within the frame from one node to the next
+
+### Encapsulation
+
+![figure_1_24_hosts_routers_and_link_layer_switches](images/chapter1-computer-networks-and-the-Internet/figure_1_24_hosts_routers_and_link_layer_switches.png)
+
+* **Encapsulation**
+  * At the sending host, an **application-layer message** is passed to the transport layer
+  * In the simplest case, the transport layer takes the message and appends additional information that will be used by the receiver-side transport layer
+  * The application-layer message and the transport-layer header information together constitute the **transport-layer segment**
+  * The transport layer then passes the segment to the network layer, which adds network-layer header information such as source and destination end system addresses, creating a **network-layer datagram**
+  * The datagram is then passed to the link layer, which will add its own link-layer header information and create a **link-layer frame**
+  * Thus, we see that at each layer, a packet has two types of fields: header fields and a **payload field**
+
+## Networks Under Attack
+
+* **Malware**
+  * Self-replicating
+  * **Viruses** are malware that require some form of user interaction to infect the user’s device
+  * **Worms** are malware that can enter a device without any explicit user interaction
+* **Denial-of-service (DoS) attacks** render a network, host, or other piece of infrastructure unusable by legitimate users
+  * Web servers, e-mail servers, DNS servers, and institutional networks can all be subject to DoS
+  * If all the traffic emanates from a single source, an upstream router may be able to detect the attack and block all traffic from that source before the traffic gets near the server
+  * **Distributed DoS (DDoS)** attack leverages botnets with thousands of comprised hosts
+* **Packet sniffer** records a copy of every packet that flies by
+* **IP spoofing** injects packets into the Internet with a false source address
