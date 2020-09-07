@@ -82,3 +82,136 @@
   * The syntax of the various message types, such as the fields in the message and how the fields are delineated
   * The semantics of the fields, that is, the meaning of the information in the fields
   * Rules for determining when and how a process sends messages and responds to messages
+
+## The Web and HTTP
+
+### Overview of HTTP
+
+* The **HyperText Transfer Protocol (HTTP)**, the Web’s application-layer protocol, is at the heart of the Web
+* HTTP is implemented in two programs: a client program and a server program
+* A **Web page** (also called a document) consists of objects
+  * Most Web pages consist of a **base HTML file** and several referenced objects
+* Each URL has two components: the hostname of the server that houses the object and the object’s path name
+* HTTP defines how Web clients request Web pages from Web servers and how servers transfer Web pages to clients
+  * HTTP uses TCP as its underlying transport protocol
+    * The HTTP client first initiates a TCP connection with the server
+    * Once the connection is established, the browser and the server processes access TCP through their socket interfaces
+* HTTP is said to be a **stateless protocol**
+
+### Non-Persistent and Persistent Connections
+
+* Non-persistent connections close the connection after the server sends the object
+* Typically, the HTTP server closes a con- nection when it isn’t used for a certain time (a configurable timeout interval)
+* The default mode of HTTP uses persistent connections with pipelining
+
+### HTTP Message Format
+
+#### HTTP Request Message
+
+```text
+GET /somedir/page.html HTTP/1.1
+Host: www.someschool.edu
+Connection: close
+User-agent: Mozilla/5.0
+
+```
+
+* **Request line**
+  * Method field, URL field, HTTP version field
+  * `GET`/`POST`/`HEAD`/`PUT`/`DELETE`
+    * `HEAD`: leaves out requested object, often for debugging
+    * `PUT`: publishing, uploading a file to a Web server
+    * `DELETE`: delete objects on a Web server
+* **Header lines**
+  * `Host`: required by Web proxy caches
+  * `Connection: close`: doesn't keep persistent connections
+  * User-agent: specifies the user agent, that is, the browser type that is making the request to the server
+* **Blank line** (cr;lf)
+* **Entity body**
+  * Empty with GET method, but used with POST method when user fills out a form
+
+#### HTTP Response Message
+
+```text
+HTTP/1.1 200 OK
+Connection: close
+Date: Tue, 09 Aug 2011 15:44:04 GMT
+Server: Apache/2.2.3 (CentOS)
+Last-Modified: Tue, 09 Aug 2011 15:11:03 GMT Content-Length: 6821
+Content-Type: text/html
+
+(data data data data data ...)
+```
+
+* **Status line**
+  * Protocol version field, a status code, a corresponding status message
+  * Status code
+    * 200 OK: Request succeeded and the information is returned in the response
+    * 301 Moved Permanently: Requested object has been permanently moved; the new URL is specified in `Location:` header of the response message
+      * The client software will automatically retrieve the new URL
+    * 400 Bad Request: This is a generic error code indicating that the request could not be understood by the server
+    * 404 Not Found: The requested document does not exist on this server
+    * 505 HTTP Version Not Supported: The requested HTTP protocol version is not supported by the server
+* **Header lines**
+  * `Connection: close`: tells the client that the server is going to close the TCP connection after sending this message
+  * `Server`: Analogous to the `User-agent`
+  * `Last-Modified`: critical for object caching, both in the local client and in network cache servers (also known as proxy servers)
+  * `Content-Length`: the number of bytes in the object being sent
+* **Entity body**
+  * The requested object itself
+
+### User-Server Interaction: Cookies
+
+* Cookies allow sites to keep track of users
+  * The server wishes to restrict user access or because it wants to serve content as a function of the user identity
+* Cookie technology has four components
+  * a cookie header line in the HTTP response message
+  * a cookie header line in the HTTP request message
+  * a cookie file kept on the user’s end system and managed by the user’s browser
+  * a back-end database at the Web site
+
+![figure_2_10_keeping_user_state_with_cookies](images/chapter2-application-layer/figure_2_10_keeping_user_state_with_cookies.png)
+
+### Web Caching
+
+* A **Web cache**—also called a **proxy server**—is a network entity that satisfies HTTP requests on the behalf of an origin Web server
+* The Web cache has its own disk storage and keeps copies of recently requested objects in this storage
+* A user’s browser can be configured so that all of the user’s HTTP requests are first directed to the Web cache
+* Through the use of **Content Distribution Networks (CDNs)**, Web caches are increasingly playing an important role in the Internet
+* A CDN company installs many geographically distributed caches throughout the Internet, thereby localizing much of the traffic
+
+### The Conditional GET
+
+* HTTP has a mechanism **conditional GET** that allows a cache to verify that its objects are up to date
+* The request message includes an `If-Modified-Since` in header line
+* Importantly, the cache also stores the last-modified date along with the object
+* This conditional GET is telling the server to send the object only if the object has been modified since the specified date
+
+## File Transfer: FTP
+
+* The user interacts with FTP through an FTP user agent to transfer files to or from a remote host
+* The user first provides the hostname of the remote host, causing the FTP client process in the local host to establish a TCP connection with the FTP server process in the remote host
+* The user then provides the user identification and password, which are sent over the TCP connection as part of FTP commands
+* Once the server has authorized the user, the user copies one or more files stored in the local file system into the remote file system (or vice versa)
+
+![figure_2_14_ftp_moves_files_between_local_and_remote_file_systems](images/chapter2-application-layer/figure_2_14_ftp_moves_files_between_local_and_remote_file_systems.png)
+
+* HTTP and FP both run on top of TCP
+  * FTP uses two parallel TCP connections to transfer a file, a **control connection** and a **data connection**
+  * The control is used for sending control information between the two hosts—information such as user identification, password, commands to change remote directory, and commands to “put” and “get” files
+  * The data connection is used to actually send a file
+* FTP sends exactly one file over the data connection and then closes the data connection
+* If, during the same session, the user wants to transfer another file, FTP opens another data connection
+* The FTP server must maintain **state** about the user
+* Keeping track of this state information for each ongoing user session significantly constrains the total number of sessions that FTP can maintain simultaneously
+
+### FTP Commands and Replies
+
+* `USER username`: Used to send the user identification to the server
+* `PASS password`: Used to send the user password to the server
+* `LIST`: Used to ask the server to send back a list of all the files in the current remote directory
+* `RETR filename`: Used to retrieve a file from the current directory of the remote host
+* `SROR filename`: Used to store a file into the current directory of the remote host
+* There is typically a one-to-one correspondence between the command that the user issues and the FTP command sent across the control connection
+* Each command is followed by a reply, sent from server to client
+* The replies are three-digit numbers, with an optional message following the number
