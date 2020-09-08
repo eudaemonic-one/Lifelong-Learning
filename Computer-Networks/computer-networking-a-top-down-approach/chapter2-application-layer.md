@@ -215,3 +215,80 @@ Content-Type: text/html
 * There is typically a one-to-one correspondence between the command that the user issues and the FTP command sent across the control connection
 * Each command is followed by a reply, sent from server to client
 * The replies are three-digit numbers, with an optional message following the number
+
+## Electronic Mail in the Internet
+
+* E-mail is an asynchronous communication medium
+* Three major components: user agents, mail servers, Simple Mail Transfer Protocol (SMTP)
+  * User agents allow user to read, reply to, forward, save, and compose messages
+  * Mail servers form teh core of the e-mail infrastructure
+  * Message queue holds the message and attempt to re-transfer the message if failure happens
+  * **SMTP** is the principal application-layer protocol for Internet electronic mail
+  * Both the client and server sides of SMTP run on every mail server
+  * SMTP uses persistent connections
+  * SMTP is primarily a **push protocol**—the sending mail server pushes the file to the receiving mail server
+  * Mail access protocols include **Post Office Protocol—Version 3 (POP3)**, **Internet Mail Access Protocol (IMAP)**, and HTTP
+  * A mail access protocol, such as **POP3**, is used to transfer mail from the recipient’s mail server to the recipient’s user agent
+    * POP3 progresses through three phases: authorization, transaction, and update
+  * IMAP maintains a folder hierarchy on a remote server that can be accessed from any computer
+
+## DNS—The Internet’s Directory Service
+
+* Hosts are identified by IP addresses
+
+### Services Provided by DNS
+
+* Domain name system (DNS)
+  * A distributed database implemented in a hierarchy of DNS servers
+  * An application-layer protocol that allows hosts to query the distributed database
+* The DNS protocol runs over UDP and uses port 53
+* The desired IP address is often cached in a nearby DNS server, which helps to reduce DNS network traffix as well as the average DNS delay
+* DNS provides several services
+  * **Host aliasing**
+  * **Mail server aliasing**
+  * **Load distribution**
+    * DNS is also used to perform load distribution among replicated servers, such as replicated Web servers
+
+### Overview of How DNS Works
+
+* All DNS query and reply messages are sent within UDP datagrams to port 53
+* **A Distributed, Hierarchical Database**
+  * The DNS uses a large numebr of servers, organized in a hierarchical fashion and distributied around the world
+  * No single DNS server has all of the mappings for all of the hosts in the Internet
+  * There are three classes of DNS servers—root DNS servers, top-level domain (TLD) DNS servers, and authoritative DNS servers
+
+![figure_2_19_portion_of_the_hierarchy_of_dns_servers](images/chapter2-application-layer/figure_2_19_portion_of_the_hierarchy_of_dns_servers.png)
+
+* **Root DNS servers**
+  * In the Internet there are 13 root DNS servers
+* **Top-level domain (TLD) servers**
+  * These servers are responsible for top-level domains such as com, org, net, edu, and gov, and all of the country top-level domains such as uk, fr, ca, and jp
+* **Authoritative DNS servers**
+  * Every organization with publicly accessible hosts on the Internet must provide publicly accessible DNS records that map the names of those hosts to IP addresses
+* **Local DNS server**
+  * A local DNS server does not strictly belong to the hierarchy of servers but is nevertheless central to the DNS architecture
+  * When a host makes a DNS query, the query is sent to the local DNS server, which acts a proxy, forwarding the query into the DNS server hierarchy
+
+![figure_2_21_interaction_of_the_various_dns_servers](images/chapter2-application-layer/figure_2_21_interaction_of_the_various_dns_servers.png)
+
+* **DNS Caching**
+  * DNS extensively exploits DNS caching in order to improve the delay performance and to reduce the number of DNS messages ricocheting around the Internet
+  * DNS servers discard cached information after a period of time
+
+### DNS Records and Messages
+
+* The DNS servers store **resource records** (RRs)
+  * (Name, Value, Type, TTL)
+  * If Type=A, then Name is a hostname and Value is the IP address for the hostname
+  * If Type=NS, then Name is a domain (such as foo.com) and Value is the hostname of an authoritative DNS server that knows how to obtain the IP addresses for hosts in the domain
+  * If Type=CNAME, then Value is a canonical hostname for the alias hostname Name
+  * If Type=MX, then Value is the canonical name of a mail server that has an alias hostnameName
+
+## Peer-to-Peer Applications
+
+*  Pairs of intermittently connected hosts communicate directly with each other
+
+### P2P File Distribution
+
+* In client-server file distribution, the server must send a copy of the file to each of the peers—placing an enormous burden on the server and consuming a large amount of server bandwidth
+* In P2P file distribution, each peer can redistribute any portion of the file it has received to any other peers
