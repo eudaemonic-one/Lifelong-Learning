@@ -91,7 +91,7 @@
 
 #### Pathname Lookup
 
-* When the client reaches an NFS mounted file system, NFS directory's VNODE lookup() operation will send lokkup to server
+* When the client reaches an NFS mounted file system, NFS directory's VNODE lookup() operation will send lookup to server
   * Server will look it up in the directory
 * This piece-meal lookup can take a long time
   * 1 RPC per directory
@@ -145,3 +145,29 @@
 * Who does what?
   * Client provides session and complete caching
   * Server does callbacks, directory magement, and additional caching
+
+### Approach #3: NFSv3 (Stateless Caching)
+
+* Other clients' writes visible within 30 seconds
+  * Or the local open() after the other client's close()
+* How?
+  * Clients cache blocks and remember when last verified
+  * Server promises nothing and remembers nothing
+  * Clients check block freshness whenever older than 30 secs
+  * Client used write-through caching (send to server immediately)
+* Who does what?
+  * Client provides session and caching
+  * Server does everything an FS would do on a local system
+
+### Stateless Server vs. Stateful Server
+
+* Stateless servers
+  * Simple
+  * May be faster because of simplicity, though usually not
+  * Quick to recover from crashes
+    * Don't need to reconstruct client-related state
+  * No problem with running out of state-tracking resources
+* Stateful servers
+  * May be faster because of long-lived connections
+  * Can provide better semantics for users/programmers
+
