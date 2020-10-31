@@ -79,3 +79,10 @@
   * Record appended atomically **at-least-once**
 * Applications should validate (**don't trust GFS**)
   * formatting, checkpointing, checksums, sequence numbers (nonces)
+
+|                      | Write                    | Record Append                         |
+| -------------------- | ------------------------ | ------------------------------------- |
+| Serial success       | defined                  | defined interpersed with inconsistent |
+| Concurrent successes | consistent but undefined | ditto                                 |
+| Faliure              | inconsistent             | inconsistent                          |
+
