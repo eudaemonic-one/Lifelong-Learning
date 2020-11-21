@@ -178,3 +178,34 @@
 * Reality today: Full backups + deduplication
 
 ![backup_performance_metrics](images/lecture14-data-protection/backup_performance_metrics.png)
+
+## Diaster Recovery
+
+* Diaster - Anything that stops your computing
+
+### Protecting the Infrastruture
+
+* For years, backup was the most common method
+* Different levels of replacement plan
+  * cold backup site - empty site reserved in case of disaster
+  * hot backup site - site which already contains all of the necessary equipment
+
+### Remote Mirroring
+
+* Mirror all data on multiple sites
+* Issues
+  * Synchronous vs. Asynchronous (slow/perfect vs. fast/imperfect)
+  * Distance
+  * Support for network partitions
+  * Network
+* Implementation
+  * Snapshot mirroring - takes a snapshot of the current disk and mirrors it to another drive
+  * Snapshots can and do fall out-of-sync
+  * Allows one to duplicate their data at a point in time for backup/testing new systems/analytics
+
+### Remote Data Centers
+
+* If network costs continue to drop, can we store all of our data remotely?
+  * only use local disks as a cache
+  * remote site is responsible for managing your data (backup, mirroring, security)
+  * storage management costs are shared among multiple customers
