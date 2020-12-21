@@ -2,7 +2,7 @@
 
 My personal notes on everything, from coding to philosophy.
 
-## Catalog
+## Table of Contents
 
 * [Algorithms](./Algorithms/): Note on Algorithms.
   * [Introduction to Algorithms (aka CLRS)](./CLRS/Algorithms/)
@@ -27,6 +27,8 @@ My personal notes on everything, from coding to philosophy.
   * [CMU Course 18361/661 Introduction to Machine Learning for Engineers](./Machine-Learning/cmu-18661/)
 * [Object-Oriented Programming](./Object-Oriented-Programming/): Note on principles of object-oriented programming and Java programming language (Java Concurrency involved).
   * [CMU Course 17214/514 Principles of Software Construction](./Object-Oriented-Programming/cmu-17514/) (Lectured by [Josh Bloch](https://www.isri.cmu.edu/people/affiliated-fac/bloch-josh.html) and [Charlie Garrod](https://www.cs.cmu.edu/~charlie/))
+* [Software Engineering](./Software-Engineering/): Note on software engineering practice, including process, requirements, measurement, quality, management, ethics, etc.
+  * [CMU Course 17313 Foundations of Software Engineering](./Software-Engineering/cmu-17313/)
 * [Storage Systems](./Storage-Systems): Note on storage systems, from physical media to I/O controller, and also file systems and user programs.
   * [CMU Course 15746/18746 Storage Systems](./Storage-Systems/cmu-18746/) (Lectured by [Greg Ganger](http://users.ece.cmu.edu/~ganger/) and [George Amvrosiadis](http://users.ece.cmu.edu/~gamvrosi/))
 
