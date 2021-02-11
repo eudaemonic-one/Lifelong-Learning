@@ -86,3 +86,20 @@
 
 * Each header includes a demultiplexing field that is used to identify the next layer
 * Multiplexing occurs at multiple layers (e.g., IP, TCP)
+
+![protocol_demultiplexing](images/lecture02-protocol-stack/protocol_demultiplexing.png)
+
+### Socket API
+
+![socket_api](images/lecture02-protocol-stack/socket_api.png)
+
+### IP Based on a Minimalist Approach
+
+* IP provide minimal functionalities to support connectivity
+  * Addressing, forwarding, routing
+* Transport layer or application performs more sophisticated functionalities
+  * Flow control, error control, congestion control
+* Advantages
+  * Accommodate heterogeneous technologies (Ethernet, modem, wireless)
+  * Support diverse applications (telnet, ftp, web)
+  * Decentralized network administration
