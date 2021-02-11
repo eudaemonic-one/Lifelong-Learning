@@ -103,3 +103,36 @@
   * Accommodate heterogeneous technologies (Ethernet, modem, wireless)
   * Support diverse applications (telnet, ftp, web)
   * Decentralized network administration
+
+## Network Tools
+
+### ping
+
+* Application to determine if host is reachable (also round-trip delay)
+* Based on Internet Control Message Protocol (ICMP)
+
+### traceroute
+
+* Find route from local host to a remote host
+* Time-to-live (TTL)
+  * IP packets have TTL field that specifies maximum # hops traversed before packet discarded
+
+### ipconfig/ifconfig
+
+* Utility to display TCP/IP information about a host
+* Many options
+  * Simplest: IP address, subnet mask, default gateway for the host
+
+### netstat
+
+* Queries a host about TCP/IP network status
+  * Status of network drivers & their interface cards
+  * State of routing table in host
+  * TCP/IP active server processes
+  * TCP active connections
+
+### tcpdump
+
+* Captures IP packets on a network interface
+* Packets and higher-layer messages can be displayed and analyzed
+* Basis for many network protocol analyzers for troubleshooting networks
