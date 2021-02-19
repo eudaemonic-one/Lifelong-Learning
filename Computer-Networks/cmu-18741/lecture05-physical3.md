@@ -75,3 +75,34 @@
 * $b(x) = x^{n-k}i(x) + r(x)$
 
 ![find_polynomial_codeword](images/lecture05-physical3/find_polynomial_codeword.png)
+
+* Undetectable error patterns
+  * If e(x) is a multiple of g(x), that is, e(x) is a non-zero codeword
+  * Choose the generator polynomial so that selected error patterns can be detected
+
+![undetectable_error_patterns](images/lecture05-physical3/undetectable_error_patterns.png)
+
+#### Design Good Polynomial Code
+
+* Select generator polynomial so that likely error patterns are not multiples of g(x)
+* Detect Single Errors
+  * $e(x) = x^i$ for error in location i + 1
+  * If g(x) has more than 1 term, it cannot divide $x^i$
+* Detect Double Errors
+  * $e(x) = x^i + x^j = x^i (x^{j-i} + 1)$ where j > i
+  * If g(x) has more than 1 term, it cannot divide $x^i$
+  * If g(x) is a primitive polynomial, it cannot divide $x^m + 1$ for all $m < 2^{n-k} - 1$
+  * Primitive polynomials can be found by consulting coding theory books
+
+### Hamming Code
+
+* Class of error-correcting code
+* Capable of correcting all single-error patterns
+* Probably optimal for 1-bit errors
+* Very less redundancy, e.g., 1-bit error proof - add O(logN) bits of redundancy for n bit sequence
+* e.g., m=3 Hamming Code
+  * Information bits b1, b2, b3, b4
+  * Equations for parity checks b5, b6, b7
+    * b5 = b1 + b3 + b4
+    * b6 = b1 + b2 + b4
+    * b7 = b2 + b3 + b4
