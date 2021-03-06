@@ -1,5 +1,16 @@
 # Lecture 7 Cloud Storage I
 
+## Scalable Storage
+
+* Approach 1: extend familiar distributed file systems
+  * Basic design tradeoffs: statelessness, caching, etc
+  * NASD: scaling the data transfer path
+  * Haystack: optimize for specific workload
+  * GFS: fault-tolerance, targeted consistency model
+  * TableFS: efficiency for small files too
+* Approach 2: abandon traditional file system model
+  * Examples: AWS S3, AWS EBS, Docker UFS
+
 ## File System
 
 ### Approach #1: Server Does Everything
@@ -208,3 +219,5 @@
 * Advantages
   * Fewer random lookups by co-locating dir entires with inode attrs, small files
   * `readdir` performs sequential scan on the table
+
+![tablefs_schema](images/lecture07-storage-1/tablefs_schema.png)
