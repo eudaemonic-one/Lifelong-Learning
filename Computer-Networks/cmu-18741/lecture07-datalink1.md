@@ -99,3 +99,17 @@
   * Can achieve higher throughput
 * Ethernet MAC
 * Ethernet Frames
+
+### Carrier Sense Multiple Access / Collision Avoidance (CSMA/CA)
+
+![csma_ca](images/lecture07-datalink1/csma_ca.png)
+
+* Exponential Backoff
+  * Why not random delay with fixed mean?
+    * Few senders -> needless waiting
+    * Too many senders -> too many collisions
+  * Goal: adapt retransmission attempts to estimated current load
+  * Delay is set as K slots - control K
+    * First collission: choose K from {0, 1}
+    * Second collision: choose K from {0, 1, 2, 3}
+    * After ten collisions: choose K from {0, 1, 2, 3, ..., 1023}
