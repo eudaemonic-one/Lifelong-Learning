@@ -74,6 +74,8 @@
 * Most data communication standards use polynomial code for error detection
 * $b(x) = x^{n-k}i(x) + r(x)$
 
+![crc](images/lecture05-physical3/crc.png)
+
 ![find_polynomial_codeword](images/lecture05-physical3/find_polynomial_codeword.png)
 
 * Undetectable error patterns
