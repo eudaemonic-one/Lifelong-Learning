@@ -24,7 +24,7 @@
 * Ethernet address assignment
   * Each adapter is given a globally unique 6-byte address at manufacturing time
     * 24 bits identify manufacturer
-    * Frame is recieved by all adapters on a LAN and dropped if address does not match
+    * Frame is received by all adapters on a LAN and dropped if address does not match
   * Special addresses
     * Broadcast: FF:FF:FF:FF:FF:FF:FF:FF
     * Range of addresses allocated to multicast
@@ -44,11 +44,14 @@
   * Fill in the forwarding table
 * Spanning tree switches
   * Elect a single switch as a root switch
+    * Root is the switch with the lowest identifier
   * Each switch calculates the distance of the shortest path to the root switch
   * Each LAN identifies a designated switch, the switch closest to the root
     * It will forward packets to the root
   * Each switch determines a root port, which will be used to send packets to the root
   * Identify the ports that form the spanning tree
+
+![spanninig_tree_algorithm_example](images/lecture08-datalink2/spanninig_tree_algorithm_example.png)
 
 ### Circuit vs. Packet Switching
 
@@ -68,5 +71,7 @@
 * Each wire carries many virtual circuits
 * Forwarding based on virtual circuit identifier
 * Can support wide range of quality of service
-* VCid swapping
+* VC id swapping
+  * Look up is based on VC id in header + incoming port number
   * Forwarding table specifies outgoing port and new VC id
+  * VC id conflicts can be resolved locally during signaling
