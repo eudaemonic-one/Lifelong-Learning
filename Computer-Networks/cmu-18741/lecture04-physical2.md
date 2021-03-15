@@ -21,6 +21,7 @@
 ### Bandwidth
 
 * Bandwidth is width of the frequency range in which the Fourier transform of the signal is non-zero
+* Bit Rate = 1 bit / T seconds
 * dB - short for decibel
   * Defined as $10 * log_{10}(P_1/P_2)$
 
@@ -36,6 +37,7 @@
 ![spectrum_of_a_signal](images/lecture04-physical2/spectrum_of_a_signal.png)
 
 * $x_1(t)$ varies faster in time & has more high frequency content than $x_2(t)$
+* Bandwidth $W_s$ is defined as range of frequencies where a signal has non-negligible power, e.g., range of band that contains 99% of total signal power
 
 ### Transmission Channel Considerations
 
