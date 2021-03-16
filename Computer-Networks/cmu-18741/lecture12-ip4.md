@@ -94,3 +94,13 @@
 * Try alternate servers on timeout
   * Exponential backoff when retrying same server
 
+## Routing Hierarchy
+
+* Flat routing doesn't scale
+* Need less information with increasing distance to destination
+* Solution: hierarchy
+  * Inter and intra domain routing in the Internet
+  * Areas inside OSPF
+  * Switched LAN technologies
+* Internet's Area Hierarchy
+  * Autonomous System (AS) is a set of routers under a single technical administration, using an interior gateway protocol (IGP) and common metrics to route packets within the AS and using an exterior gateway protocol (EGP) to route packets to other AS's
