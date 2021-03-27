@@ -96,3 +96,21 @@
   * Still need to deal with reordering -> wait for out of order by 3 packets
 
 ![window_flow_control](images/lecture14-transport1/window_flow_control.png)
+
+### Timeout
+
+#### Round-trip Time Estimation
+
+* Wait at least one RTT before retransmitting
+* Low RTT estimate -> unneeded retransmissions
+* High RTT estimate -> poor throughput
+* RTT estimator must adapt to change in RTT
+* RTT exponentially averaged -> New RTT = alpha (old RTT) + (1 - alpha)(new sample) and alpha is 0.875 for most TCPs
+* Retransmit timer set to be (b * RTT) where b = 2
+
+#### Jacobson's Retransmission Timeout
+
+* At high loads, round trip variance is high
+* Solution: Base RTO on RTT and standard deviation -> RTO = RTT + 4 * rttvar
+  * New_rttvar = beta * dev + (1 - beta) old_rttvar
+
