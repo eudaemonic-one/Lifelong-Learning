@@ -4,33 +4,36 @@ My personal notes on everything, from coding to philosophy.
 
 ## Table of Contents
 
-* [Algorithms](./Algorithms/): Note on Algorithms.
+* [Algorithms](./Algorithms/): Note of Algorithms.
   * [Introduction to Algorithms (aka CLRS)](./CLRS/Algorithms/)
-* [API Design](./API-Design/): Note on API design and implementation, including the Power of APIs, design processes and principles of APIs, and how to document and name APIs.
+* [API Design](./API-Design/): Note of API design and implementation, including the Power of APIs, design processes and principles of APIs, and how to document and name APIs.
   * [CMU Course 17480/780 API Design And Implementation](./API-Design/cmu-17780/) (Lectured by [Josh Bloch](https://www.isri.cmu.edu/people/affiliated-fac/bloch-josh.html))
-* [Computer Systems](./Computer-Systems/): Note on Computer Systems, including machine basics, storage hierarchy, compilation system, memory management, exceptional control flow, I/O, networking programming, and synchronization.
+* [Cloud Computing](./Cloud-Computing/): Note of Cloud Computing, including modern data center computing, scalable distributed systems, and programming frameworks enabling the widespread adoption of cloud computing.
+  * [CMU Course 15719/18709 Advanced Cloud Computing](./Cloud-Computing/cmu-18709/)
+* [Computer-Network](./Computer-Networks/): Note of Computer Networks, including physical layer, link layer, ip layer, transport layer, and network applications.
+  * [CMU Course 18441/741 Computer Networks](./Computer-Networks/cmu-18741/)
+* [Computer Systems](./Computer-Systems/): Note of Computer Systems, including machine basics, storage hierarchy, compilation system, memory management, exceptional control flow, I/O, networking programming, and synchronization.
   * [Computer Systems: A Programmer's Perspective (aka CS:APP)](./Computer-Systems/CSAPP/)
   * [CMU Course 15213/15513/18213/18613 Foundations of Computer Systems](./Computer-Systems/cmu-18613/)
-* [Cookbook](./Cookbook/): Note on how to cook delicious food and cookbooks.
+* [Cookbook](./Cookbook/): Note of how to cook delicious food and cookbooks.
 * [Data Structures](./Data-Structures/): Implementations of basic and advanced data structures and related algorithms.
-* [Database](./Database/): Note on database theory and MySQL.
+* [Database](./Database/): Note of database theory and MySQL.
   * [CMU Course 15445/645 Database Systems](./Database/cmu-15645/)
-  * [MySQL](./Database/MySQL/): Note on MySQL and InnoDB engine.
-* [Distributed Systems](./Distributed-Systems/): Note on distributed systems, including network knowledge, concurrency models, time synchronization methods, distributed file systems, fault-tolerance, replication, cluster computing, Spark, virtualization, and security protocols.
+  * [MySQL](./Database/MySQL/): Note of MySQL and InnoDB engine.
+* [Distributed Systems](./Distributed-Systems/): Note of distributed systems, including network knowledge, concurrency models, time synchronization methods, distributed file systems, fault-tolerance, replication, cluster computing, Spark, virtualization, and security protocols.
   * [CMU Course 15440/640 Distributed Systems](./Distributed-Systems/cmu-15640/)
-* [Golang](./Golang/): Note on Go language and Gin framework.
-  * [Golang go-to Guide](./Golang/Go-go-to-Guide/): Note on Go language basics and how to write Go programs.
-  * [Gin](./Golang/Gin): Note on web framework Go-Gin.
-* [LeetCode](./LeetCode/): Solution set of LeetCode algorithms problems and note on useful tricks and expressions, and also self-defined solution models.
-* [Machine Learning](./Machine-Learning/): Note on machine learning theory and implementations of ML algorithms.
+* [Golang](./Golang/): Note of Go language and Gin framework.
+  * [Golang go-to Guide](./Golang/Go-go-to-Guide/): Note of Go language basics and how to write Go programs.
+  * [Gin](./Golang/Gin): Note of web framework Go-Gin.
+* [LeetCode](./LeetCode/): Solution set of LeetCode algorithms problems and Note of useful tricks and expressions, and also self-defined solution models.
+* [Machine Learning](./Machine-Learning/): Note of machine learning theory and implementations of ML algorithms.
   * [CMU Course 10301/601 Introduction to Machine Learning (Master's)](./Machine-Learning/cmu-10601/)
-  * [CMU Course 18361/661 Introduction to Machine Learning for Engineers](./Machine-Learning/cmu-18661/)
-* [Object-Oriented Programming](./Object-Oriented-Programming/): Note on principles of object-oriented programming and Java programming language (Java Concurrency involved).
-  * [CMU Course 17214/514 Principles of Software Construction](./Object-Oriented-Programming/cmu-17514/) (Lectured by [Josh Bloch](https://www.isri.cmu.edu/people/affiliated-fac/bloch-josh.html) and [Charlie Garrod](https://www.cs.cmu.edu/~charlie/))
-* [Software Engineering](./Software-Engineering/): Note on software engineering practice, including process, requirements, measurement, quality, management, ethics, etc.
+* [Object-Oriented Programming](./Object-Oriented-Programming/): Note of principles of object-oriented programming and Java programming language (Java Concurrency involved).
+  * [CMU Course 17214/514 Principles of Software Construction](./Object-Oriented-Programming/cmu-17514/)
+* [Software Engineering](./Software-Engineering/): Note of software engineering practice, including process, requirements, measurement, quality, management, ethics, etc.
   * [CMU Course 17313 Foundations of Software Engineering](./Software-Engineering/cmu-17313/)
-* [Storage Systems](./Storage-Systems): Note on storage systems, from physical media to I/O controller, and also file systems and user programs.
-  * [CMU Course 15746/18746 Storage Systems](./Storage-Systems/cmu-18746/) (Lectured by [Greg Ganger](http://users.ece.cmu.edu/~ganger/) and [George Amvrosiadis](http://users.ece.cmu.edu/~gamvrosi/))
+* [Storage Systems](./Storage-Systems): Note of storage systems, from physical media to I/O controller, and also file systems and user programs.
+  * [CMU Course 15746/18746 Storage Systems](./Storage-Systems/cmu-18746/)
 
 ## Milestones
 
@@ -42,3 +45,4 @@ My personal notes on everything, from coding to philosophy.
 * 400 commits: Apr 18, 2020
 * 500 commits: May 18, 2020
 * 600 commits: Oct 26, 2020
+* 700 commits: Mar 28, 2021
