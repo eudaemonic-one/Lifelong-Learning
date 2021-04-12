@@ -108,3 +108,22 @@
 
 * Two events are not concurrent if one "happens before" the other
 * Replicated state machine wants same order of changes at all replicas
+
+#### Logical Clocks
+
+* Every machine maintains a counter for its orderable events
+* A message arrives with sender's counter: receiver advances counter past the sender's
+  * $C' = max(C, C_{msg})+1$
+  * Resolve ties by adding machine/thread ID as lower order bits
+* Define a total order that is consistent with "happen before"
+
+#### Replicated State Machines + Logical Clocks
+
+* Problem: To decide what request to execute next, we need to know no request with a lower logical clock may arrive in future
+* Require messages between two machines arrive in order (e.g., TCP)
+* Delay execution at a replica until it has seen a larger logical clock from all non-faulty machines
+* New problem: waiting for later messages is undesirable
+  * Forces heartbeat messages, and significant latency
+  * Real-time clocks can fix this iff clock skew < message delivery
+  * Replicas can negotiate an order by communicating among themselves
+    * At the cost of extra messaging
