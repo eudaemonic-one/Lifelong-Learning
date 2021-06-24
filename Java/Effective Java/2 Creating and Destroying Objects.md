@@ -27,3 +27,24 @@
   * **get*Type*** - “Like `getInstance`, but used if the factory method is in a different class.”
   * **new*Type*** - “Like `newInstance`, but used if the factory method is in a different class.”
   * ***type*** - “A concise alternative to `getType` and `newType`.”
+
+## Item 2: Consider a builder when faced with many constructor parameters
+
+* “Static factories and constructors share a limitation: they do not scale well to large numbers of optional parameters.”
+* Telescoping Constructor Pattern
+  * "You provide a constructor with only the required parameters, another with a single optional parameter, a third with two optional parameters, and so on, culminating in a constructor with all the optional parameters.”
+  * “The telescoping constructor pattern works, but it is hard to write client code when there are many parameters, and harder still to read it.”
+* JavaBeans Pattern
+  * “You call a parameterless constructor to create the object and then call setter methods to set each required parameter and each optional parameter of interest.”
+  * “Because construction is split across multiple calls, a JavaBean may be in an inconsistent state partway through its construction.”
+  * “A related disadvantage is that the JavaBeans pattern precludes the possibility of making a class immutable (Item 17) and requires added effort on the part of the programmer to ensure thread safety.”
+* **Builder Pattern**
+  * “Instead of making the desired object directly, the client calls a constructor (or static factory) with all of the required parameters and gets a builder object. Then the client calls setter-like methods on the builder object to set each optional parameter of interest. Finally, the client calls a parameterless build method to generate the object, which is typically immutable."
+  * “The builder is typically a static member class (Item 24) of the class it builds. ”
+  * “The builder’s setter methods return the builder itself so that invocations can be chained, resulting in a *fluent* API.”
+  * **“The Builder pattern is well suited to class hierarchies.”**
+  * “A minor advantage of builders over constructors is that builders can have multiple varargs parameters because each parameter is specified in its own method.”
+  * “While the cost of creating this builder is unlikely to be noticeable in practice, it could be a problem in performance-critical situations.”
+  * “Builder pattern is more verbose than the telescoping constructor pattern, so it should be used only if there are enough parameters to make it worthwhile, say four or more.”
+  * “It’s often better to start with a builder in the first place.”
+* **“In summary, the Builder pattern is a good choice when designing classes whose constructors or static factories would have more than a handful of parameters.”**
