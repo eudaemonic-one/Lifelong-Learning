@@ -48,3 +48,58 @@
   * “Builder pattern is more verbose than the telescoping constructor pattern, so it should be used only if there are enough parameters to make it worthwhile, say four or more.”
   * “It’s often better to start with a builder in the first place.”
 * **“In summary, the Builder pattern is a good choice when designing classes whose constructors or static factories would have more than a handful of parameters.”**
+
+## Item 3: Enforce the singleton property with a private constructor or an enum type
+
+* “A *singleton* is simply a class that is instantiated exactly once [Gamma95].”
+* “Singletons typically represent either a stateless object such as a function (Item 24) or a system component that is intrinsically unique.”
+* “**Making a class a singleton can make it difficult to test its clients** because it’s impossible to substitute a mock implementation for a singleton unless it implements an interface that serves as its type.”
+
+```java
+// Singleton with public final field
+public class Elvis {
+    public static final Elvis INSTANCE = new Elvis();
+    private Elvis() { ... }
+
+    public void leaveTheBuilding() { ... }
+}
+```
+
+* “The main advantage of the public field approach is that the API makes it clear that the class is a singleton: the public static field is final, so it will always contain the same object reference. The second advantage is that it’s simpler.”
+
+```java
+// Singleton with static factory
+public class Elvis {
+    private static final Elvis INSTANCE = new Elvis();
+    private Elvis() { ... }
+    public static Elvis getInstance() { return INSTANCE; }
+
+    public void leaveTheBuilding() { ... }
+}
+```
+
+* “One advantage of the static factory approach is that it gives you the flexibility to change your mind about whether the class is a singleton without changing its API.”
+* “A second advantage is that you can write a generic singleton factory if your application requires it (Item 30).”
+* “A final advantage of using a static factory is that a method reference can be used as a supplier.”
+* “To make a singleton class that uses either of these approaches *serializable* (Chapter 12), it is not sufficient merely to add `implements Serializable` to its declaration. To maintain the singleton guarantee, declare all instance fields transient and provide a readResolve method (Item 89). Otherwise, each time a serialized instance is deserialized, a new instance will be created.”
+
+```java
+// readResolve method to preserve singleton property
+private Object readResolve() {
+     // Return the one true Elvis and let the garbage collector
+     // take care of the Elvis impersonator.
+    return INSTANCE;
+}
+```
+
+```java
+// Enum singleton - the preferred approach
+public enum Elvis {
+    INSTANCE;
+
+ 		public void leaveTheBuilding() { ... }
+}
+```
+
+* “This approach is similar to the public field approach, but it is more concise, provides the serialization machinery for free, and provides an ironclad guarantee against multiple instantiation, even in the face of sophisticated serialization or reflection attacks.”
+* **“A single-element enum type is often the best way to implement a singleton.”**
