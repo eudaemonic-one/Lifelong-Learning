@@ -103,3 +103,25 @@ public enum Elvis {
 
 * “This approach is similar to the public field approach, but it is more concise, provides the serialization machinery for free, and provides an ironclad guarantee against multiple instantiation, even in the face of sophisticated serialization or reflection attacks.”
 * **“A single-element enum type is often the best way to implement a singleton.”**
+
+## Item 4: Enforce noninstantiability with a private constructor
+
+* “*Utility classes* were not designed to be instantiated”
+* **“Attempting to enforce noninstantiability by making a class abstract does not work.”**
+  * “The class can be subclassed and the subclass instantiated. Furthermore, it misleads the user into thinking the class was designed for inheritance (Item 19).”
+* **“A class can be made noninstantiable by including a private constructor.”**
+
+```java
+// Noninstantiable utility class
+public class UtilityClass {
+    // Suppress default constructor for noninstantiability
+    private UtilityClass() {
+        throw new AssertionError();
+    }
+    ... // Remainder omitted
+}
+```
+
+* “The `AssertionError` isn’t strictly required, but it provides insurance in case the constructor is accidentally invoked from within the class. It guarantees the class will never be instantiated under any circumstances.”
+* “As a side effect, this idiom also prevents the class from being subclassed.”
+  * “All constructors must invoke a superclass constructor, explicitly or implicitly, and a subclass would have no accessible superclass constructor to invoke.”
