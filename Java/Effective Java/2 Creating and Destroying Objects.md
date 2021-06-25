@@ -125,3 +125,38 @@ public class UtilityClass {
 * “The `AssertionError` isn’t strictly required, but it provides insurance in case the constructor is accidentally invoked from within the class. It guarantees the class will never be instantiated under any circumstances.”
 * “As a side effect, this idiom also prevents the class from being subclassed.”
   * “All constructors must invoke a superclass constructor, explicitly or implicitly, and a subclass would have no accessible superclass constructor to invoke.”
+
+
+## Item 5: Prefer dependency injection to hardwiring resources
+
+* **“Static utility classes and singletons are inappropriate for classes whose behavior is parameterized by an underlying resource.”**
+* “A simple pattern that satisfies this requirement is to **pass the resource into the constructor when creating a new instance**.”
+
+
+```java
+// Dependency injection provides flexibility and testability
+public class SpellChecker {
+    private final Lexicon dictionary;
+
+    public SpellChecker(Lexicon dictionary) {
+        this.dictionary = Objects.requireNonNull(dictionary);
+    }
+
+    public boolean isValid(String word) { ... }
+    public List<String> suggestions(String typo) { ... }
+}
+```
+
+* “Dependency injection works with an arbitrary number of resources and arbitrary dependency graphs.”
+* “It preserves immutability (Item 17), so multiple clients can share dependent objects.”
+* “Dependency injection is equally applicable to constructors, static factories (Item 1), and builders (Item 2).”
+* “A useful variant of the pattern is to pass a resource factory to the constructor. A factory is an object that can be called repeatedly to create instances of a type. Such factories embody the Factory Method pattern [Gamma95].”
+  * “The `Supplier<T>` interface, introduced in Java 8, is perfect for representing factories.”
+  * “Methods that take a Supplier<T> on input should typically constrain the factory’s type parameter using a bounded wildcard type (Item 31) to allow the client to pass in a factory that creates any subtype of a specified type.”
+
+```java
+Mosaic create(Supplier<? extends Tile> tileFactory) { ... }
+```
+
+* **“In summary, do not use a singleton or static utility class to implement a class that depends on one or more underlying resources whose behavior affects that of the class, and do not have the class create these resources directly. Instead, pass the resources, or factories to create them, into the constructor (or static factory or builder).”**
+
