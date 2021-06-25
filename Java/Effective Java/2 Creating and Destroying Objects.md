@@ -192,3 +192,18 @@ Mosaic create(Supplier<? extends Tile> tileFactory) { ... }
 * **“A third common source of memory leaks is listeners and other callbacks.”**
   * “One way to ensure that callbacks are garbage collected promptly is to store only weak references to them, for instance, by storing them only as keys in a WeakHashMap.”
 * “Because memory leaks typically do not manifest themselves as obvious failures, they may remain present in a system for years. They are typically discovered only as a result of careful code inspection or with the aid of a debugging tool known as a heap profiler. Therefore, it is very desirable to learn to anticipate problems like this before they occur and prevent them from happening.”
+
+
+## Item 8: Avoid finalizers and cleaners
+
+* **“Finalizers are unpredictable, often dangerous, and generally unnecessary.”**
+* **“Cleaners are less dangerous than finalizers, but still unpredictable, slow, and generally unnecessary.”**
+* **“You should never do anything time-critical in a finalizer or cleaner.”**
+* “Cleaners are a bit better than finalizers in this regard because class authors have control over their own cleaner threads, but cleaners still run in the background, under the control of the garbage collector, so there can be no guarantee of prompt cleaning.”
+* **“You should never depend on a finalizer or cleaner to update persistent state.”**
+* “Another problem with finalizers is that an uncaught exception thrown during finalization is ignored, and finalization of that object terminates.”
+* **“There is a severe performance penalty for using finalizers and cleaners.”**
+* **“Finalizers have a serious security problem: they open your class up to finalizer attacks.”**
+* “So what should you do instead of writing a finalizer or cleaner for a class whose objects encapsulate resources that require termination, such as files or threads? Just **have your class implement `AutoCloseable`**, and require its clients to invoke the `close` method on each instance when it is no longer needed, typically using `try`-with-resources to ensure termination even in the face of exceptions (Item 9).”
+  * “One detail worth mentioning is that the instance must keep track of whether it has been closed: the `close` method must record in a field that the object is no longer valid, and other methods must check this field and throw an `IllegalStateException` if they are called after the object has been closed.”
+* **“In summary, don’t use cleaners, or in releases prior to Java 9, finalizers, except as a safety net or to terminate noncritical native resources.”**
