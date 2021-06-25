@@ -176,3 +176,19 @@ Mosaic create(Supplier<? extends Tile> tileFactory) { ... }
 
 * “The counterpoint to this item is Item 50 on defensive copying. The present item says, “Don’t create a new object when you should reuse an existing one,” while Item 50 says, “Don’t reuse an existing object when you should create a new one.”
 
+
+## Item 7: Eliminate obsolete object references
+
+* **“An obsolete reference is simply a reference that will never be dereferenced again.”**
+* “If an object reference is unintentionally retained, not only is that object excluded from garbage collection, but so too are any objects referenced by that object, and so on.”
+* “The fix for this sort of problem is simple: **null out references once they become obsolete**.”
+  * “An added benefit of nulling out obsolete references is that if they are subsequently dereferenced by mistake, the program will immediately fail with a NullPointerException, rather than quietly doing the wrong thing.”
+* **“Nulling out object references should be the exception rather than the norm.”**
+  * “The best way to eliminate an obsolete reference is to let the variable that contained the reference fall out of scope. This occurs naturally if you define each variable in the narrowest possible scope (Item 57).”
+* **“Whenever a class manages its own memory, the programmer should be alert for memory leaks”**
+* **“Another common source of memory leaks is caches.”**
+  * “The cache should occasionally be cleansed of entries that have fallen into disuse.”
+
+* **“A third common source of memory leaks is listeners and other callbacks.”**
+  * “One way to ensure that callbacks are garbage collected promptly is to store only weak references to them, for instance, by storing them only as keys in a WeakHashMap.”
+* “Because memory leaks typically do not manifest themselves as obvious failures, they may remain present in a system for years. They are typically discovered only as a result of careful code inspection or with the aid of a debugging tool known as a heap profiler. Therefore, it is very desirable to learn to anticipate problems like this before they occur and prevent them from happening.”
