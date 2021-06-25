@@ -160,3 +160,19 @@ Mosaic create(Supplier<? extends Tile> tileFactory) { ... }
 
 * **“In summary, do not use a singleton or static utility class to implement a class that depends on one or more underlying resources whose behavior affects that of the class, and do not have the class create these resources directly. Instead, pass the resources, or factories to create them, into the constructor (or static factory or builder).”**
 
+## Item 6: Avoid creating unnecessary objects
+
+* **“It is often appropriate to reuse a single object instead of creating a new functionally equivalent object each time it is needed. ”**
+  * “Reuse can be both faster and more stylish."
+  * "An object can always be reused if it is immutable (Item 17).”
+* “You can often avoid creating unnecessary objects by using static factory methods (Item 1) in preference to constructors on immutable classes that provide both.”
+* “Some object creations are much more expensive than others. If you’re going to need such an “expensive object” repeatedly, it may be advisable to cache it for reuse.”
+  * **“While String.matches is the easiest way to check if a string matches a regular expression, it’s not suitable for repeated use in performance-critical situations.”**
+* “Another way to create unnecessary objects is autoboxing, which allows the programmer to mix primitive and boxed primitive types, boxing and unboxing automatically as needed.”
+  * **“Autoboxing blurs but does not erase the distinction between primitive and boxed primitive types.”**
+  * **“Prefer primitives to boxed primitives, and watch out for unintentional autoboxing.”**
+* “Avoiding object creation by maintaining your own object pool is a bad idea unless the objects in the pool are extremely heavyweight.”
+  * “Generally speaking, however, maintaining your own object pools clutters your code, increases memory footprint, and harms performance.”
+
+* “The counterpoint to this item is Item 50 on defensive copying. The present item says, “Don’t create a new object when you should reuse an existing one,” while Item 50 says, “Don’t reuse an existing object when you should create a new one.”
+
