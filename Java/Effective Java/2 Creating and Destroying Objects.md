@@ -207,3 +207,37 @@ Mosaic create(Supplier<? extends Tile> tileFactory) { ... }
 * “So what should you do instead of writing a finalizer or cleaner for a class whose objects encapsulate resources that require termination, such as files or threads? Just **have your class implement `AutoCloseable`**, and require its clients to invoke the `close` method on each instance when it is no longer needed, typically using `try`-with-resources to ensure termination even in the face of exceptions (Item 9).”
   * “One detail worth mentioning is that the instance must keep track of whether it has been closed: the `close` method must record in a field that the object is no longer valid, and other methods must check this field and throw an `IllegalStateException` if they are called after the object has been closed.”
 * **“In summary, don’t use cleaners, or in releases prior to Java 9, finalizers, except as a safety net or to terminate noncritical native resources.”**
+
+## Item 9: Prefer `try`-with-resources to `try`-`finally`
+
+* “Historically, a try-finally statement was the best way to guarantee that a resource would be closed properly, even in the face of an exception or return.”
+
+```java
+// try-finally - No longer the best way to close resources!
+static String firstLineOfFile(String path) throws IOException {
+    BufferedReader br = new BufferedReader(new FileReader(path));
+    try {
+        return br.readLine();
+    } finally {
+        br.close();
+    }
+}
+```
+
+* “To be usable with the `try`-with-resources statement, a resource must implement the AutoCloseable interface, which consists of a single void-returning `close` method.”
+
+```java
+// try-with-resources on multiple resources - short and sweet
+static void copy(String src, String dst) throws IOException {
+    try (InputStream   in = new FileInputStream(src);
+         OutputStream out = new FileOutputStream(dst)) {
+        byte[] buf = new byte[BUFFER_SIZE];
+        int n;
+        while ((n = in.read(buf)) >= 0)
+            out.write(buf, 0, n);
+    }
+}
+```
+
+* **“Always use `try`-with-resources in preference to `try`-`finally` when working with resources that must be closed. The resulting code is shorter and clearer, and the exceptions that it generates are more useful.”**
+
