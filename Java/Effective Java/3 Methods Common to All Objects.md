@@ -87,3 +87,16 @@ private int hashCode; // Automatically initialized to 0
 * **“Do not be tempted to exclude significant fields from the hash code computation to improve performance.”**
 * **“Don’t provide a detailed specification for the value returned by `hashCode`, so clients can’t reasonably depend on it; this gives you the flexibility to change it.”**
 
+## Item 12: Always override `toString`
+
+* “While `Object` provides an implementation of the `toString` method, the string that it returns is generally not what the user of your class wants to see. It consists of the class name followed by an “at” sign (`@`) and the unsigned hexadecimal representation of the hash code, for example, `PhoneNumber@163b91`.”
+* **“Providing a good `toString` implementation makes your class much more pleasant to use and makes systems using the class easier to debug.”**
+  * “Even if you never call toString on an object, others may.”
+* **“When practical, the toString method should return all of the interesting information contained in the object.”**
+* **“One important decision you’ll have to make when implementing a `toString` method is whether to specify the format of the return value in the documentation.”**
+  * “It is recommended that you do this for value classes, such as phone number or matrix. The advantage of specifying the format is that it serves as a standard, unambiguous, human-readable representation of the object. This representation can be used for input and output and in persistent human-readable data objects, such as CSV files.”
+  * “The disadvantage of specifying the format of the `toString` return value is that once you’ve specified it, you’re stuck with it for life, assuming your class is widely used. Programmers will write code to parse the representation, to generate it, and to embed it into persistent data. If you change the representation in a future release, you’ll break their code and data, and they will yowl.”
+
+  * “Whether or not you decide to specify the format, **you should clearly document your intentions**.”
+  * “Whether or not you specify the format, **provide programmatic access to the information contained in the value returned by `toString`**.”
+    * “By failing to provide accessors, you turn the string format into a de facto API, even if you’ve specified that it’s subject to change.”
