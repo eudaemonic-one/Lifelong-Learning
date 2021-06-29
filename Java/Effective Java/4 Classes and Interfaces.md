@@ -215,3 +215,25 @@ public class ForwardingSet<E> implements Set<E> {
   * “There are two ways to prohibit subclassing. The easier of the two is to declare the class final. The alternative is to make all the constructors private or package-private and to add public static factories in place of the constructors.”
 * “If a concrete class does not implement a standard interface, then you may inconvenience some programmers by prohibiting inheritance. If you feel that you must allow inheritance from such a class, one reasonable approach is to ensure that the class never invokes any of its overridable methods and to document this fact.”
   * “You can eliminate a class’s self-use of overridable methods mechanically, without changing its behavior. Move the body of each overridable method to a private “helper method” and have each overridable method invoke its private helper method. Then replace each self-use of an overridable method with a direct invocation of the overridable method’s private helper method.”
+
+
+## Item 20: Prefer interfaces to abstract classes
+
+* “Java has two mechanisms to define a type that permits multiple implementations: interfaces and abstract classes. Since the introduction of *default methods* for interfaces in Java 8 [JLS 9.4.3], both mechanisms allow you to provide implementations for some instance methods.”
+  * “A major difference is that to implement the type defined by an abstract class, a class must be a subclass of the abstract class. Because Java permits only single inheritance, this restriction on abstract classes severely constrains their use as type definitions.”
+* **“Existing classes can easily be retrofitted to implement a new interface.”**
+  * “All you have to do is to add the required methods, if they don’t yet exist, and to add an `implements` clause to the class declaration.”
+  * “If you want to have two classes extend the same abstract class, you have to place it high up in the type hierarchy where it is an ancestor of both classes. Unfortunately, this can cause great collateral damage to the type hierarchy, forcing all descendants of the new abstract class to subclass it, whether or not it is appropriate.”
+
+* **“Interfaces are ideal for defining mixins.”**
+  * “Loosely speaking, a mixin is a type that a class can implement in addition to its “primary type,” to declare that it provides some optional behavior. ”
+* **“Interfaces allow for the construction of nonhierarchical type frameworks.”**
+* “**Interfaces enable safe, powerful functionality enhancements** via the *wrapper class* idiom (Item 18).”
+* “When there is an obvious implementation of an interface method in terms of other interface methods, consider providing implementation assistance to programmers in the form of a default method.”
+  * “You can’t add default methods to an interface that you don’t control.”
+
+* **“You can, however, combine the advantages of interfaces and abstract classes by providing an abstract *skeletal implementation class* to go with an interface.”**
+  * “The interface defines the type, perhaps providing some default methods, while the skeletal implementation class implements the remaining non-primitive interface methods atop the primitive interface methods. Extending a skeletal implementation takes most of the work out of implementing an interface. This is the *Template Method* pattern [Gamma95].”
+  * “By convention, skeletal implementation classes are called `Abstract`*Interface*, where *Interface* is the name of the interface they implement.”
+  * “Because skeletal implementations are designed for inheritance, you should follow all of the design and documentation guidelines in Item 19.”
+* “A minor variant on the skeletal implementation is the *simple implementation*, exemplified by `AbstractMap.SimpleEntry`. A simple implementation is like a skeletal implementation in that it implements an interface and is designed for inheritance, but it differs in that it isn’t abstract: it is the simplest possible working implementation. You can use it as it stands or subclass it as circumstances warrant.”
