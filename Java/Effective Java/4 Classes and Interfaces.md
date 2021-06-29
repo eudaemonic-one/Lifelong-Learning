@@ -66,3 +66,61 @@ class Point {
 * **“If a class is accessible outside its package, provide accessor methods to preserve the flexibility to change the class’s internal representation.”**
 * **“If a class is package-private or is a private nested class, there is nothing inherently wrong with exposing its data fields.”**
 * **“In summary, public classes should never expose mutable fields. It is less harmful, though still questionable, for public classes to expose immutable fields. It is, however, sometimes desirable for package-private or private nested classes to expose fields, whether mutable or immutable.”**
+
+## Item 17: Minimize mutability
+
+* “An immutable class is simply a class whose instances cannot be modified. All of the information contained in each instance is fixed for the lifetime of the object, so no changes can ever be observed.”
+* “To make a class immutable, follow these five rules:”
+
+  * **“Don’t provide methods that modify the object’s state** (known as *mutators*).”
+  * **“Ensure that the class can’t be extended.”**
+  * **“Make all fields final.”**
+  * **“Make all fields private.”**
+    * “While it is technically permissible for immutable classes to have public final fields containing primitive values or references to immutable objects, it is not recommended because it precludes changing the internal representation in a later release (Items 15 and 16).”
+
+  * **“Ensure exclusive access to any mutable components.”**
+    * “Make *defensive copies* (Item 50) in constructors, accessors, and `readObject` methods (Item 88).”
+* **“Immutable objects are simple.”**
+  * “Mutable objects, on the other hand, can have arbitrarily complex state spaces. If the documentation does not provide a precise description of the state transitions performed by mutator methods, it can be difficult or impossible to use a mutable class reliably.”
+
+* **“Immutable objects are inherently thread-safe; they require no synchronization.”**
+  * **“Immutable objects can be shared freely.”**
+  * “An immutable class can provide static factories (Item 1) that cache frequently requested instances to avoid creating new instances when existing ones would do.”
+  * “A consequence of the fact that immutable objects can be shared freely is that you never have to make *defensive copies* of them (Item 50).”
+    * “Therefore, you need not and should not provide a `clone` method or *copy constructor* (Item 13) on an immutable class.”
+* **“Not only can you share immutable objects, but they can share their internals.”**
+  * “**Immutable objects make great building blocks for other objects**, whether mutable or immutable.”
+* **“Immutable objects provide failure atomicity for free (Item 76).”**
+  * “Their state never changes, so there is no possibility of a temporary inconsistency.”
+* **“The major disadvantage of immutable classes is that they require a separate object for each distinct value.”**
+  * “Creating these objects can be costly, especially if they are large.”
+  * “The performance problem is magnified if you perform a multistep operation that generates a new object at every step, eventually discarding all objects except the final result. There are two approaches to coping with this problem.”
+    * “The first is to guess which multistep operations will be commonly required and to provide them as primitives.”
+    * “If not applicable, then your best bet is to provide a public mutable companion class.”
+* “Instead of making an immutable class final, you can make all of its constructors private or package-private and add public static factories in place of the public constructors (Item 1).”
+
+```java
+// Immutable class with static factories instead of constructors
+public class Complex {
+    private final double re;
+    private final double im;
+
+    private Complex(double re, double im) {
+        this.re = re;
+        this.im = im;
+    }
+
+    public static Complex valueOf(double re, double im) {
+        return new Complex(re, im);
+    }
+
+    ... // Remainder unchanged
+}
+```
+
+* “However, some immutable classes have one or more nonfinal fields in which they cache the results of expensive computations the first time they are needed. If the same value is requested again, the cached value is returned, saving the cost of recalculation. This trick works precisely because the object is immutable, which guarantees that the computation would yield the same result if it were repeated.”
+* “One caveat should be added concerning serializability. If you choose to have your immutable class implement `Serializable` and it contains one or more fields that refer to mutable objects, you must provide an explicit `readObject` or `readResolve` method, or use the `ObjectOutputStream.writeUnshared` and `ObjectInputStream.readUnshared` methods, even if the default serialized form is acceptable. Otherwise an attacker could create a mutable instance of your class.”
+* **“Classes should be immutable unless there’s a very good reason to make them mutable.”**
+* **“If a class cannot be made immutable, limit its mutability as much as possible.”**
+  * “Combining the advice of this item with that of Item 15, your natural inclination should be to **declare every field private final unless there’s a good reason to do otherwise**.”
+* **“Constructors should create fully initialized objects with all of their invariants established.”**
