@@ -100,3 +100,63 @@ private int hashCode; // Automatically initialized to 0
   * “Whether or not you decide to specify the format, **you should clearly document your intentions**.”
   * “Whether or not you specify the format, **provide programmatic access to the information contained in the value returned by `toString`**.”
     * “By failing to provide accessors, you turn the string format into a de facto API, even if you’ve specified that it’s subject to change.”
+
+## Item 13: Override `clone` judiciously
+
+* “The `Cloneable` interface was intended as a *mixin interface* (Item 20) for classes to advertise that they permit cloning. Unfortunately, it fails to serve this purpose.”
+  * **“Its primary flaw is that it lacks a clone method, and `Object`’s `clone` method is protected.”**
+  * “You cannot, without resorting to reflection (Item 65), invoke `clone` on an object merely because it implements `Cloneable`. Even a reflective invocation may fail, because there is no guarantee that the object has an accessible `clone` method.”
+  * “It determines the behavior of `Object`’s protected `clone` implementation: if a class implements `Cloneable`, `Object`’s `clone` method returns a field-by-field copy of the object; otherwise it throws `CloneNotSupportedException`.”
+  
+* **In practice, a class implementing `Cloneable` is expected to provide a properly functioning public `clone` method.”** 
+* “Note that **immutable classes should never provide a `clone` method** because it would merely encourage wasteful copying.”
+
+
+```java
+// Clone method for class with no references to mutable state
+@Override public PhoneNumber clone() {
+    try {
+        return (PhoneNumber) super.clone();
+    } catch (CloneNotSupportedException e) {
+        throw new AssertionError();  // Can't happen
+    }
+}
+```
+
+* “In order for this method to work, the class declaration for `PhoneNumber` would have to be modified to indicate that it implements `Cloneable`.”
+* **“In effect, the `clone` method functions as a constructor; you must ensure that it does no harm to the original object and that it properly establishes invariants on the clone.”**
+  * “Calling `clone` on an array returns an array whose runtime and compile-time types are identical to those of the array being cloned. This is the preferred idiom to duplicate an array.”
+  * “Like serialization, **the `Cloneable` architecture is incompatible with normal use of final fields referring to mutable objects**, except in cases where the mutable objects may be safely shared between an object and its clone.”
+* “`Object`’s clone method is declared to throw `CloneNotSupportedException`, but overriding methods need not. **Public `clone` methods should omit the `throws` clause**, as methods that don’t throw checked exceptions are easier to use (Item 71).”
+
+
+```java
+// clone method for extendable class not supporting Cloneable
+@Override
+protected final Object clone() throws CloneNotSupportedException {
+    throw new CloneNotSupportedException();
+} 
+```
+
+* “If you write a thread-safe class that implements `Cloneable`, remember that its clone method must be properly synchronized, just like any other method (Item 78). `Object`’s `clone` method is not synchronized, so even if its implementation is otherwise satisfactory, you may have to write a synchronized clone method that returns `super.clone()`.”
+* **“To recap, all classes that implement `Cloneable` should override clone with a public method whose return type is the class itself.”**
+  * “This method should first call `super.clone`, then fix any fields that need fixing. Typically, this means copying any mutable objects that comprise the internal “deep structure” of the object and replacing the clone’s references to these objects with references to their copies.”
+  * “While these internal copies can usually be made by calling `clone` recursively, this is not always the best approach. If the class contains only primitive fields or references to immutable objects, then it is likely the case that no fields need to be fixed.”
+    * “There are exceptions to this rule. For example, a field representing a serial number or other unique ID will need to be fixed even if it is primitive or immutable.”
+* **“A better approach to object copying is to provide a *copy constructor* or *copy factory*.”**
+
+```java
+// Copy constructor
+public Yum(Yum yum) { ... };
+```
+
+```java
+// Copy factory
+public static Yum newInstance(Yum yum) { ... };
+```
+
+* “The copy constructor approach and its static factory variant have many advantages over `Cloneable`/`clone`: they don’t rely on a risk-prone extralinguistic object creation mechanism; they don’t demand unenforceable adherence to thinly documented conventions; they don’t conflict with the proper use of final fields; they don’t throw unnecessary checked exceptions; and they don’t require casts.”
+* “Interface-based copy constructors and factories, more properly known as *conversion constructors* and *conversion factories*, allow the client to choose the implementation type of the copy rather than forcing the client to accept the implementation type of the original.”
+  * “For example, suppose you have a `HashSet`, `s`, and you want to copy it as a `TreeSet`. The `clone` method can’t offer this functionality, but it’s easy with a conversion constructor: `new TreeSet<>(s)`.”
+* **“Given all the problems associated with `Cloneable`, new interfaces should not extend it, and new extendable classes should not implement it. While it’s less harmful for final classes to implement `Cloneable`, this should be viewed as a performance optimization, reserved for the rare cases where it is justified (Item 67). As a rule, copy functionality is best provided by constructors or factories. A notable exception to this rule is arrays, which are best copied with the `clone` method.”**
+
