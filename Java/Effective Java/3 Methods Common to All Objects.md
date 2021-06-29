@@ -160,3 +160,67 @@ public static Yum newInstance(Yum yum) { ... };
   * “For example, suppose you have a `HashSet`, `s`, and you want to copy it as a `TreeSet`. The `clone` method can’t offer this functionality, but it’s easy with a conversion constructor: `new TreeSet<>(s)`.”
 * **“Given all the problems associated with `Cloneable`, new interfaces should not extend it, and new extendable classes should not implement it. While it’s less harmful for final classes to implement `Cloneable`, this should be viewed as a performance optimization, reserved for the rare cases where it is justified (Item 67). As a rule, copy functionality is best provided by constructors or factories. A notable exception to this rule is arrays, which are best copied with the `clone` method.”**
 
+## Item 14: Consider implementing `Comparable`
+
+* **“By implementing `Comparable`, a class indicates that its instances have a *natural ordering*."**
+  * “It is similarly easy to search, compute extreme values, and maintain automatically sorted collections of `Comparable` objects.”
+  * “If you are writing a value class with an obvious natural ordering, such as alphabetical order, numerical order, or chronological order, you should implement the `Comparable` interface.”
+
+
+```java
+// Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object. Throws ClassCastException if the specified object’s type prevents it from being compared to this object.
+```
+
+* “There is no way to extend an instantiable class with a new value component while preserving the `compareTo` contract, unless you are willing to forgo the benefits of object-oriented abstraction (Item 10). ”
+  * “If you want to add a value component to a class that implements `Comparable`, don’t extend it; write an unrelated class containing an instance of the first class. Then provide a “view” method that returns the contained instance.”
+
+* “Writing a `compareTo` method is similar to writing an `equals` method, but there are a few key differences.”
+  * “Because the `Comparable` interface is parameterized, the `compareTo` method is statically typed, so you don’t need to type check or cast its argument. If the argument is of the wrong type, the invocation won’t even compile.”
+  * “If the argument is null, the invocation should throw a `NullPointer-Exception`, and it will, as soon as the method attempts to access its members.”
+* “In a `compareTo` method, fields are compared for order rather than equality. To compare object reference fields, invoke the `compareTo` method recursively. If a field does not implement `Comparable` or you need a nonstandard ordering, use a `Comparator` instead.”
+
+
+```java
+// Multiple-field Comparable with primitive fields
+public int compareTo(PhoneNumber pn) {
+    int result = Short.compare(areaCode, pn.areaCode);
+    if (result == 0)  {
+        result = Short.compare(prefix, pn.prefix);
+        if (result == 0)
+            result = Short.compare(lineNum, pn.lineNum);
+    }
+    return result;
+} 
+```
+
+* “In Java 8, the `Comparator` interface was outfitted with a set of *comparator construction methods*, which enable fluent construction of comparators. These comparators can then be used to implement a `compareTo` method, as required by the `Comparable` interface.”
+  * “When using this approach, consider using Java’s *static import* facility so you can refer to static comparator construction methods by their simple names for clarity and brevity. ”
+
+
+```java
+// Comparable with comparator construction methods
+private static final Comparator<PhoneNumber> COMPARATOR =
+        comparingInt((PhoneNumber pn) -> pn.areaCode)
+          .thenComparingInt(pn -> pn.prefix)
+          .thenComparingInt(pn -> pn.lineNum);
+
+public int compareTo(PhoneNumber pn) {
+    return COMPARATOR.compare(this, pn);
+}
+```
+
+```java
+// Comparator based on static compare method
+static Comparator<Object> hashCodeOrder = new Comparator<>() {
+    public int compare(Object o1, Object o2) {
+        return Integer.compare(o1.hashCode(), o2.hashCode());
+    }
+};
+```
+
+```java
+// Comparator based on Comparator construction method
+static Comparator<Object> hashCodeOrder =
+        Comparator.comparingInt(o -> o.hashCode());
+```
+
