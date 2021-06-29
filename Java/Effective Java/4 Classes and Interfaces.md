@@ -29,3 +29,40 @@
   * “A module is a grouping of packages, like a package is a grouping of classes.”
   * “A module may explicitly export some of its packages via *export declarations* in its *module declaration* (which is by convention contained in a source file named module-info.java).”
   * “Using the module system allows you to share classes among packages within a module without making them visible to the entire world.”
+
+
+## Item 16: In public classes, use accessor methods, not public fields
+
+```java
+// Degenerate classes like this should not be public!
+class Point {
+    public double x;
+    public double y;
+}
+```
+
+* “Hard-line object-oriented programmers feel that such classes are anathema and should always be replaced by classes with private fields and public *accessor methods* (getters) and, for mutable classes, *mutators* (setters).”
+
+
+```java
+// Encapsulation of data by accessor methods and mutators
+class Point {
+    private double x;
+    private double y;
+
+    public Point(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double getX() { return x; }
+    public double getY() { return y; }
+
+    public void setX(double x) { this.x = x; }
+    public void setY(double y) { this.y = y; }
+}
+```
+
+* **“If a class is accessible outside its package, provide accessor methods to preserve the flexibility to change the class’s internal representation.”**
+* **“If a class is package-private or is a private nested class, there is nothing inherently wrong with exposing its data fields.”**
+* **“In summary, public classes should never expose mutable fields. It is less harmful, though still questionable, for public classes to expose immutable fields. It is, however, sometimes desirable for package-private or private nested classes to expose fields, whether mutable or immutable.”**
