@@ -6,3 +6,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 1. Introduction](./Effective%20Java/1%20Introduction.md)
   * [Chapter 2. Creating and Destroying Objects](./Effective%20Java/2%20Creating%20and%20Destroying%20Objects.md)
   * [Chapter 3. Methods Common to All Objects](./Effective%20Java/3%20Methods%20Common%20to%20All%20Objects.md)
+  * [Chapter 4. Classes and Interfaces](./Effective%20Java/4%20Classes%20and%20Interfaces.md)
