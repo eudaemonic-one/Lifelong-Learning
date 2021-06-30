@@ -237,3 +237,18 @@ public class ForwardingSet<E> implements Set<E> {
   * “By convention, skeletal implementation classes are called `Abstract`*Interface*, where *Interface* is the name of the interface they implement.”
   * “Because skeletal implementations are designed for inheritance, you should follow all of the design and documentation guidelines in Item 19.”
 * “A minor variant on the skeletal implementation is the *simple implementation*, exemplified by `AbstractMap.SimpleEntry`. A simple implementation is like a skeletal implementation in that it implements an interface and is designed for inheritance, but it differs in that it isn’t abstract: it is the simplest possible working implementation. You can use it as it stands or subclass it as circumstances warrant.”
+
+
+## Item 21: Design interfaces for posterity
+
+* “Prior to Java 8, it was impossible to add methods to interfaces without breaking existing implementations.”
+  * “If you added a new method to an interface, existing implementations would, in general, lack the method, resulting in a compile-time error.”
+  * “In Java 8, the default method construct was added [JLS 9.4], with the intent of allowing the addition of methods to existing interfaces. ”
+  * “But adding new methods to existing interfaces is fraught with risk.”
+* “The declaration for a default method includes a *default implementation* that is used by all classes that implement the interface but do not implement the default method.”
+  * “Default methods are “injected” into existing implementations without the knowledge or consent of their implementors.”
+  * **“It is not always possible to write a default method that maintains all invariants of every conceivable implementation.”**
+* **“In the presence of default methods, existing implementations of an interface may compile without error or warning but fail at runtime.”**
+* “It is also worth noting that default methods were not designed to support removing methods from interfaces or changing the signatures of existing methods. Neither of these interface changes is possible without breaking existing clients.”
+* “The moral is clear. Even though default methods are now a part of the Java platform, **it is still of the utmost importance to design interfaces with great care**.”
+* **“While it may be possible to correct some interface flaws after an interface is released, you cannot count on it.”**
