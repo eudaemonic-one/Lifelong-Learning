@@ -60,3 +60,41 @@ if (o instanceof Set) {       // Raw type
 
 * **“In summary, using raw types can lead to exceptions at runtime, so don’t use them. They are provided only for compatibility and interoperability with legacy code that predates the introduction of generics. As a quick review, `Set<Object>` is a parameterized type representing a set that can contain objects of any type, `Set<?>` is a wildcard type representing a set that can contain only objects of some unknown type, and `Set` is a raw type, which opts out of the generic type system. The first two are safe, and the last is not.”**
 
+## Item 27: Eliminate unchecked warnings
+
+* “When you program with generics, you will see many compiler warnings: unchecked cast warnings, unchecked method invocation warnings, unchecked parameterized vararg type warnings, and unchecked conversion warnings.”
+
+```java
+Set<Lark> exaltation = new HashSet();
+
+Venery.java:4: warning: [unchecked] unchecked conversion
+        Set<Lark> exaltation = new HashSet();
+                               ^
+  required: Set<Lark>
+  found:    HashSet
+```
+
+* “You can then make the indicated correction, causing the warning to disappear. Note that you don’t actually have to specify the type parameter, merely to indicate that it’s present with the diamond operator (<>), introduced in Java 7.”
+* **“Eliminate every unchecked warning that you can.”**
+  * “If you eliminate all warnings, you are assured that your code is typesafe, which is a very good thing. It means that you won’t get a `ClassCastException` at runtime, and it increases your confidence that your program will behave as you intended.”
+* **“If you can’t eliminate a warning, but you can prove that the code that provoked the warning is typesafe, then (and only then) suppress the warning with an `@SuppressWarnings("unchecked")` annotation.”**
+  * **“Always use the `SuppressWarnings` annotation on the smallest scope possible.”**
+  * **“Every time you use a `@SuppressWarnings("unchecked")` annotation, add a comment saying why it is safe to do so.”**
+
+```java
+// Adding local variable to reduce scope of @SuppressWarnings
+public <T> T[] toArray(T[] a) {
+    if (a.length < size) {
+        // This cast is correct because the array we're creating
+        // is of the same type as the one passed in, which is T[].
+        @SuppressWarnings("unchecked") T[] result =
+            (T[]) Arrays.copyOf(elements, size, a.getClass());
+        return result;
+    }
+    System.arraycopy(elements, 0, a, 0, size);
+    if (a.length > size)
+        a[size] = null;
+    return a;
+}
+```
+
