@@ -256,3 +256,71 @@ public static <E extends Comparable<E>> E max(Collection<E> c);
 
 * “Recursive type bounds can get much more complex, but luckily they rarely do. If you understand this idiom, its wildcard variant (Item 31), and the *simulated self-type* idiom (Item 2), you’ll be able to deal with most of the recursive type bounds you encounter in practice.”
 * **“In summary, generic methods, like generic types, are safer and easier to use than methods requiring their clients to put explicit casts on input parameters and return values. Like types, you should make sure that your methods can be used without casts, which often means making them generic. And like types, you should generify existing methods whose use requires casts. This makes life easier for new users without breaking existing clients (Item 26).”**
+
+## Item 31: Use bounded wildcards to increase API flexibility
+
+* “The language provides a special kind of parameterized type call a *bounded wildcard type* to deal with situations like this”
+
+
+```java
+// Wildcard type for a parameter that serves as an E producer
+public void pushAll(Iterable<? extends E> src) {
+    for (E e : src)
+        push(e);
+}
+```
+
+```java
+// Wildcard type for parameter that serves as an E consumer
+public void popAll(Collection<? super E> dst) {
+    while (!isEmpty())
+        dst.add(pop());
+}
+```
+
+* **“For maximum flexibility, use wildcard types on input parameters that represent producers or consumers.”**
+* “In other words, if a parameterized type represents a `T` producer, use `<? extends T>`; if it represents a `T` consumer, use `<? super T>`.”
+* **“Do not use bounded wildcard types as return types.”**
+* **“If the user of a class has to think about wildcard types, there is probably something wrong with its API.”**
+* “Comparables are always consumers, so you should generally **use `Comparable<? super T>` in preference to `Comparable<T>`**. The same is true of comparators; therefore, you should generally **use `Comparator<? super T>` in preference to `Comparator<T>`**.”
+* “There is a duality between type parameters and wildcards, and many methods can be declared using one or the other. ”
+
+
+```java
+// Two possible declarations for the swap method
+public static <E> void swap(List<E> list, int i, int j);
+public static void swap(List<?> list, int i, int j);
+```
+
+* “Which of these two declarations is preferable, and why? In a public API, the second is better because it’s simpler. You pass in a list—any list—and the method swaps the indexed elements. There is no type parameter to worry about.”
+* **“As a rule, if a type parameter appears only once in a method declaration, replace it with a wildcard.”**
+* “If it’s an unbounded type parameter, replace it with an unbounded wildcard; if it’s a bounded type parameter, replace it with a bounded wildcard.”
+* “There’s one problem with the second declaration for `swap`. ”
+
+```java
+public static void swap(List<?> list, int i, int j) {
+    list.set(i, list.set(j, list.get(i)));
+}
+
+Swap.java:5: error: incompatible types: Object cannot be
+converted to CAP#1
+        list.set(i, list.set(j, list.get(i)));
+                                        ^
+  where CAP#1 is a fresh type-variable:
+    CAP#1 extends Object from capture of ?
+```
+
+* “The problem is that the type of `list` is `List<?>`, and you can’t put any value except null into a `List<?>`. Fortunately, there is a way to implement this method without resorting to an unsafe cast or a raw type. The idea is to write a private helper method to *capture* the wildcard type.”
+
+```java
+public static void swap(List<?> list, int i, int j) {
+    swapHelper(list, i, j);
+}
+
+// Private helper method for wildcard capture
+private static <E> void swapHelper(List<E> list, int i, int j) {
+    list.set(i, list.set(j, list.get(i)));
+}
+```
+
+* **“In summary, using wildcard types in your APIs, while tricky, makes the APIs far more flexible. If you write a library that will be widely used, the proper use of wildcard types should be considered mandatory. Remember the basic rule: producer-`extends`, consumer-`super` (PECS). Also remember that all comparables and comparators are consumers.”**
