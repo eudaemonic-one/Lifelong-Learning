@@ -124,3 +124,67 @@ ol.add("I don't fit in");
 * “**When you get a generic array creation error or an unchecked cast warning on a cast to an array type, the best solution is often to use the collection type `List<E>` in preference to the array type `E[]`.** You might sacrifice some conciseness or performance, but in exchange you get better type safety and interoperability.”
 
 
+## Item 29: Favor generic types
+
+```java
+// Object-based collection - a prime candidate for generics
+public class Stack {
+    private Object[] elements;
+    private int size = 0;
+    private static final int DEFAULT_INITIAL_CAPACITY = 16;
+
+    public Stack() {
+        elements = new Object[DEFAULT_INITIAL_CAPACITY];
+    }
+
+    public void push(Object e) {
+        ensureCapacity();
+        elements[size++] = e;
+    }
+
+    public Object pop() {
+        if (size == 0)
+            throw new EmptyStackException();
+        Object result = elements[--size];
+        elements[size] = null; // Eliminate obsolete reference
+        return result;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    private void ensureCapacity() {
+        if (elements.length == size)
+            elements = Arrays.copyOf(elements, 2 * size + 1);
+    }
+} 
+```
+
+* “This class should have been parameterized to begin with, but since it wasn’t, we can generify it after the fact. In other words, we can parameterize it without harming clients of the original non-parameterized version.”
+
+* “As explained in Item 28, you can’t create an array of a non-reifiable type, such as `E`. This problem arises every time you write a generic type that is backed by an array.”
+
+```java
+Stack.java:8: warning: [unchecked] unchecked cast
+found: Object[], required: E[]
+        elements = (E[]) new Object[DEFAULT_INITIAL_CAPACITY];
+                       ^
+```
+
+* “The compiler may not be able to prove that your program is typesafe, but you can. You must convince yourself that the unchecked cast will not compromise the type safety of the program.”
+* “Once you’ve proved that an unchecked cast is safe, suppress the warning in as narrow a scope as possible (Item 27).”
+
+
+```java
+// The elements array will contain only E instances from push(E).
+// This is sufficient to ensure type safety, but the runtime
+// type of the array won't be E[]; it will always be Object[]!
+@SuppressWarnings("unchecked")
+public Stack() {
+    elements = (E[]) new Object[DEFAULT_INITIAL_CAPACITY];
+}
+```
+
+* **“In summary, generic types are safer and easier to use than types that require casts in client code. When you design new types, make sure that they can be used without such casts. This will often mean making the types generic. If you have any existing types that should be generic but aren’t, generify them. This will make life easier for new users of these types without breaking existing clients (Item 26).”**
+
