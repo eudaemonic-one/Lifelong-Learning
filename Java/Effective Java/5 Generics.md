@@ -357,3 +357,41 @@ static <T> T[] toArray(T... args) {
   * “The advantage of this approach is that the compiler can prove that the method is typesafe. You don’t have to vouch for its safety with a `SafeVarargs` annotation, and you don’t have worry that you might have erred in determining that it was safe. ”
   * “The main disadvantage is that the client code is a bit more verbose and may be a bit slower.”
 * **“In summary, varargs and generics do not interact well because the varargs facility is a leaky abstraction built atop arrays, and arrays have different type rules from generics. Though generic varargs parameters are not typesafe, they are legal. If you choose to write a method with a generic (or parameterized) varargs parameter, first ensure that the method is typesafe, and then annotate it with `@SafeVarargs` so it is not unpleasant to use.”**
+
+## Item 33: Consider typesafe heterogeneous containers
+
+* “Common uses of generics include collections, such as `Set<E>` and `Map<K,V>`, and single-element containers, such as `ThreadLocal<T>` and `AtomicReference<T>`. In all of these uses, it is the container that is parameterized. This limits you to a fixed number of type parameters per container.”
+* “When a class literal is passed among methods to communicate both compile-time and runtime type information, it is called a *type token* [Bracha04].”
+
+```java
+// Typesafe heterogeneous container pattern - API
+public class Favorites {
+    public <T> void putFavorite(Class<T> type, T instance);
+    public <T> T getFavorite(Class<T> type);
+}
+```
+
+```java
+// Typesafe heterogeneous container pattern - implementation
+public class Favorites {
+    private Map<Class<?>, Object> favorites = new HashMap<>();
+
+    public <T> void putFavorite(Class<T> type, T instance) {
+        favorites.put(Objects.requireNonNull(type), instance);
+    }
+
+    public <T> T getFavorite(Class<T> type) {
+        return type.cast(favorites.get(type));
+    }
+}
+```
+
+```java
+// Achieving runtime type safety with a dynamic cast
+public <T> void putFavorite(Class<T> type, T instance) {
+    favorites.put(type, type.cast(instance));
+}
+```
+
+* “The type tokens used by `Favorites` are unbounded: `getFavorite` and `put`-`Favorite` accept any `Class` object. Sometimes you may need to limit the types that can be passed to a method. This can be achieved with a bounded type token, which is simply a type token that places a bound on what type can be represented, using a bounded type parameter (Item 30) or a bounded wildcard (Item 31).”
+* **“In summary, the normal use of generics, exemplified by the collections APIs, restricts you to a fixed number of type parameters per container. You can get around this restriction by placing the type parameter on the key rather than the container. You can use `Class` objects as keys for such typesafe heterogeneous containers. A `Class` object used in this fashion is called a type token. You can also use a custom key type. For example, you could have a `DatabaseRow` type representing a database row (the container), and a generic type `Column<T>` as its key.”**
