@@ -324,3 +324,36 @@ private static <E> void swapHelper(List<E> list, int i, int j) {
 ```
 
 * **“In summary, using wildcard types in your APIs, while tricky, makes the APIs far more flexible. If you write a library that will be widely used, the proper use of wildcard types should be considered mandatory. Remember the basic rule: producer-`extends`, consumer-`super` (PECS). Also remember that all comparables and comparators are consumers.”**
+
+## Item 32: Combine generics and varargs judiciously
+
+* “The purpose of varargs is to allow clients to pass a variable number of arguments to a method, but it is a leaky abstraction: when you invoke a varargs method, an array is created to hold the varargs parameters; that array, which should be an implementation detail, is visible.”
+* “If a method declares its varargs parameter to be of a non-reifiable type, the compiler generates a warning on the declaration. If the method is invoked on varargs parameters whose inferred type is non-reifiable, the compiler generates a warning on the invocation too.”
+
+```java
+warning: [unchecked] Possible heap pollution from
+    parameterized vararg type List<String>
+```
+
+* “*Heap pollution* occurs when a variable of a parameterized type refers to an object that is not of that type [JLS, 4.12.2]. It can cause the compiler’s automatically generated casts to fail, violating the fundamental guarantee of the generic type system.”
+* **“It is unsafe to store a value in a generic varargs array parameter.”**
+* “In Java 7, the `SafeVarargs` annotation was added to the platform, to allow the author of a method with a generic varargs parameter to suppress client warnings automatically.”
+  * **“In essence, the `SafeVarargs` annotation constitutes a promise by the author of a method that it is typesafe.”**
+  * “Recall that a generic array is created when the method is invoked, to hold the varargs parameters. If the method doesn’t store anything into the array (which would overwrite the parameters) and doesn’t allow a reference to the array to escape (which would enable untrusted code to access the array), then it’s safe.”
+
+
+```java
+// UNSAFE - Exposes a reference to its generic parameter array!
+static <T> T[] toArray(T... args) {
+    return args;
+}
+```
+
+* “**It is unsafe to give another method access to a generic varargs parameter array**, with two exceptions: it is safe to pass the array to another varargs method that is correctly annotated with `@SafeVarargs`, and it is safe to pass the array to a non-varargs method that merely computes some function of the contents of the array.”
+* “**Use `@SafeVarargs` on every method with a varargs parameter of a generic or parameterized type**, so its users won’t be burdened by needless and confusing compiler warnings.”
+  * “This implies that you should never write unsafe varargs methods like `dangerous` or `toArray`. Every time the compiler warns you of possible heap pollution from a generic varargs parameter in a method you control, check that the method is safe.”
+  * “Note that the `SafeVarargs` annotation is legal only on methods that can’t be overridden, because it is impossible to guarantee that every possible overriding method will be safe.”
+* “An alternative to using the `SafeVarargs` annotation is to take the advice of Item 28 and replace the varargs parameter (which is an array in disguise) with a `List` parameter.”
+  * “The advantage of this approach is that the compiler can prove that the method is typesafe. You don’t have to vouch for its safety with a `SafeVarargs` annotation, and you don’t have worry that you might have erred in determining that it was safe. ”
+  * “The main disadvantage is that the client code is a bit more verbose and may be a bit slower.”
+* **“In summary, varargs and generics do not interact well because the varargs facility is a leaky abstraction built atop arrays, and arrays have different type rules from generics. Though generic varargs parameters are not typesafe, they are legal. If you choose to write a method with a generic (or parameterized) varargs parameter, first ensure that the method is typesafe, and then annotate it with `@SafeVarargs` so it is not unpleasant to use.”**
