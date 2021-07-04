@@ -243,3 +243,140 @@ text.applyStyles(EnumSet.of(Style.BOLD, Style.ITALIC));
 
 * “In summary, **just because an enumerated type will be used in sets, there is no reason to represent it with bit fields**.”
 * “The `EnumSet` class combines the conciseness and performance of bit fields with all the many advantages of enum types described in Item 34. The one real disadvantage of `EnumSet` is that it is not, as of Java 9, possible to create an immutable `EnumSet`, but this will likely be remedied in an upcoming release. In the meantime, you can wrap an `EnumSet` with `Collections.unmodifiableSet`, but conciseness and performance will suffer.”
+
+
+## Item 37: Use `EnumMap` instead of ordinal indexing
+
+```java
+class Plant {
+    enum LifeCycle { ANNUAL, PERENNIAL, BIENNIAL }
+
+    final String name;
+    final LifeCycle lifeCycle;
+    
+    Plant(String name, LifeCycle lifeCycle) {
+        this.name = name;
+        this.lifeCycle = lifeCycle;
+    }
+
+    @Override public String toString() {
+        return name;
+    }
+}
+```
+
+* “Now suppose you have an array of plants representing a garden, and you want to list these plants organized by life cycle (annual, perennial, or biennial).”
+  * “To do this, you construct three sets, one for each life cycle, and iterate through the garden, placing each plant in the appropriate set.”
+
+
+```java
+// Using ordinal() to index into an array - DON'T DO THIS!
+Set<Plant>[] plantsByLifeCycle =
+    (Set<Plant>[]) new Set[Plant.LifeCycle.values().length];
+for (int i = 0; i < plantsByLifeCycle.length; i++)
+    plantsByLifeCycle[i] = new HashSet<>();
+
+for (Plant p : garden)
+    plantsByLifeCycle[p.lifeCycle.ordinal()].add(p);
+
+// Print the results
+for (int i = 0; i < plantsByLifeCycle.length; i++) {
+    System.out.printf("%s: %s%n",
+        Plant.LifeCycle.values()[i], plantsByLifeCycle[i]);
+}
+```
+
+* “This technique works, but it is fraught with problems. ”
+  * “Because arrays are not compatible with generics (Item 28), the program requires an unchecked cast and will not compile cleanly.”
+  * “Because the array does not know what its index represents, you have to label the output manually.”
+  * “But the most serious problem with this technique is that when you access an array that is indexed by an enum’s ordinal, it is your responsibility to use the correct `int` value; `ints` do not provide the type safety of enums. If you use the wrong value, the program will silently do the wrong thing or—if you’re lucky—throw an `ArrayIndexOutOfBoundsException`.”
+* “There is a much better way to achieve the same effect. The array is effectively serving as a map from the enum to a value, so you might as well use a `Map`. More specifically, there is a very fast `Map` implementation designed for use with enum keys, known as `java.util.EnumMap`.”
+
+```java
+// Using an EnumMap to associate data with an enum
+Map<Plant.LifeCycle, Set<Plant>>  plantsByLifeCycle =
+    new EnumMap<>(Plant.LifeCycle.class);
+for (Plant.LifeCycle lc : Plant.LifeCycle.values())
+    plantsByLifeCycle.put(lc, new HashSet<>());
+for (Plant p : garden)
+    plantsByLifeCycle.get(p.lifeCycle).add(p);
+System.out.println(plantsByLifeCycle);
+```
+
+* “Note that the `EnumMap` constructor takes the `Class` object of the key type: this is a *bounded type token*, which provides runtime generic type information (Item 33).”
+
+
+```java
+// Using a stream and an EnumMap to associate data with an enum
+System.out.println(Arrays.stream(garden)
+        .collect(groupingBy(p -> p.lifeCycle,
+            () -> new EnumMap<>(LifeCycle.class), toSet())));
+```
+
+* “You may see an array of arrays indexed (twice!) by ordinals used to represent a mapping from two enum values.”
+
+```java
+// Using ordinal() to index array of arrays - DON'T DO THIS!
+public enum Phase {
+    SOLID, LIQUID, GAS;
+
+    public enum Transition {
+        MELT, FREEZE, BOIL, CONDENSE, SUBLIME, DEPOSIT;
+
+        // Rows indexed by from-ordinal, cols by to-ordinal
+        private static final Transition[][] TRANSITIONS = {
+            { null,    MELT,     SUBLIME },
+            { FREEZE,  null,     BOIL    },
+            { DEPOSIT, CONDENSE, null    }
+        };
+
+        // Returns the phase transition from one phase to another
+        public static Transition from(Phase from, Phase to) {
+            return TRANSITIONS[from.ordinal()][to.ordinal()];
+        }
+    }
+}
+```
+
+* “This program works and may even appear elegant, but appearances can be deceiving.”
+  * “the compiler has no way of knowing the relationship between ordinals and array indices.”
+  * “If you make a mistake in the transition table or forget to update it when you modify the `Phase` or `Phase.Transition` enum type, your program will fail at runtime. The failure may be an `ArrayIndexOutOfBoundsException`, a `NullPointerException`, or (worse) silent erroneous behavior.”
+  * “And the size of the table is quadratic in the number of phases, even if the number of non-null entries is smaller.”
+* “Again, you can do much better with `EnumMap`. Because each phase transition is indexed by a *pair* of phase enums, you are best off representing the relationship as a map from one enum (the “from” phase) to a map from the second enum (the “to” phase) to the result (the phase transition).”
+
+
+```java
+// Using a nested EnumMap to associate data with enum pairs
+public enum Phase {
+   SOLID, LIQUID, GAS;
+
+   public enum Transition {
+      MELT(SOLID, LIQUID), FREEZE(LIQUID, SOLID),
+      BOIL(LIQUID, GAS),   CONDENSE(GAS, LIQUID),
+      SUBLIME(SOLID, GAS), DEPOSIT(GAS, SOLID);
+
+      private final Phase from;
+      private final Phase to;
+
+      Transition(Phase from, Phase to) {
+         this.from = from;
+         this.to = to;
+      }
+
+      // Initialize the phase transition map
+      private static final Map<Phase, Map<Phase, Transition>>
+        m = Stream.of(values()).collect(groupingBy(t -> t.from,
+         () -> new EnumMap<>(Phase.class),
+         toMap(t -> t.to, t -> t,
+            (x, y) -> y, () -> new EnumMap<>(Phase.class))));
+
+      public static Transition from(Phase from, Phase to) {
+         return m.get(from).get(to);
+      }
+   }
+}
+```
+
+* “In summary, **it is rarely appropriate to use ordinals to index into arrays: use `EnumMap` instead**. If the relationship you are representing is multidimensional, use `EnumMap<..., EnumMap<...>>`. This is a special case of the general principle that application programmers should rarely, if ever, use Enum.ordinal (Item 35).”
+
+
