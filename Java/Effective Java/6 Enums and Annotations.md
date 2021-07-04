@@ -380,3 +380,77 @@ public enum Phase {
 * “In summary, **it is rarely appropriate to use ordinals to index into arrays: use `EnumMap` instead**. If the relationship you are representing is multidimensional, use `EnumMap<..., EnumMap<...>>`. This is a special case of the general principle that application programmers should rarely, if ever, use Enum.ordinal (Item 35).”
 
 
+## Item 38: Emulate extensible enums with interfaces
+
+* “For the most part, extensibility of enums turns out to be a bad idea. It is confusing that elements of an extension type are instances of the base type and not vice versa. There is no good way to enumerate over all of the elements of a base type and its extensions. Finally, extensibility would complicate many aspects of the design and implementation.”
+* “That said, there is at least one compelling use case for extensible enumerated types, which is *operation codes*, also known as *opcodes*.”
+  * “An opcode is an enumerated type whose elements represent operations on some machine, such as the `Operation` type in Item 34, which represents the functions on a simple calculator.”
+  * “Sometimes it is desirable to let the users of an API provide their own operations, effectively extending the set of operations provided by the API.”
+
+
+```java
+// Emulated extensible enum using an interface
+public interface Operation {
+    double apply(double x, double y);
+}
+
+public enum BasicOperation implements Operation {
+    PLUS("+") {
+        public double apply(double x, double y) { return x + y; }
+    },
+    MINUS("-") {
+        public double apply(double x, double y) { return x - y; }
+    },
+    TIMES("*") {
+        public double apply(double x, double y) { return x * y; }
+    },
+    DIVIDE("/") {
+        public double apply(double x, double y) { return x / y; }
+    };
+    private final String symbol;
+
+    BasicOperation(String symbol) {
+        this.symbol = symbol;
+    }
+
+    @Override public String toString() {
+        return symbol;
+    }
+}
+```
+
+* “While the enum type (`BasicOperation`) is not extensible, the interface type (`Operation`) is, and it is the interface type that is used to represent operations in APIs.”
+* “You can define another enum type that implements this interface and use instances of this new type in place of the base type.”
+
+
+```java
+// Emulated extension enum
+public enum ExtendedOperation implements Operation {
+    EXP("^") {
+        public double apply(double x, double y) {
+            return Math.pow(x, y);
+        }
+    },
+    REMAINDER("%") {
+        public double apply(double x, double y) {
+            return x % y;
+        }
+    };
+
+    private final String symbol;
+
+    ExtendedOperation(String symbol) {
+        this.symbol = symbol;
+    }
+
+    @Override public String toString() {
+        return symbol;
+    }
+}
+```
+
+* “A minor disadvantage of the use of interfaces to emulate extensible enums is that implementations cannot be inherited from one enum type to another.”
+  * “If the implementation code does not rely on any state, it can be placed in the interface, using default implementations (Item 20).”
+  * “If there were a larger amount of shared functionality, you could encapsulate it in a helper class or a static helper method to eliminate the code duplication.”
+* “In summary, **while you cannot write an extensible enum type, you can emulate it by writing an interface to accompany a basic enum type that implements the interface**.”
+  * “This allows clients to write their own enums (or other types) that implement the interface. Instances of these types can then be used wherever instances of the basic enum type can be used, assuming APIs are written in terms of the interface.”
