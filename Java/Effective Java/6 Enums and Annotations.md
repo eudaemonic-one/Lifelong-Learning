@@ -191,3 +191,55 @@ public enum Ensemble {
 * “The `Enum` specification has this to say about `ordinal`: “Most programmers will have no use for this method. It is designed for use by general-purpose enum-based data structures such as `EnumSet` and `EnumMap`.” Unless you are writing code with this character, you are best off avoiding the `ordinal` method entirely.”
 
 
+## Item 36: Use `EnumSet` instead of bit fields
+
+* “If the elements of an enumerated type are used primarily in sets, it is traditional to use the `int` enum pattern (Item 34), assigning a different power of 2 to each constant.”
+
+
+```java
+// Bit field enumeration constants - OBSOLETE!
+public class Text {
+    public static final int STYLE_BOLD          = 1 << 0;  // 1
+    public static final int STYLE_ITALIC        = 1 << 1;  // 2
+    public static final int STYLE_UNDERLINE     = 1 << 2;  // 4
+    public static final int STYLE_STRIKETHROUGH = 1 << 3;  // 8
+
+    // Parameter is bitwise OR of zero or more STYLE_ constants
+    public void applyStyles(int styles) { ... }
+}
+```
+
+* “This representation lets you use the bitwise `OR` operation to combine several constants into a set, known as a *bit field*.”
+
+```java
+text.applyStyles(STYLE_BOLD | STYLE_ITALIC);
+```
+
+* “But bit fields have all the disadvantages of `int` enum constants and more.”
+  * “It is even harder to interpret a bit field than a simple `int` enum constant when it is printed as a number. ”
+  * “There is no easy way to iterate over all of the elements represented by a bit field.”
+  * “Finally, you have to predict the maximum number of bits you’ll ever need at the time you’re writing the API and choose a type for the bit field (typically `int` or `long`) accordingly. Once you’ve picked a type, you can’t exceed its width (32 or 64 bits) without changing the API.”
+* “The `java.util` package provides the `EnumSet` class to efficiently represent sets of values drawn from a single enum type.”
+  * “But internally, each `EnumSet` is represented as a bit vector.”
+
+```java
+// EnumSet - a modern replacement for bit fields
+public class Text {
+    public enum Style { BOLD, ITALIC, UNDERLINE, STRIKETHROUGH }
+
+    // Any Set could be passed in, but EnumSet is clearly best
+    public void applyStyles(Set<Style> styles) { ... }
+}
+```
+
+* “The `EnumSet` class provides a rich set of static factories for easy set creation.”
+
+
+```java
+text.applyStyles(EnumSet.of(Style.BOLD, Style.ITALIC));
+```
+
+* “Note that the `applyStyles` method takes a `Set<Style>` rather than an `EnumSet<Style>`. While it seems likely that all clients would pass an `EnumSet` to the method, it is generally good practice to accept the interface type rather than the implementation type (Item 64). This allows for the possibility of an unusual client to pass in some other `Set` implementation.”
+
+* “In summary, **just because an enumerated type will be used in sets, there is no reason to represent it with bit fields**.”
+* “The `EnumSet` class combines the conciseness and performance of bit fields with all the many advantages of enum types described in Item 34. The one real disadvantage of `EnumSet` is that it is not, as of Java 9, possible to create an immutable `EnumSet`, but this will likely be remedied in an upcoming release. In the meantime, you can wrap an `EnumSet` with `Collections.unmodifiableSet`, but conciseness and performance will suffer.”
