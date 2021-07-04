@@ -8,3 +8,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 3. Methods Common to All Objects](./Effective%20Java/3%20Methods%20Common%20to%20All%20Objects.md)
   * [Chapter 4. Classes and Interfaces](./Effective%20Java/4%20Classes%20and%20Interfaces.md)
   * [Chapter 5. Generics](./Effective%20Java/5%20Generics.md)
+  * [Chapter 6. Enums and Annotations](./Effective%20Java/6%20Enums%20and%20Annotations.md)
