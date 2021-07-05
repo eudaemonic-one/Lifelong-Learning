@@ -682,3 +682,14 @@ if (m.isAnnotationPresent(ExceptionTest.class)
 
 * “If you write a tool that requires programmers to add information to source code, define appropriate annotation types. **There is simply no reason to use naming patterns when you can use annotations instead.**”
 * “That said, with the exception of toolsmiths, most programmers will have no need to define annotation types. But **all programmers should use the predefined annotation types that Java provides** (Items 40, 27).”
+
+
+## Item 40: Consistently use the `Override` annotation
+
+* “For the typical programmer, the most important of these is `@Override`. This annotation can be used only on method declarations, and it indicates that the annotated method declaration overrides a declaration in a supertype. If you consistently use this annotation, it will protect you from a large class of nefarious bugs.”
+* **“Use the `Override` annotation on every method declaration that you believe to override a superclass declaration.”**
+* “The `Override` annotation may be used on method declarations that override declarations from interfaces as well as classes.”
+  * “With the advent of default methods, it is good practice to use `Override` on concrete implementations of interface methods to ensure that the signature is correct.”
+  * “If you know that an interface does not have default methods, you may choose to omit `Override` annotations on concrete implementations of interface methods to reduce clutter.”
+* “In an abstract class or an interface, however, it is worth annotating all methods that you believe to override superclass or superinterface methods, whether concrete or abstract.”
+* “In summary, the compiler can protect you from a great many errors if you use the `Override` annotation on every method declaration that you believe to override a supertype declaration, with one exception. In concrete classes, you need not annotate methods that you believe to override abstract method declarations (though it is not harmful to do so).”
