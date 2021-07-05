@@ -693,3 +693,30 @@ if (m.isAnnotationPresent(ExceptionTest.class)
   * “If you know that an interface does not have default methods, you may choose to omit `Override` annotations on concrete implementations of interface methods to reduce clutter.”
 * “In an abstract class or an interface, however, it is worth annotating all methods that you believe to override superclass or superinterface methods, whether concrete or abstract.”
 * “In summary, the compiler can protect you from a great many errors if you use the `Override` annotation on every method declaration that you believe to override a supertype declaration, with one exception. In concrete classes, you need not annotate methods that you believe to override abstract method declarations (though it is not harmful to do so).”
+
+
+## Item 41: Use marker interfaces to define types
+
+* “A *marker interface* is an interface that contains no method declarations but merely designates (or “marks”) a class that implements the interface as having some property.”
+
+  * “For example, consider the `Serializable` interface (Chapter 12). By implementing this interface, a class indicates that its instances can be written to an `ObjectOutputStream` (or “serialized”).”
+
+* “Marker interfaces have two advantages over marker annotations.”
+
+  * “First and foremost, **marker interfaces define a type that is implemented by instances of the marked class; marker annotations do not**.”
+
+    * “The existence of a marker interface type allows you to catch errors at compile time that you couldn’t catch until runtime if you used a marker annotation.”
+
+      “Compile-time error detection is the intent of marker interfaces, but unfortunately, the `ObjectOutputStream.write` API does not take advantage of the Serializable interface: its argument is declared to be of type `Object`, so attempts to serialize an unserializable object won’t fail until runtime.”
+
+  * **“Another advantage of marker interfaces over marker annotations is that they can be targeted more precisely.”**
+
+* “**The chief advantage of marker annotations over marker interfaces is that they are part of the larger annotation facility.** Therefore, marker annotations allow for consistency in annotation-based frameworks.”
+
+* “So when should you use a marker annotation and when should you use a marker interface? Clearly you must use an annotation if the marker applies to any program element other than a class or interface, because only classes and interfaces can be made to implement or extend an interface.”
+
+* “If the marker applies only to classes and interfaces, ask yourself the question “Might I want to write one or more methods that accept only objects that have this marking?” If so, you should use a marker interface in preference to an annotation.”
+
+* “If, additionally, the marking is part of a framework that makes heavy use of annotations, then a marker annotation is the clear choice.”
+
+* **“If you find yourself writing a marker annotation type whose target is `ElementType.TYPE`, take the time to figure out whether it really should be an annotation type or whether a marker interface would be more appropriate.”**
