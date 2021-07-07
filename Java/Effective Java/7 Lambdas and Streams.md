@@ -78,3 +78,30 @@ public enum Operation {
   * “Therefore, **you should rarely, if ever, serialize a lambda** (or an anonymous class instance).”
   * “If you have a function object that you want to make serializable, such as a `Comparator`, use an instance of a private static nested class (Item 24).”
 * **“Don’t use anonymous classes for function objects unless you have to create instances of types that aren’t functional interfaces.”**
+
+## Item 43: Prefer method references to lambdas
+
+* **“Java provides a way to generate function objects even more succinct than lambdas: *method references*.”**
+
+```java
+map.merge(key, 1, (count, incr) -> count + incr);
+```
+
+* “Note that this code uses the `merge` method, which was added to the `Map` interface in Java 8. If no mapping is present for the given key, the method simply inserts the given value; if a mapping is already present, `merge` applies the given function to the current value and the given value and overwrites the current value with the result. This code represents a typical use case for the `merge` method.”
+* “The code reads nicely, but there’s still some boilerplate. The parameters `count` and `incr` don’t add much value, and they take up a fair amount of space. Really, all the lambda tells you is that the function returns the sum of its two arguments. As of Java 8, `Integer` (and all the other boxed numerical primitive types) provides a static method `sum` that does exactly the same thing.”
+
+```java
+map.merge(key, 1, Integer::sum);
+```
+
+* “The more parameters a method has, the more boilerplate you can eliminate with a method reference. In some lambdas, however, the parameter names you choose provide useful documentation, making the lambda more readable and maintainable than a method reference, even if the lambda is longer.”
+
+| Method Ref Type   | Example                  | Lambda Equivalent                                |
+| ----------------- | ------------------------ | ------------------------------------------------ |
+| Static            | `Integer::parseInt`      | `str -> Integer.parseInt(str)`                   |
+| Bound             | `Instant.now()::isAfter` | `Instant then = Instant.now(); then.isAfter(t);` |
+| Unbound           | `String::toLowerCase`    | `str -> str.toLowerCase()`                       |
+| Class Constructor | `TreeMap<K,V>::new`      | `() -> new TreeMap<K,V>`                         |
+| Array Constructor | `int[]::new`             | `len -> new int[len]`                            |
+
+* “In summary, method references often provide a more succinct alternative to lambdas. **Where method references are shorter and clearer, use them; where they aren’t, stick with lambdas.**”
