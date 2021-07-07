@@ -105,3 +105,54 @@ map.merge(key, 1, Integer::sum);
 | Array Constructor | `int[]::new`             | `len -> new int[len]`                            |
 
 * “In summary, method references often provide a more succinct alternative to lambdas. **Where method references are shorter and clearer, use them; where they aren’t, stick with lambdas.**”
+
+
+## Item 44: Favor the use of standard functional interfaces
+
+* “Now that Java has lambdas, best practices for writing APIs have changed considerably. For example, the *Template Method* pattern [Gamma95], wherein a subclass overrides a primitive method to specialize the behavior of its superclass, is far less attractive. The modern alternative is to provide a static factory or constructor that accepts a function object to achieve the same effect. More generally, you’ll be writing more constructors and methods that take function objects as parameters.”
+
+```java
+// Unnecessary functional interface; use a standard one instead.
+@FunctionalInterface interface EldestEntryRemovalFunction<K,V>{
+    boolean remove(Map<K,V> map, Map.Entry<K,V> eldest);
+}
+```
+
+* “This interface would work fine, but you shouldn’t use it, because you don’t need to declare a new interface for this purpose. The `java.util.function` package provides a large collection of standard functional interfaces for your use.”
+* **“If one of the standard functional interfaces does the job, you should generally use it in preference to a purpose-built functional interface.”**
+* “There are forty-three interfaces in `java.util.Function`. You can’t be expected to remember them all, but if you remember six basic interfaces, you can derive the rest when you need them.”
+  * “The `Operator` interfaces represent functions whose result and argument types are the same.”
+  * “The `Predicate` interface represents a function that takes an argument and returns a boolean.”
+  * “The `Function` interface represents a function whose argument and return types differ.”
+  * “The `Supplier` interface represents a function that takes no arguments and returns (or “supplies”) a value. ”
+  * “Finally, `Consumer` represents a function that takes an argument and returns nothing, essentially consuming its argument.”
+
+| Interface           | Function Signature    | Example               |
+| ------------------- | --------------------- | --------------------- |
+| `UnaryOperator<T>`  | `T apply(T t)`        | `String::toLowerCase` |
+| `BinaryOperator<T>` | `T apply(T t1, T t2)` | `BigInteger::add`     |
+| `Predicate<T>`      | `boolean test(T t)`   | `Collection::isEmpty` |
+| `Function<T,R>`     | `R apply(T t)`        | `Arrays::asList`      |
+| `Supplier<T>`       | `T get()`             | `Instant::now`        |
+| `Consumer<T>`       | `void accept(T t)`    | `System.out::println` |
+
+* “There are also three variants of each of the six basic interfaces to operate on the primitive types `int`, `long`, and `double`. Their names are derived from the basic interfaces by prefixing them with a primitive type. So, for example, a predicate that takes an `int` is an `IntPredicate`, and a binary operator that takes two `long` values and returns a `long` is a `LongBinaryOperator`. ”
+* “There are nine additional variants of the `Function` interface, for use when the result type is primitive. The source and result types always differ, because a function from a type to itself is a `UnaryOperator`. If both the source and result types are primitive, prefix `Function` with `SrcToResult`, for example `LongToIntFunction (six variants)`.”
+* “There are two-argument versions of the three basic functional interfaces for which it makes sense to have them: `BiPredicate<T,U>`, `BiFunction<T,U,R>`, and `BiConsumer<T,U>`. ”
+* “There are also `BiFunction` variants returning the three relevant primitive types: `ToIntBiFunction<T,U>`, `ToLongBiFunction<T,U>`, and `ToDoubleBiFunction<T,U>`.”
+* “There are two-argument variants of `Consumer` that take one object reference and one primitive type: `ObjDoubleConsumer<T>`, `ObjIntConsumer<T>`, and `ObjLongConsumer<T>`.”
+
+* “Most of the standard functional interfaces exist only to provide support for primitive types. **Don’t be tempted to use basic functional interfaces with boxed primitives instead of primitive functional interfaces.**”
+* “Finally, there is the `BooleanSupplier` interface, a variant of `Supplier` that returns `boolean` values. This is the only explicit mention of the `boolean` type in any of the standard functional interface names, but `boolean` return values are supported via `Predicate` and its four variant forms.”
+* “Consider our old friend `Comparator<T>`, which is structurally identical to the `ToIntBiFunction<T,T>` interface. Even if the latter interface had existed when the former was added to the libraries, it would have been wrong to use it. There are several reasons that `Comparator` deserves its own interface. ”
+  * “First, its name provides excellent documentation every time it is used in an API, and it’s used a lot.”
+  * “Second, the `Comparator` interface has strong requirements on what constitutes a valid instance, which comprise its *general contract*. By implementing the interface, you are pledging to adhere to its contract.”
+  * “Third, the interface is heavily outfitted with useful default methods to transform and combine comparators.”
+* **“You should seriously consider writing a purpose-built functional interface in preference to using a standard one if you need a functional interface that shares one or more of the following characteristics with `Comparator`:”**
+  * “It will be commonly used and could benefit from a descriptive name.”
+  * “It has a strong contract associated with it.”
+  * “It would benefit from custom default methods.”
+* **“Always annotate your functional interfaces with the `@FunctionalInterface` annotation.”**
+  * “It is a statement of programmer intent that serves three purposes: it tells readers of the class and its documentation that the interface was designed to enable lambdas; it keeps you honest because the interface won’t compile unless it has exactly one abstract method; and it prevents maintainers from accidentally adding abstract methods to the interface as it evolves.”
+* **“Do not provide a method with multiple overloadings that take different functional interfaces in the same argument position if it could create a possible ambiguity in the client.”**
+* **“In summary, now that Java has lambdas, it is imperative that you design your APIs with lambdas in mind. Accept functional interface types on input and return them on output. It is generally best to use the standard interfaces provided in `java.util.function.Function`, but keep your eyes open for the relatively rare cases where you would be better off writing your own functional interface.”**
