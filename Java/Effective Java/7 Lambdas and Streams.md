@@ -1,4 +1,4 @@
-# Chapter 7. Lambdas and Streams
+Chapter 7. Lambdas and Streams
 
 ## Item 42: Prefer lambdas to anonymous classes
 
@@ -235,3 +235,120 @@ private static List<Card> newDeck() {
 * “If you’re not sure which version you prefer, the iterative version is probably the safer choice. If you prefer the stream version and you believe that other programmers who will work with the code will share your preference, then you should use it.”
 * “In summary, some tasks are best accomplished with streams, and others with iteration. Many tasks are best accomplished by combining the two approaches. There are no hard and fast rules for choosing which approach to use for a task, but there are some useful heuristics. In many cases, it will be clear which approach to use; in some cases, it won’t.”
 * **“If you’re not sure whether a task is better served by streams or iteration, try both and see which works better.”**
+
+## Item 46: Prefer side-effect-free functions in streams
+
+* “Streams isn’t just an API, it’s a paradigm based on functional programming.”
+* “In order to obtain the expressiveness, speed, and in some cases parallelizability that streams have to offer, you have to adopt the paradigm as well as the API.”
+* **“The most important part of the streams paradigm is to structure your computation as a sequence of transformations where the result of each stage is as close as possible to a *pure function* of the result of the previous stage.”**
+  * “A pure function is one whose result depends only on its input: it does not depend on any mutable state, nor does it update any state.”
+  * “In order to achieve this, any function objects that you pass into stream operations, both intermediate and terminal, should be free of side-effects.”
+
+```java
+// Uses the streams API but not the paradigm--Don't do this!
+Map<String, Long> freq = new HashMap<>();
+try (Stream<String> words = new Scanner(file).tokens()) {
+    words.forEach(word -> {
+        freq.merge(word.toLowerCase(), 1L, Long::sum);
+    });
+}
+```
+
+* “What’s wrong with this code? After all, it uses streams, lambdas, and method references, and gets the right answer. Simply put, it’s not streams code at all; it’s iterative code masquerading as streams code. It derives no benefits from the streams API, and it’s (a bit) longer, harder to read, and less maintainable than the corresponding iterative code. The problem stems from the fact that this code is doing all its work in a terminal `forEach` operation, using a lambda that mutates external state (the frequency table).”
+  * “A `forEach` operation that does anything more than present the result of the computation performed by a stream is a “bad smell in code,” as is a lambda that mutates state.”
+
+```java
+// Proper use of streams to initialize a frequency table
+Map<String, Long> freq;
+try (Stream<String> words = new Scanner(file).tokens()) {
+    freq = words
+        .collect(groupingBy(String::toLowerCase, counting()));
+}
+```
+
+* **“The `forEach` operation should be used only to report the result of a stream computation, not to perform the computation.”**
+  * “Occasionally, it makes sense to use `forEach` for some other purpose, such as adding the results of a stream computation to a preexisting collection.”
+* “The improved code uses a *collector*, which is a new concept that you have to learn in order to use streams.”
+  * “For starters, you can ignore the `Collector` interface and think of a collector as an opaque object that encapsulates a *reduction* strategy.”
+* “The collectors for gathering the elements of a stream into a true Collection are straightforward. There are three such collectors: `toList()`, `toSet()`, and `toCollection(collectionFactory)`.”
+
+
+```java
+// Pipeline to get a top-ten list of words from a frequency table
+List<String> topTen = freq.keySet().stream()
+    .sorted(comparing(freq::get).reversed())
+    .limit(10)
+    .collect(toList());
+```
+
+* “The `comparing` method is a comparator construction method (Item 14) that takes a key extraction function.”
+
+* **“It is customary and wise to statically import all members of `Collectors` because it makes stream pipelines more readable.”**
+* “So what about the other thirty-six methods in `Collectors`? Most of them exist to let you collect streams into maps, which is far more complicated than collecting them into true collections. Each stream element is associated with a *key* and a *value*, and multiple stream elements can be associated with the same key.”
+* “The simplest map collector is `toMap(keyMapper, valueMapper)`, which takes two functions, one of which maps a stream element to a key, the other, to a value.”
+  * “If multiple stream elements map to the same key, the pipeline will terminate with an `IllegalStateException`.”
+
+
+```java
+// Using a toMap collector to make a map from string to enum
+private static final Map<String, Operation> stringToEnum =
+    Stream.of(values()).collect(
+        toMap(Object::toString, e -> e));
+```
+
+* “The more complicated forms of `toMap`, as well as the `groupingBy` method, give you various ways to provide strategies for dealing with such collisions.”
+  * “One way is to provide the `toMap` method with a *merge function* in addition to its key and value mappers.”
+* “The three-argument form of `toMap` is also useful to make a map from a key to a chosen element associated with that key. ”
+
+```java
+// Collector to generate a map from key to chosen element for key
+Map<Artist, Album> topHits = albums.collect(
+   toMap(Album::artist, a->a, maxBy(comparing(Album::sales))));
+```
+
+* “Another use of the three-argument form of `toMap` is to produce a collector that imposes a last-write-wins policy when there are collisions.”
+
+
+```java
+// Collector to impose last-write-wins policy
+toMap(keyMapper, valueMapper, (v1, v2) -> v2)”
+```
+
+* “The third and final version of `toMap` takes a fourth argument, which is a map factory, for use when you want to specify a particular map implementation such as an `EnumMap` or a `TreeMap`.”
+* “There are also variant forms of the first three versions of `toMap`, named `toConcurrentMap`, that run efficiently in parallel and produce `ConcurrentHashMap` instances.”
+* “In addition to the `toMap` method, the `Collectors` API provides the `groupingBy` method, which returns collectors to produce maps that group elements into categories based on a *classifier function*.”
+  * “The classifier function takes an element and returns the category into which it falls. This category serves as the element’s map key.”
+  * “The simplest version of the `groupingBy` method takes only a classifier and returns a map whose values are lists of all the elements in each category.”
+
+
+```java
+words.collect(groupingBy(word -> alphabetize(word)))
+```
+
+* “If you want `groupingBy` to return a collector that produces a map with values other than lists, you can specify a *downstream collector* in addition to a classifier.”
+  * “A downstream collector produces a value from a stream containing all the elements in a category.”
+  * “The simplest use of this parameter is to pass `toSet()`, which results in a map whose values are sets of elements rather than lists.”
+* “Alternatively, you can pass `toCollection(collectionFactory)`, which lets you create the collections into which each category of elements is placed. This gives you the flexibility to choose any collection type you want.”
+* “Another simple use of the two-argument form of `groupingBy` is to pass `counting()` as the downstream collector. This results in a map that associates each category with the number of elements in the category, rather than a collection containing the elements.”
+
+
+```java
+Map<String, Long> freq = words
+        .collect(groupingBy(String::toLowerCase, counting()));
+```
+
+* “The third version of `groupingBy` lets you specify a map factory in addition to a downstream collector. Note that this method violates the standard telescoping argument list pattern: the `mapFactory` parameter precedes, rather than follows, the `downStream` parameter.”
+  * “This version of `groupingBy` gives you control over the containing map as well as the contained collections, so, for example, you can specify a collector that returns a `TreeMap` whose values are `TreeSets`.”
+* “The `groupingByConcurrent` method provides variants of all three overloadings of `groupingBy`. These variants run efficiently in parallel and produce `ConcurrentHashMap` instances. ”
+* “There is also a rarely used relative of `groupingBy` called `partitioningBy`. In lieu of a classifier method, it takes a predicate and returns a map whose key is a `Boolean`.”
+* “The collectors returned by the `counting` method are intended *only* for use as downstream collectors. The same functionality is available directly on `Stream`, via the `count` method, so there is never a reason to say `collect(counting())`. ”
+* “There are fifteen more `Collectors` methods with this property. They include the nine methods whose names begin with `summing`, `averaging`, and `summarizing` (whose functionality is available on the corresponding primitive stream types).”
+* “They also include all overloadings of the `reducing` method, and the `filtering`, `mapping`, `flatMapping`, and `collectingAndThen` methods.”
+* “There are three `Collectors` methods we have yet to mention. Though they are in `Collectors`, they don’t involve collections.”
+  * “The first two are `minBy` and `maxBy`, which take a comparator and return the minimum or maximum element in the stream as determined by the comparator.”
+* “The final `Collectors` method is `joining`, which operates only on streams of `CharSequence` instances such as strings. In its parameterless form, it returns a collector that simply concatenates the elements.”
+  * “Its one argument form takes a single `CharSequence` parameter named `delimiter` and returns a collector that joins the stream elements, inserting the delimiter between adjacent elements.”
+  * “The three argument form takes a prefix and suffix in addition to the delimiter. The resulting collector generates strings like the ones that you get when you print a collection, for example `[came, saw, conquered]`.”
+* **“In summary, the essence of programming stream pipelines is side-effect-free function objects. This applies to all of the many function objects passed to streams and related objects.”**
+* “The terminal operation `forEach` should only be used to report the result of a computation performed by a stream, not to perform the computation.”
+* “In order to use streams properly, you have to know about collectors. The most important collector factories are `toList`, `toSet`, `toMap`, `groupingBy`, and `joining`.”
