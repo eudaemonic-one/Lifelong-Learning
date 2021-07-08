@@ -480,3 +480,52 @@ public static <E> Stream<List<E>> of(List<E> list) {
   * “Otherwise, consider implementing a custom collection as we did for the power set.”
   * “If it isn’t feasible to return a collection, return a stream or iterable, whichever seems more natural.”
   * “If, in a future Java release, the `Stream` interface declaration is modified to extend `Iterable`, then you should feel free to return streams because they will allow for both stream processing and iteration.”
+
+
+## Item 48: Use caution when making streams parallel
+
+* “Writing concurrent programs in Java keeps getting easier, but writing concurrent programs that are correct and fast is as difficult as it ever was. Safety and liveness violations are a fact of life in concurrent programming, and parallel stream pipelines are no exception.”
+* “Even under the best of circumstances, **parallelizing a pipeline is unlikely to increase its performance if the source is from `Stream.iterate`, or the intermediate operation limit is used**.”
+* **“Do not parallelize stream pipelines indiscriminately.”**
+  * “The performance consequences may be disastrous.”
+* **“As a rule, performance gains from parallelism are best on streams over `ArrayList`, `HashMap`, `HashSet`, and `ConcurrentHashMap` instances; arrays; `int` ranges; and `long` ranges.”**
+  * “What these data structures have in common is that they can all be accurately and cheaply split into subranges of any desired sizes, which makes it easy to divide work among parallel threads.”
+  * “The abstraction used by the streams library to perform this task is the *spliterator*, which is returned by the `spliterator` method on `Stream` and `Iterable`.”
+  * “Another important factor that all of these data structures have in common is that they provide good-to-excellent *locality of reference* when processed sequentially: sequential element references are stored together in memory.”
+  * “If you write your own `Stream`, `Iterable`, or `Collection` implementation and you want decent parallel performance, you must override the `spliterator` method and test the parallel performance of the resulting streams extensively.”
+
+* **“The nature of a stream pipeline’s terminal operation also affects the effectiveness of parallel execution.”**
+  * “The best terminal operations for parallelism are reductions, where all of the elements emerging from the pipeline are combined using one of `Stream`’s `reduce` methods, or prepackaged reductions such as `min`, `max`, `count`, and `sum`.”
+  * “The *short-circuiting* operations `anyMatch`, `allMatch`, and `noneMatch` are also amenable to parallelism.”
+  * “The operations performed by `Stream`’s collect method, which are known as *mutable reductions*, are not good candidates for parallelism because the overhead of combining collections is costly.”
+* “**Not only can parallelizing a stream lead to poor performance, including liveness failures; it can lead to incorrect results and unpredictable behavior** (*safety failures*).”
+  * “Safety failures may result from parallelizing a pipeline that uses mappers, filters, and other programmer-supplied function objects that fail to adhere to their specifications.”
+* “Even assuming that you’re using an efficiently splittable source stream, a parallelizable or cheap terminal operation, and non-interfering function objects, you won’t get a good speedup from parallelization unless the pipeline is doing enough real work to offset the costs associated with parallelism.”
+  * “As a very rough estimate, the number of elements in the stream times the number of lines of code executed per element should be at least a hundred thousand [Lea14].”
+* “It’s important to remember that parallelizing a stream is strictly a performance optimization. As is the case for any optimization, you must test the performance before and after the change to ensure that it is worth doing (Item 67). Ideally, you should perform the test in a realistic system setting.”
+* **“Under the right circumstances, it is possible to achieve near-linear speedup in the number of processor cores simply by adding a `parallel` call to a stream pipeline.”**
+
+```java
+// Prime-counting stream pipeline - benefits from parallelization
+static long pi(long n) {
+    return LongStream.rangeClosed(2, n)
+        .mapToObj(BigInteger::valueOf)
+        .filter(i -> i.isProbablePrime(50))
+        .count();
+}
+
+// Prime-counting stream pipeline - parallel version
+static long pi(long n) {
+    return LongStream.rangeClosed(2, n)
+        .parallel()
+        .mapToObj(BigInteger::valueOf)
+        .filter(i -> i.isProbablePrime(50))
+        .count();
+}
+```
+
+* “If you are going to parallelize a stream of random numbers, start with a `SplittableRandom` instance rather than a `ThreadLocalRandom` (or the essentially obsolete `Random`).”
+  * “`SplittableRandom` is designed for precisely this use, and has the potential for linear speedup.”
+  * “`ThreadLocalRandom` is designed for use by a single thread, and will adapt itself to function as a parallel stream source, but won’t be as fast as `SplittableRandom`.”
+  * “`Random` synchronizes on every operation, so it will result in excessive, parallelism-killing contention.”
+* **“In summary, do not even attempt to parallelize a stream pipeline unless you have good reason to believe that it will preserve the correctness of the computation and increase its speed. The cost of inappropriately parallelizing a stream can be a program failure or performance disaster. If you believe that parallelism may be justified, ensure that your code remains correct when run in parallel, and do careful performance measurements under realistic conditions. If your code remains correct and these experiments bear out your suspicion of increased performance, then and only then parallelize the stream in production code.”**
