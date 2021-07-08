@@ -352,3 +352,131 @@ Map<String, Long> freq = words
 * **“In summary, the essence of programming stream pipelines is side-effect-free function objects. This applies to all of the many function objects passed to streams and related objects.”**
 * “The terminal operation `forEach` should only be used to report the result of a computation performed by a stream, not to perform the computation.”
 * “In order to use streams properly, you have to know about collectors. The most important collector factories are `toList`, `toSet`, `toMap`, `groupingBy`, and `joining`.”
+
+
+## Item 47: Prefer Collection to Stream as a return type
+
+* “Many methods return sequences of elements. Prior to Java 8, the obvious return types for such methods were the collection interfaces `Collection`, `Set`, and `List`; `Iterable`; and the array types.”
+  * “The norm was a collection interface.”
+  * “If the method existed solely to enable for-each loops or the returned sequence couldn’t be made to implement some `Collection` method (typically, `contains(Object))`, the `Iterable` interface was used.”
+  * “If the returned elements were primitive values or there were stringent performance requirements, arrays were used.”
+  * “In Java 8, streams were added to the platform, substantially complicating the task of choosing the appropriate return type for a sequence-returning method.”
+* “If an API returns only a stream and some users want to iterate over the returned sequence with a for-each loop, those users will be justifiably upset.”
+  * “The only thing preventing programmers from using a for-each loop to iterate over a stream is `Stream`’s failure to extend `Iterable`.”
+
+
+```java
+// Hideous workaround to iterate over a stream
+for  (ProcessHandle ph : (Iterable<ProcessHandle>)
+                        ProcessHandle.allProcesses()::iterator)
+```
+
+* “This client code works, but it is too noisy and opaque to use in practice.”
+* “A better workaround is to use an adapter method.”
+  * “Note that no cast is necessary in the adapter method because Java’s type inference works properly in this context:”
+
+
+```java
+// Adapter from  Stream<E> to Iterable<E>
+public static <E> Iterable<E> iterableOf(Stream<E> stream) {
+    return stream::iterator;
+}
+```
+
+* “Conversely, a programmer who wants to process a sequence using a stream pipeline will be justifiably upset by an API that provides only an Iterable.”
+
+```java
+// Adapter from Iterable<E> to Stream<E>
+public static <E> Stream<E> streamOf(Iterable<E> iterable) {
+    return StreamSupport.stream(iterable.spliterator(), false);
+}
+```
+
+* “The `Collection` interface is a subtype of `Iterable` and has a stream method, so it provides for both iteration and stream access.”
+* “Therefore, **`Collection` or an appropriate subtype is generally the best return type for a public, sequence-returning method**.”
+* **“Arrays also provide for easy iteration and stream access with the `Arrays.asList` and `Stream.of` methods.”**
+* “But **do not store a large sequence in memory just to return it as a collection**.”
+  * “If the sequence you’re returning is large but can be represented concisely, consider implementing a special-purpose collection.”
+
+```java
+// Returns the power set of an input set as custom collection
+public class PowerSet {
+   public static final <E> Collection<Set<E>> of(Set<E> s) {
+      List<E> src = new ArrayList<>(s);
+      if (src.size() > 30)
+         throw new IllegalArgumentException("Set too big " + s);
+      return new AbstractList<Set<E>>() {
+         @Override public int size() {
+            return 1 << src.size(); // 2 to the power srcSize
+         }
+
+         @Override public boolean contains(Object o) {
+            return o instanceof Set && src.containsAll((Set)o);
+         }
+
+         @Override public Set<E> get(int index) {
+            Set<E> result = new HashSet<>();
+            for (int i = 0; index != 0; i++, index >>= 1)
+               if ((index & 1) == 1)
+                  result.add(src.get(i));
+            return result;
+         }
+      };
+   }
+}
+```
+
+* “This highlights a disadvantage of using `Collection` as a return type rather than `Stream` or `Iterable`: `Collection` has an int-returning size method, which limits the length of the returned sequence to `Integer.MAX_VALUE`, or $2^{31} − 1$. The `Collection` specification does allow the size method to return $2^{31} − 1$ if the collection is larger, even infinite, but this is not a wholly satisfying solution.”
+* “In order to write a `Collection` implementation atop `AbstractCollection`, you need implement only two methods beyond the one required for Iterable: `contains` and `size`.”
+  * “Often it’s easy to write efficient implementations of these methods. If it isn’t feasible, perhaps because the contents of the sequence aren’t predetermined before iteration takes place, return a stream or iterable, whichever feels more natural.”
+* “There are times when you’ll choose the return type based solely on ease of implementation.”
+
+```java
+// Returns a stream of all the sublists of its input list
+public class SubLists {
+   public static <E> Stream<List<E>> of(List<E> list) {
+      return Stream.concat(Stream.of(Collections.emptyList()),
+         prefixes(list).flatMap(SubLists::suffixes));
+   }
+
+   private static <E> Stream<List<E>> prefixes(List<E> list) {
+      return IntStream.rangeClosed(1, list.size())
+         .mapToObj(end -> list.subList(0, end));
+   }
+
+   private static <E> Stream<List<E>> suffixes(List<E> list) {
+      return IntStream.range(0, list.size())
+         .mapToObj(start -> list.subList(start, list.size()));
+   }
+}
+```
+
+* “Note that we generate the prefixes and suffixes by mapping a stream of consecutive `int` values returned by `IntStream.range` and `IntStream.rangeClosed`. This idiom is, roughly speaking, the stream equivalent of the standard `for`-loop on integer indices.”
+* “Thus, our sublist implementation is similar in spirit to the obvious nested `for`-loop:”
+
+
+```java
+for (int start = 0; start < src.size(); start++)
+    for (int end = start + 1; end <= src.size(); end++)
+        System.out.println(src.subList(start, end));
+```
+
+* “It is possible to translate this `for`-loop directly into a stream. The result is more concise than our previous implementation, but perhaps a bit less readable.”
+
+```java
+// Returns a stream of all the sublists of its input list
+public static <E> Stream<List<E>> of(List<E> list) {
+   return IntStream.range(0, list.size())
+      .mapToObj(start ->
+         IntStream.rangeClosed(start + 1, list.size())
+            .mapToObj(end -> list.subList(start, end)))
+      .flatMap(x -> x);
+}
+```
+
+* “In summary, when writing a method that returns a sequence of elements, remember that some of your users may want to process them as a stream while others may want to iterate over them. Try to accommodate both groups.”
+  * **“If it’s feasible to return a collection, do so.”**
+  * “If you already have the elements in a collection or the number of elements in the sequence is small enough to justify creating a new one, return a standard collection such as `ArrayList`.”
+  * “Otherwise, consider implementing a custom collection as we did for the power set.”
+  * “If it isn’t feasible to return a collection, return a stream or iterable, whichever seems more natural.”
+  * “If, in a future Java release, the `Stream` interface declaration is modified to extend `Iterable`, then you should feel free to return streams because they will allow for both stream processing and iteration.”
