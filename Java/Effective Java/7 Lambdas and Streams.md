@@ -156,3 +156,82 @@ map.merge(key, 1, Integer::sum);
   * “It is a statement of programmer intent that serves three purposes: it tells readers of the class and its documentation that the interface was designed to enable lambdas; it keeps you honest because the interface won’t compile unless it has exactly one abstract method; and it prevents maintainers from accidentally adding abstract methods to the interface as it evolves.”
 * **“Do not provide a method with multiple overloadings that take different functional interfaces in the same argument position if it could create a possible ambiguity in the client.”**
 * **“In summary, now that Java has lambdas, it is imperative that you design your APIs with lambdas in mind. Accept functional interface types on input and return them on output. It is generally best to use the standard interfaces provided in `java.util.function.Function`, but keep your eyes open for the relatively rare cases where you would be better off writing your own functional interface.”**
+
+## Item 45: Use streams judiciously
+
+* “The streams API was added in Java 8 to ease the task of performing bulk operations, sequentially or in parallel.”
+* “This API provides two key abstractions: the *stream*, which represents a finite or infinite sequence of data elements, and the *stream pipeline*, which represents a multistage computation on these elements. ”
+* “The elements in a stream can come from anywhere. Common sources include collections, arrays, files, regular expression pattern matchers, pseudorandom number generators, and other streams.”
+* “The data elements in a stream can be object references or primitive values. Three primitive types are supported: `int`, `long`, and `double`.”
+* “A stream pipeline consists of a source stream followed by zero or more *intermediate operations* and one *terminal operation*.”
+* “**Stream pipelines are evaluated *lazily***: evaluation doesn’t start until the terminal operation is invoked, and data elements that aren’t required in order to complete the terminal operation are never computed.”
+* “**The streams API is *fluent***: it is designed to allow all of the calls that comprise a pipeline to be chained into a single expression. ”
+* “By default, stream pipelines run sequentially.”
+  * “Making a pipeline execute in parallel is as simple as invoking the `parallel` method on any stream in the pipeline, but it is seldom appropriate to do so (Item 48).”
+* “The streams API is sufficiently versatile that practically any computation can be performed using streams, but just because you can doesn’t mean you should.”
+* **“Overusing streams makes programs hard to read and maintain.”**
+
+```java
+// Tasteful use of streams enhances clarity and conciseness
+public class Anagrams {
+   public static void main(String[] args) throws IOException {
+      Path dictionary = Paths.get(args[0]);
+      int minGroupSize = Integer.parseInt(args[1]);
+
+      try (Stream<String> words = Files.lines(dictionary)) {
+         words.collect(groupingBy(word -> alphabetize(word)))
+           .values().stream()
+           .filter(group -> group.size() >= minGroupSize)
+           .forEach(g -> System.out.println(g.size() + ": " + g));
+      }
+   }
+
+   // alphabetize method is the same as in original version
+}
+```
+
+* **“In the absence of explicit types, careful naming of lambda parameters is essential to the readability of stream pipelines.”**
+* “**Using helper methods is even more important for readability in stream pipelines than in iterative code** because pipelines lack explicit type information and named temporary variables.”
+* “Ideally, you should **refrain from using streams to process `char` values**.”
+* **“Refactor existing code to use streams and use them in new code only where it makes sense to do so.”**
+* “Stream pipelines express repeated computation using function objects (typically lambdas or method references), while iterative code expresses repeated computation using code blocks.”
+* “There are some things you can do from code blocks that you can’t do from function objects:”
+  * “From a code block, you can read or modify any local variable in scope; from a lambda, you can only read final or effectively final variables [JLS 4.12.4], and you can’t modify any local variables.”
+  * “From a code block, you can `return` from the enclosing method, `break` or `continue` an enclosing loop, or throw any checked exception that this method is declared to throw”
+  * **“If a computation is best expressed using these techniques, then it’s probably not a good match for streams.”**
+* “Conversely, streams make it very easy to do some things:”
+  * “Uniformly transform sequences of elements”
+  * “Filter sequences of elements”
+  * “Combine sequences of elements using a single operation (for example to add them, concatenate them, or compute their minimum)”
+  * “Accumulate sequences of elements into a collection, perhaps grouping them by some common attribute”
+  * “Search a sequence of elements for an element satisfying some criterion”
+  * **“If a computation is best expressed using these techniques, then it is a good candidate for streams.”**
+* “One thing that is hard to do with streams is to access corresponding elements from multiple stages of a pipeline simultaneously: once you map a value to some other value, the original value is lost.”
+  * “One workaround is to map each value to a *pair object* containing the original value and the new value, but this is not a satisfying solution, especially if the pair objects are required for multiple stages of a pipeline.”
+  * “When it is applicable, a better workaround is to invert the mapping when you need access to the earlier-stage value.”
+
+```java
+// Iterative Cartesian product computation
+private static List<Card> newDeck() {
+    List<Card> result = new ArrayList<>();
+    for (Suit suit : Suit.values())
+        for (Rank rank : Rank.values())
+            result.add(new Card(suit, rank));
+    return result;
+}
+```
+
+```java
+// Stream-based Cartesian product computation
+private static List<Card> newDeck() {
+    return Stream.of(Suit.values())
+        .flatMap(suit ->
+            Stream.of(Rank.values())
+                .map(rank -> new Card(suit, rank)))
+        .collect(toList());
+}
+```
+
+* “If you’re not sure which version you prefer, the iterative version is probably the safer choice. If you prefer the stream version and you believe that other programmers who will work with the code will share your preference, then you should use it.”
+* “In summary, some tasks are best accomplished with streams, and others with iteration. Many tasks are best accomplished by combining the two approaches. There are no hard and fast rules for choosing which approach to use for a task, but there are some useful heuristics. In many cases, it will be clear which approach to use; in some cases, it won’t.”
+* **“If you’re not sure whether a task is better served by streams or iteration, try both and see which works better.”**
