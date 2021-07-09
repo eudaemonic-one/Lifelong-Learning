@@ -53,3 +53,103 @@ private static void sort(long a[], int offset, int length) {
   * “Under these circumstances, you should use the *exception translation* idiom, described in Item 73, to translate the natural exception into the correct one.”
 
 * **“To summarize, each time you write a method or constructor, you should think about what restrictions exist on its parameters. You should document these restrictions and enforce them with explicit checks at the beginning of the method body. It is important to get into the habit of doing this. The modest work that it entails will be paid back with interest the first time a validity check fails.”**
+
+## Item 50: Make defensive copies when needed
+
+* **“You must program defensively, with the assumption that clients of your class will do their best to destroy its invariants.”**
+
+```java
+// Broken "immutable" time period class
+public final class Period {
+    private final Date start;
+    private final Date end;
+
+    /**
+     * @param  start the beginning of the period
+     * @param  end the end of the period; must not precede start
+     * @throws IllegalArgumentException if start is after end
+     * @throws NullPointerException if start or end is null
+     */
+    public Period(Date start, Date end) {
+        if (start.compareTo(end) > 0)
+            throw new IllegalArgumentException(
+                start + " after " + end);
+        this.start = start;
+        this.end   = end;
+    }
+
+    public Date start() {
+        return start;
+    }
+
+    public Date end() {
+        return end;
+    }
+
+    ...    // Remainder omitted
+}
+```
+
+* “It is, however, easy to violate this invariant by exploiting the fact that `Date` is mutable.”
+
+```java
+// Attack the internals of a Period instance
+Date start = new Date();
+Date end = new Date();
+Period p = new Period(start, end);
+end.setYear(78);  // Modifies internals of p!
+```
+
+* “As of Java 8, the obvious way to fix this problem is to use `Instant` (or `LocalDateTime` or `ZonedDateTime`) in place of a `Date` because `Instant` (and the other `java.time` classes) are immutable (Item 17).”
+  * **“`Date` is obsolete and should no longer be used in new code.”**
+* “To protect the internals of a `Period` instance from this sort of attack, **it is essential to make a defensive copy of each mutable parameter to the constructor** and to use the copies as components of the `Period` instance in place of the originals.”
+
+
+```java
+// Repaired constructor - makes defensive copies of parameters
+public Period(Date start, Date end) {
+    this.start = new Date(start.getTime());
+    this.end   = new Date(end.getTime());
+
+    if (this.start.compareTo(this.end) > 0)
+      throw new IllegalArgumentException(
+          this.start + " after " + this.end);
+}
+```
+
+* “Note that **defensive copies are made before checking the validity of the parameters (Item 49), and the validity check is performed on the copies rather than on the originals**.”
+  * “It protects the class against changes to the parameters from another thread during the *window of vulnerability* between the time the parameters are checked and the time they are copied. In the computer security community, this is known as a *time-of-check*/*time-of-use* or *TOCTOU* attack [Viega01].”
+* **“Do not use the `clone` method to make a defensive copy of a parameter whose type is subclassable by untrusted parties.”**
+  * “That said, you are generally better off using a constructor or static factory to copy an instance, for reasons outlined in Item 13.”
+
+
+```java
+// Second attack on the internals of a Period instance
+Date start = new Date();
+Date end = new Date();
+Period p = new Period(start, end);
+p.end().setYear(78);  // Modifies internals of p!
+```
+
+* “To defend against the second attack, merely modify the accessors to **return defensive copies of mutable internal fields**:”
+
+
+```java
+// Repaired accessors - make defensive copies of internal fields
+public Date start() {
+    return new Date(start.getTime());
+}
+
+public Date end() {
+    return new Date(end.getTime());
+}
+```
+
+* “Any time you write a method or constructor that stores a reference to a client-provided object in an internal data structure, think about whether the client-provided object is potentially mutable. If it is, think about whether your class could tolerate a change in the object after it was entered into the data structure. If the answer is no, you must defensively copy the object and enter the copy into the data structure in place of the original.”
+* “The same is true for defensive copying of internal components prior to returning them to clients.”
+  * “Remember that nonzero-length arrays are always mutable. Therefore, you should always make a defensive copy of an internal array before returning it to a client. Alternatively, you could return an immutable view of the array. ”
+* “There may be a performance penalty associated with defensive copying and it isn’t always justified.”
+  * “If a class trusts its caller not to modify an internal component, perhaps because the class and its client are both part of the same package, then it may be appropriate to dispense with defensive copying.”
+  * “Under these circumstances, the class documentation should make it clear that the caller must not modify the affected parameters or return values.”
+
+* **“In summary, if a class has mutable components that it gets from or returns to its clients, the class must defensively copy these components. If the cost of the copy would be prohibitive *and* the class trusts its clients not to modify the components inappropriately, then the defensive copy may be replaced by documentation outlining the client’s responsibility not to modify the affected components.”**
