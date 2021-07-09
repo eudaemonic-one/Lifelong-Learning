@@ -11,3 +11,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 6. Enums and Annotations](./Effective%20Java/6%20Enums%20and%20Annotations.md)
   * [Chapter 7. Lambdas and Streams](./Effective%20Java/7%20Lambdas%20and%20Streams.md)
   * [Chapter 8. Methods](./Effective%20Java/8%20Methods.md)
+  * [Chapter 9. General Programming](./Effective%20Java/9%20General%20Programming.md)
