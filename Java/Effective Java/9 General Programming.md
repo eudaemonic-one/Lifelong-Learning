@@ -267,3 +267,21 @@ public final class ThreadLocal<T> {
 ```
 
 * **“To summarize, avoid the natural tendency to represent objects as strings when better data types exist or can be written. Used inappropriately, strings are more cumbersome, less flexible, slower, and more error-prone than other types. Types for which strings are commonly misused include primitive types, enums, and aggregate types.”**
+
+## Item 63: Beware the performance of string concatenation
+
+* “The string concatenation operator (`+`) is a convenient way to combine a few strings into one. It is fine for generating a single line of output or constructing the string representation of a small, fixed-size object, but it does not scale.”
+  * “Using the string concatenation operator repeatedly to concatenate n strings requires time quadratic in n.”
+  * “This is an unfortunate consequence of the fact that strings are *immutable* (Item 17). When two strings are concatenated, the contents of both are copied.”
+* “**To achieve acceptable performance, use a `StringBuilder` in place of a `String`** to store the statement under construction:”
+
+```java
+public String statement() {
+    StringBuilder b = new StringBuilder(numItems() * LINE_WIDTH);
+    for (int i = 0; i < numItems(); i++)
+        b.append(lineForItem(i));
+    return b.toString();
+}
+```
+
+* **“The moral is simple: Don’t use the string concatenation operator to combine more than a few strings unless performance is irrelevant. Use `StringBuilder`’s `append` method instead. Alternatively, use a character array, or process the strings one at a time instead of combining them.”**
