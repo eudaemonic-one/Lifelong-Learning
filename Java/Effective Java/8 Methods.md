@@ -392,3 +392,100 @@ return cheesesInStock.toArray(new Cheese[cheesesInStock.size()]);
 ```
 
 * “In summary, **never return `null` in place of an empty array or collection**. It makes your API more difficult to use and more prone to error, and it has no performance advantages.”
+
+
+## Item 55: Return optionals judiciously
+
+* “Prior to Java 8, there were two approaches you could take when writing a method that was unable to return a value under certain circumstances. Either you could throw an exception, or you could return `null` (assuming the return type was an object reference type). Neither of these approaches is perfect.”
+  * “Exceptions should be reserved for exceptional conditions (Item 69), and throwing an exception is expensive because the entire stack trace is captured when an exception is created.”
+  * “Returning `null` doesn’t have these shortcomings, but it has its own. If a method returns `null`, clients must contain special-case code to deal with the possibility of a null return, unless the programmer can prove that a null return is impossible.”
+* “In Java 8, there is a third approach to writing methods that may not be able to return a value. The `Optional<T>` class represents an immutable container that can hold either a single non-null `T` reference or nothing at all.”
+  * “An optional that contains nothing is said to be *empty*. A value is said to be *present* in an optional that is not empty.”
+
+
+```java
+// Returns maximum value in collection as an Optional<E>
+public static <E extends Comparable<E>>
+        Optional<E> max(Collection<E> c) {
+    if (c.isEmpty())
+        return Optional.empty();
+        
+    E result = null;
+    for (E e : c)
+        if (result == null || e.compareTo(result) > 0)
+            result = Objects.requireNonNull(e);
+
+    return Optional.of(result);
+}
+```
+
+* “**Never return a null value from an `Optional`-returning method**: it defeats the entire purpose of the facility.”
+* “Many terminal operations on streams return optionals.”
+
+```java
+// Returns max val in collection as Optional<E> - uses stream
+public static <E extends Comparable<E>>
+        Optional<E> max(Collection<E> c) {
+    return c.stream().max(Comparator.naturalOrder());
+}
+```
+
+* “So how do you choose to return an optional instead of returning a `null` or throwing an exception? **Optionals are similar in spirit to checked exceptions** (Item 71), in that they *force* the user of an API to confront the fact that there may be no value returned.”
+  * “Throwing an unchecked exception or returning a `null` allows the user to ignore this eventuality, with potentially dire consequences. However, throwing a checked exception requires additional boilerplate code in the client.”
+* “If a method returns an optional, the client gets to choose what action to take if the method can’t return a value.”
+
+```java
+// Using an optional to provide a chosen default value
+String lastWordInLexicon = max(words).orElse("No words...");
+```
+
+* “or you can throw any exception that is appropriate.”
+
+```java
+// Using an optional to throw a chosen exception
+Toy myToy = max(toys).orElseThrow(TemperTantrumException::new);
+```
+
+* “If you can *prove* that an optional is nonempty, you can get the value from the optional without specifying an action to take if the optional is empty, but if you’re wrong, your code will throw a `NoSuchElementException`:”
+
+
+```java
+// Using optional when you know there’s a return value
+Element lastNobleGas = max(Elements.NOBLE_GASES).get();
+```
+
+* “Occasionally you may be faced with a situation where it’s expensive to get the default value, and you want to avoid that cost unless it’s necessary. For these situations, `Optional` provides a method that takes a `Supplier<T>` and invokes it only when necessary. This method is called `orElseGet`, but perhaps it should have been called `orElseCompute` because it is closely related to the three Map methods whose names begin with `compute`.”
+* “There are several `Optional` methods for dealing with more specialized use cases: `filter`, `map`, `flatMap`, and `ifPresent`. In Java 9, two more of these methods were added: `or` and `ifPresentOrElse`.”
+* “In case none of these methods meets your needs, `Optional` provides the `isPresent()` method, which may be viewed as a safety valve. It returns `true` if the optional contains a value, `false` if it’s empty. You can use this method to perform any processing you like on an optional result, but make sure to use it wisely.”
+
+```java
+Optional<ProcessHandle> parentProcess = ph.parent();
+System.out.println("Parent PID: " + (parentProcess.isPresent() ?
+    String.valueOf(parentProcess.get().pid()) : "N/A"));
+```
+
+* “The code snippet above can be replaced by this one, which uses `Optional`’s map function:”
+
+
+```java
+System.out.println("Parent PID: " +
+  ph.parent().map(h -> String.valueOf(h.pid())).orElse("N/A"));
+```
+
+* “When programming with streams, it is not uncommon to find yourself with a `Stream<Optional<T>>` and to require a `Stream<T>` containing all the elements in the nonempty optionals in order to proceed. If you’re using Java 8, here’s how to bridge the gap:”
+
+
+```java
+streamOfOptionals
+    .filter(Optional::isPresent)
+    .map(Optional::get)
+```
+
+* “Not all return types benefit from the optional treatment. **Container types, including collections, maps, streams, arrays, and optionals should not be wrapped in optionals.**”
+* “So when should you declare a method to return `Optional<T>` rather than `T`? As a rule, you should **declare a method to return `Optional<T>` if it might not be able to return a result *and* clients will have to perform special processing if no result is returned**.”
+* “Returning an optional that contains a boxed primitive type is prohibitively expensive compared to returning a primitive type because the optional has two levels of boxing instead of zero. ”
+  * “Therefore, the library designers saw fit to provide analogues of `Optional<T>` for the primitive types `int`, `long`, and `double`. These optional types are `OptionalInt`, `OptionalLong`, and `OptionalDouble`. They contain most, but not all, of the methods on `Optional<T>`.”
+  * “Therefore, **you should never return an optional of a boxed primitive type**, with the possible exception of the “minor primitive types,” `Boolean`, `Byte`, `Character`, `Short`, and `Float`.”
+* “More generally, **it is almost never appropriate to use an optional as a key, value, or element in a collection or array**.”
+  * “Is it ever appropriate to store an optional in an instance field? Often it’s a “bad smell”: it suggests that perhaps you should have a subclass containing the optional fields. But sometimes it may be justified.”
+* **“In summary, if you find yourself writing a method that can’t always return a value and you believe it is important that users of the method consider this possibility every time they call it, then you should probably return an optional. You should, however, be aware that there are real performance consequences associated with returning optionals; for performance-critical methods, it may be better to return a `null` or throw an exception. Finally, you should rarely use an optional in any other capacity than as a return value.”**
