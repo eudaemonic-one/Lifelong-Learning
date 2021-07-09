@@ -489,3 +489,151 @@ streamOfOptionals
 * “More generally, **it is almost never appropriate to use an optional as a key, value, or element in a collection or array**.”
   * “Is it ever appropriate to store an optional in an instance field? Often it’s a “bad smell”: it suggests that perhaps you should have a subclass containing the optional fields. But sometimes it may be justified.”
 * **“In summary, if you find yourself writing a method that can’t always return a value and you believe it is important that users of the method consider this possibility every time they call it, then you should probably return an optional. You should, however, be aware that there are real performance consequences associated with returning optionals; for performance-critical methods, it may be better to return a `null` or throw an exception. Finally, you should rarely use an optional in any other capacity than as a return value.”**
+
+## Item 56: Write doc comments for all exposed API elements
+
+* **“If an API is to be usable, it must be documented.”**
+  * “Traditionally, API documentation was generated manually, and keeping it in sync with code was a chore.”
+  * “The Java programming environment eases this task with the Javadoc utility. *Javadoc* generates API documentation automatically from source code with specially formatted *documentation comments*, more commonly known as *doc comments*.”
+* **“To document your API properly, you must precede every exported class, interface, constructor, method, and field declaration with a doc comment.”**
+  * “If a class is serializable, you should also document its serialized form (Item 87).”
+  * “Public classes should not use default constructors because there is no way to provide doc comments for them.”
+* **“The doc comment for a method should describe succinctly the contract between the method and its client.”**
+  * “With the exception of methods in classes designed for inheritance (Item 19), the contract should say *what* the method does rather than *how* it does its job.”
+  * “The doc comment should enumerate all of the method’s *preconditions*, which are the things that have to be true in order for a client to invoke it, and its *postconditions*, which are the things that will be true after the invocation has completed successfully.”
+    * “Typically, preconditions are described implicitly by the `@throws` tags for unchecked exceptions; each unchecked exception corresponds to a precondition violation. Also, preconditions can be specified along with the affected parameters in their `@param` tags.”
+  * “In addition to preconditions and postconditions, **methods should document any *side effects***.”
+    * “For example, if a method starts a background thread, the documentation should make note of it.”
+  * “To describe a method’s contract fully, the doc comment should have an `@param` tag for every parameter, an `@return` tag unless the method has a void return type, and an `@throws` tag for every exception thrown by the method, whether checked or unchecked (Item 74).”
+    * “By convention, the text following an `@param` tag or `@return` tag should be a noun phrase describing the value represented by the parameter or return value.”
+    * “Rarely, arithmetic expressions are used in place of noun phrases; see `BigInteger` for examples. ”
+    * “The text following an `@throws` tag should consist of the word “if,” followed by a clause describing the conditions under which the exception is thrown.”
+    * “By convention, the phrase or clause following an `@param`, `@return`, or `@throws` tag is not terminated by a period.”
+    * “Also notice the use of the Javadoc `{@code}` tag around the code fragment in the `@throws` clause. This tag serves two purposes: it causes the code fragment to be rendered in `code font`, and it suppresses processing of HTML markup and nested Javadoc tags in the code fragment. The latter property is what allows us to use the less-than sign (`<`) in the code fragment even though it’s an HTML metacharacter.”
+    * “To include a multiline code example in a doc comment, use a Javadoc `{@code}` tag wrapped inside an HTML `<pre>` tag. In other words, precede the code example with the characters `<pre>{@code and follow it with }</pre>`. This preserves line breaks in the code, and eliminates the need to escape HTML metacharacters, but *not* the at sign (`@`), which must be escaped if the code sample uses annotations.”
+    * “Finally, notice the use of the words “this list” in the doc comment. By convention, the word “this” refers to the object on which a method is invoked when it is used in the doc comment for an instance method.”
+
+
+```java
+/**
+ * Returns the element at the specified position in this list.
+ *
+ * <p>This method is <i>not</i> guaranteed to run in constant
+ * time. In some implementations it may run in time proportional
+ * to the element position.
+ *
+ * @param  index index of element to return; must be
+ *         non-negative and less than the size of this list
+ * @return the element at the specified position in this list
+ * @throws IndexOutOfBoundsException if the index is out of range
+ *         ({@code index < 0 || index >= this.size()})
+ */
+E get(int index);
+```
+
+* “As mentioned in Item 15, when you design a class for inheritance, you must document its self-use patterns, so programmers know the semantics of overriding its methods. These self-use patterns should be documented using the `@implSpec` tag, added in Java 8.”
+  * “Recall that ordinary doc comments describe the contract between a method and its client; `@implSpec` comments, by contrast, describe the contract between a method and its subclass, allowing subclasses to rely on implementation behavior if they inherit the method or call it via `super`.”
+
+
+```java
+/**
+ * Returns true if this collection is empty.
+ *
+ * @implSpec
+ * This implementation returns {@code this.size() == 0}.
+ *
+ * @return true if this collection is empty
+ */
+public boolean isEmpty() { ... }
+```
+
+* “Don’t forget that you must take special action to generate documentation that contains HTML metacharacters, such as the less-than sign (`<`), the greater-than sign (`>`), and the ampersand (`&`).”
+  * “The best way to get these characters into documentation is to surround them with the `{@literal}` tag, which suppress processing of HTML markup and nested Javadoc tags. It is like the `{@code}` tag, except that it doesn’t render the text in code font.” 
+
+* **“Doc comments should be readable both in the source code and in the generated documentation.”**
+* “The first “sentence” of each doc comment (as defined below) becomes the *summary description* of the element to which the comment pertains.”
+  * “To avoid confusion, **no two members or constructors in a class or interface should have the same summary description**.”
+    * “Pay particular attention to overloadings, for which it is often natural to use the same first sentence (but unacceptable in doc comments).”
+* “For methods and constructors, the summary description should be a verb phrase (including any object) describing the action performed by the method.”
+  * “`ArrayList(int initialCapacity)`—Constructs an empty list with the specified initial capacity.”
+  * “`Collection.size()`—Returns the number of elements in this collection.”
+* “For classes, interfaces, and fields, the summary description should be a noun phrase describing the thing represented by an instance of the class or interface or by the field itself.”
+  * “`Instant`—An instantaneous point on the time-line.”
+  * “ `Math.PI`—The `double` value that is closer than any other to pi, the ratio of the circumference of a circle to its diameter.”
+* “In Java 9, a client-side index was added to the HTML generated by Javadoc. This index, which eases the task of navigating large API documentation sets, takes the form of a search box in the upper-right corner of the page.”
+
+```java
+* This method complies with the {@index IEEE 754} standard.
+```
+
+* “Generics, enums, and annotations require special care in doc comments. **When documenting a generic type or method, be sure to document all type parameters**:”
+
+
+```java
+/**
+ * An object that maps keys to values.  A map cannot contain
+ * duplicate keys; each key can map to at most one value.
+ *
+ * (Remainder omitted)
+ *
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
+ */
+public interface Map<K, V> { ... }
+```
+
+* “**When documenting an enum type, be sure to document the constants** as well as the type and any public methods.”
+
+
+```java
+/**
+ * An instrument section of a symphony orchestra.
+ */
+public enum OrchestraSection {
+    /** Woodwinds, such as flute, clarinet, and oboe. */
+    WOODWIND,
+
+    /** Brass instruments, such as french horn and trumpet. */
+    BRASS,
+
+    /** Percussion instruments, such as timpani and cymbals. */
+    PERCUSSION,
+
+    /** Stringed instruments, such as violin and cello. */
+    STRING;
+}
+```
+
+* “When documenting an annotation type, be sure to document any members as well as the type itself.”
+  * “Document members with noun phrases, as if they were fields.”
+
+  * “For the summary description of the type, use a verb phrase that says what it means when a program element has an annotation of this type:”
+
+
+```java
+/**
+ * Indicates that the annotated method is a test method that
+ * must throw the designated exception to pass.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface ExceptionTest {
+     /**
+      * The exception that the annotated test method must throw
+      * in order to pass. (The test is permitted to throw any
+      * subtype of the type described by this class object.)
+      */
+    Class<? extends Throwable> value();
+}
+```
+
+* “Package-level doc comments should be placed in a file named `package-info.java`. In addition to these comments, `package-info.java` must contain a package declaration and may contain annotations on this declaration.”
+* “Similarly, if you elect to use the module system (Item 15), module-level comments should be placed in the `module-info.java` file.”
+* “Two aspects of APIs that are often neglected in documentation are thread-safety and serializability.”
+  * “**Whether or not a class or static method is thread-safe, you should document its thread-safety level**, as described in Item 82.”
+  * “If a class is serializable, you should document its serialized form, as described in Item 87.”
+* “Javadoc has the ability to “inherit” method comments.”
+  * “You can also inherit parts of doc comments from supertypes using the `{@inheritDoc}` tag. This means, among other things, that classes can reuse doc comments from interfaces they implement, rather than copying these comments.”
+* “For complex APIs consisting of multiple interrelated classes, it is often necessary to supplement the documentation comments with an external document describing the overall architecture of the API. If such a document exists, the relevant class or package documentation comments should include a link to it.”
+* “If you adhere to the guidelines in this item, the generated documentation should provide a clear description of your API. The only way to know for sure, however, is to **read the web pages generated by the Javadoc utility**.”
+* “To summarize, documentation comments are the best, most effective way to document your API. Their use should be considered mandatory for all exported API elements. Adopt a consistent style that adheres to standard conventions. Remember that arbitrary HTML is permissible in documentation comments and that HTML metacharacters must be escaped.”
