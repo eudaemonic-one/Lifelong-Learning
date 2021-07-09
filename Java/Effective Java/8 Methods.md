@@ -291,3 +291,37 @@ public boolean contentEquals(StringBuffer sb) {
 ```
 
 * **“To summarize, just because you can overload methods doesn’t mean you should. It is generally best to refrain from overloading methods with multiple signatures that have the same number of parameters. In some cases, especially where constructors are involved, it may be impossible to follow this advice. In these cases, you should at least avoid situations where the same set of parameters can be passed to different overloadings by the addition of casts. If this cannot be avoided, for example, because you are retrofitting an existing class to implement a new interface, you should ensure that all overloadings behave identically when passed the same parameters. If you fail to do this, programmers will be hard pressed to make effective use of the overloaded method or constructor, and they won’t understand why it doesn’t work.”**
+
+## Item 53: Use varargs judiciously
+
+* “Varargs methods, formally known as *variable arity* methods [JLS, 8.4.1], accept zero or more arguments of a specified type. The varargs facility works by first creating an array whose size is the number of arguments passed at the call site, then putting the argument values into the array, and finally passing the array to the method.”
+* “ometimes it’s appropriate to write a method that requires *one* or more arguments of some type, rather than *zero* or more.”
+
+
+```java
+// The WRONG way to use varargs to pass one or more arguments!
+static int min(int... args) {
+    if (args.length == 0)
+        throw new IllegalArgumentException("Too few arguments");
+    int min = args[0];
+    for (int i = 1; i < args.length; i++)
+        if (args[i] < min)
+            min = args[i];
+    return min;
+}
+```
+
+```java
+// The right way to use varargs to pass one or more arguments
+static int min(int firstArg, int... remainingArgs) {
+    int min = firstArg;
+    for (int arg : remainingArgs)
+        if (arg < min)
+            min = arg;
+    return min;
+}
+```
+
+* “Exercise care when using varargs in performance-critical situations. Every invocation of a varargs method causes an array allocation and initialization.”
+* “The static factories for `EnumSet` use this technique to reduce the cost of creating enum sets to a minimum. This was appropriate because it was critical that enum sets provide a performance-competitive replacement for bit fields (Item 36).”
+* **“In summary, varargs are invaluable when you need to define methods with a variable number of arguments. Precede the varargs parameter with any required parameters, and be aware of the performance consequences of using varargs.”**
