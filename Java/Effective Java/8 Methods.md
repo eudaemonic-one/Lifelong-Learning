@@ -153,3 +153,37 @@ public Date end() {
   * “Under these circumstances, the class documentation should make it clear that the caller must not modify the affected parameters or return values.”
 
 * **“In summary, if a class has mutable components that it gets from or returns to its clients, the class must defensively copy these components. If the cost of the copy would be prohibitive *and* the class trusts its clients not to modify the components inappropriately, then the defensive copy may be replaced by documentation outlining the client’s responsibility not to modify the affected components.”**
+
+## Item 51: Design method signatures carefully
+
+* **“Choose method names carefully.”**
+  * “Names should always obey the standard naming conventions (Item 68).”
+  * “Your primary goal should be to choose names that are understandable and consistent with other names in the same package.”
+  * “Your secondary goal should be to choose names consistent with the broader consensus, where it exists”
+  * “Avoid long method names.”
+  * “When in doubt, look to the Java library APIs for guidance.”
+* **“Don’t go overboard in providing convenience methods.”**
+  * “Too many methods make a class difficult to learn, use, document, test, and maintain.”
+  * “This is doubly true for interfaces, where too many methods complicate life for implementors as well as users.”
+  * “Consider providing a “shorthand” only if it will be used often.”
+  * **“When in doubt, leave it out.”**
+* **“Avoid long parameter lists.”**
+  * “Aim for four parameters or fewer.”
+  * **“Long sequences of identically typed parameters are especially harmful.”**
+    * “Not only won’t users be able to remember the order of the parameters, but when they transpose parameters accidentally, their programs will still compile and run.”
+* “There are three techniques for shortening overly long parameter lists.”
+  * “One is to break the method up into multiple methods, each of which requires only a subset of the parameters.”
+  * “A second technique for shortening long parameter lists is to create *helper classes* to hold groups of parameters.”
+    * “Typically these helper classes are static member classes (Item 24). This technique is recommended if a frequently occurring sequence of parameters is seen to represent some distinct entity.”
+
+  * “A third technique that combines aspects of the first two is to adapt the Builder pattern (Item 2) from object construction to method invocation.”
+* “**For parameter types, favor interfaces over classes** (Item 64).”
+  * “By using a class instead of an interface, you restrict your client to a particular implementation and force an unnecessary and potentially expensive copy operation if the input data happens to exist in some other form.”
+* “**Prefer two-element enum types to `boolean` parameters**, unless the meaning of the boolean is clear from the method name.”
+  * “Enums make your code easier to read and to write.”
+  * “Also, they make it easy to add more options later.”
+
+```java
+public enum TemperatureScale { FAHRENHEIT, CELSIUS }
+```
+
