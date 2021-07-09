@@ -202,3 +202,68 @@ Comparator<Integer> naturalOrder = (iBoxed, jBoxed) -> {
 
   * “Finally, you must use boxed primitives when making reflective method invocations (Item 65).”
 * **“In summary, use primitives in preference to boxed primitives whenever you have the choice. Primitive types are simpler and faster. If you must use boxed primitives, be careful! Autoboxing reduces the verbosity, but not the danger, of using boxed primitives. When your program compares two boxed primitives with the `==` operator, it does an identity comparison, which is almost certainly not what you want. When your program does mixed-type computations involving boxed and unboxed primitives, it does unboxing, and when your program does unboxing, it can throw a `NullPointerException`. Finally, when your program boxes primitive values, it can result in costly and unnecessary object creations.”**
+
+## Item 62: Avoid strings where other types are more appropriate
+
+* **“Strings are poor substitutes for other value types.”**
+* **“Strings are poor substitutes for enum types.”**
+* **“Strings are poor substitutes for aggregate types.”**
+  * “A better approach is simply to write a class to represent the aggregate, often a private static member class (Item 24).”
+* **“Strings are poor substitutes for capabilities.”**
+
+```java
+// Broken - inappropriate use of string as capability!
+public class ThreadLocal {
+    private ThreadLocal() { } // Noninstantiable
+
+    // Sets the current thread's value for the named variable.
+    public static void set(String key, Object value);
+
+    // Returns the current thread's value for the named variable.
+    public static Object get(String key);
+}
+```
+
+* “The problem with this approach is that the string keys represent a shared global namespace for thread-local variables. In order for the approach to work, the client-provided string keys have to be unique: if two clients independently decide to use the same name for their thread-local variable, they unintentionally share a single variable, which will generally cause both clients to fail. Also, the security is poor. A malicious client could intentionally use the same string key as another client to gain illicit access to the other client’s data.”
+* “This API can be fixed by replacing the string with an unforgeable key (sometimes called a *capability*):”
+
+
+```java
+public class ThreadLocal {
+    private ThreadLocal() { }    // Noninstantiable
+
+    public static class Key {    // (Capability)
+        Key() { }
+    }
+
+    // Generates a unique, unforgeable key
+    public static Key getKey() {
+        return new Key();
+    }
+
+    public static void set(Key key, Object value);
+    public static Object get(Key key);
+}
+```
+
+* “While this solves both of the problems with the string-based API, you can do much better. You don’t really need the static methods anymore. They can instead become instance methods on the key, at which point the key is no longer a key for a thread-local variable: it is a thread-local variable.”
+
+```java
+public final class ThreadLocal {
+    public ThreadLocal();
+    public void set(Object value);
+    public Object get();
+}
+```
+
+* “This API isn’t typesafe, because you have to cast the value from `Object` to its actual type when you retrieve it from a thread-local variable. It is impossible to make the original `String`-based API typesafe and difficult to make the `Key`-based API typesafe, but it is a simple matter to make this API typesafe by making `ThreadLocal` a parameterized class (Item 29):”
+
+```java
+public final class ThreadLocal<T> {
+    public ThreadLocal();
+    public void set(T value);
+    public T get();
+}
+```
+
+* **“To summarize, avoid the natural tendency to represent objects as strings when better data types exist or can be written. Used inappropriately, strings are more cumbersome, less flexible, slower, and more error-prone than other types. Types for which strings are commonly misused include primitive types, enums, and aggregate types.”**
