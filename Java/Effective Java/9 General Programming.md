@@ -285,3 +285,26 @@ public String statement() {
 ```
 
 * **“The moral is simple: Don’t use the string concatenation operator to combine more than a few strings unless performance is irrelevant. Use `StringBuilder`’s `append` method instead. Alternatively, use a character array, or process the strings one at a time instead of combining them.”**
+
+## Item 64: Refer to objects by their interfaces
+
+* “You should favor the use of interfaces over classes to refer to objects.”
+  * **“If appropriate interface types exist, then parameters, return values, variables, and fields should all be declared using interface types.”**
+  * “The only time you really need to refer to an object’s class is when you’re creating it with a constructor.”
+
+```java
+// Good - uses interface as type
+Set<Son> sonSet = new LinkedHashSet<>();
+
+// Bad - uses class as type!
+LinkedHashSet<Son> sonSet = new LinkedHashSet<>();
+```
+
+* **“If you get into the habit of using interfaces as types, your program will be much more flexible.”**
+  * “If you decide that you want to switch implementations, all you have to do is change the class name in the constructor (or use a different static factory). ”
+* **“It is entirely appropriate to refer to an object by a class rather than an interface if no appropriate interface exists.”**
+  * “Value classes are rarely written with multiple implementations in mind. They are often final and rarely have corresponding interfaces.”
+  * “A second case in which there is no appropriate interface type is that of objects belonging to a framework whose fundamental types are classes rather than interfaces.”
+  * “A final case in which there is no appropriate interface type is that of classes that implement an interface but also provide extra methods not found in the interface”
+
+* **“If there is no appropriate interface, just use the least specific class in the class hierarchy that provides the required functionality.”**
