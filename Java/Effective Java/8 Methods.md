@@ -325,3 +325,70 @@ static int min(int firstArg, int... remainingArgs) {
 * “Exercise care when using varargs in performance-critical situations. Every invocation of a varargs method causes an array allocation and initialization.”
 * “The static factories for `EnumSet` use this technique to reduce the cost of creating enum sets to a minimum. This was appropriate because it was critical that enum sets provide a performance-competitive replacement for bit fields (Item 36).”
 * **“In summary, varargs are invaluable when you need to define methods with a variable number of arguments. Precede the varargs parameter with any required parameters, and be aware of the performance consequences of using varargs.”**
+
+## Item 54: Return empty collections or arrays, not nulls
+
+```java
+// Returns null to indicate an empty collection. Don't do this!
+private final List<Cheese> cheesesInStock = ...;
+
+/**
+ * @return a list containing all of the cheeses in the shop,
+ *     or null if no cheeses are available for purchase.
+ */
+public List<Cheese> getCheeses() {
+    return cheesesInStock.isEmpty() ? null
+        : new ArrayList<>(cheesesInStock);
+}
+```
+
+* “There is no reason to special-case the situation where no cheeses are available for purchase. Doing so requires extra code in the client to handle the possibly null return value, for example:”
+
+```java
+List<Cheese> cheeses = shop.getCheeses();
+if (cheeses != null && cheeses.contains(Cheese.STILTON))
+    System.out.println("Jolly good, just the thing.");
+```
+
+* “Here is the typical code to return a possibly empty collection.”
+
+
+```java
+//The right way to return a possibly empty collection
+public List<Cheese> getCheeses() {
+    return new ArrayList<>(cheesesInStock);
+}
+```
+
+* “In the unlikely event that you have evidence suggesting that allocating empty collections is harming performance, you can avoid the allocations by returning the same *immutable* empty collection repeatedly, as immutable objects may be shared freely (Item 17).”
+
+
+```java
+// Optimization - avoids allocating empty collections
+public List<Cheese> getCheeses() {
+    return cheesesInStock.isEmpty() ? Collections.emptyList()
+        : new ArrayList<>(cheesesInStock);
+}
+```
+
+* “The situation for arrays is identical to that for collections. ”
+  * “Never return null instead of a zero-length array.”
+  * “Normally, you should simply return an array of the correct length, which may be zero.”
+  * “Note that we’re passing a zero-length array into the toArray method to indicate the desired return type”
+
+```java
+//The right way to return a possibly empty array
+public Cheese[] getCheeses() {
+    return cheesesInStock.toArray(new Cheese[0]);
+}
+```
+
+* “Do *not* preallocate the array passed to `toArray` in hopes of improving performance. ”
+
+
+```java
+// Don’t do this - preallocating the array harms performance!
+return cheesesInStock.toArray(new Cheese[cheesesInStock.size()]);
+```
+
+* “In summary, **never return `null` in place of an empty array or collection**. It makes your API more difficult to use and more prone to error, and it has no performance advantages.”
