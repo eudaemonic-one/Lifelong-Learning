@@ -106,3 +106,39 @@ public interface Iterable<E> {
 ```
 
 * **“In summary, the for-each loop provides compelling advantages over the traditional `for` loop in clarity, flexibility, and bug prevention, with no performance penalty. Use for-each loops in preference to `for` loops wherever you can.”**
+
+## Item 59: Know and use the libraries
+
+* “Suppose you want to generate random integers between zero and some upper bound. Faced with this common task, many programmers would write a little method that looks something like this:”
+
+```java
+// Common but deeply flawed!
+static Random rnd = new Random();
+
+static int random(int n) {
+    return Math.abs(rnd.nextInt()) % n;
+}
+```
+
+* “This method may look good, but it has three flaws.”
+  * “The first is that if `n` is a small power of two, the sequence of random numbers will repeat itself after a fairly short period.”
+  * “The second flaw is that if `n` is not a power of two, some numbers will, on average, be returned more frequently than others. If n is large, this effect can be quite pronounced.”
+  * “The third flaw in the `random` method is that it can, on rare occasions, fail catastrophically, returning a number outside the specified range.”
+* “To write a version of the `random` method that corrects these flaws, you’d have to know a fair amount about pseudorandom number generators, number theory, and two’s complement arithmetic. Luckily, you don’t have to do this—it’s been done for you. It’s called `Random.nextInt(int)`.”
+* **“By using a standard library, you take advantage of the knowledge of the experts who wrote it and the experience of those who used it before you.”**
+* “As of Java 7, you should no longer use `Random`.”
+  * “For most uses, **the random number generator of choice is now `ThreadLocalRandom`**.”
+  * “It produces higher quality random numbers, and it’s very fast.”
+
+  * “For fork join pools and parallel streams, use `SplittableRandom`.”
+* “A second advantage of using the libraries is that you don’t have to waste your time writing ad hoc solutions to problems that are only marginally related to your work.”
+* “A third advantage of using standard libraries is that their performance tends to improve over time, with no effort on your part.”
+* “A fourth advantage of using libraries is that they tend to gain functionality over time.”
+  * “If a library is missing something, the developer community will make it known, and the missing functionality may get added in a subsequent release.”
+
+* “A final advantage of using the standard libraries is that you place your code in the mainstream.”
+  * “Such code is more easily readable, maintainable, and reusable by the multitude of developers.”
+* **“Numerous features are added to the libraries in every major release, and it pays to keep abreast of these additions.”**
+* “The libraries are too big to study all the documentation [Java9-api], but **every programmer should be familiar with the basics of `java.lang`, `java.util`, and `java.io`, and their subpackages**.”
+* “Several libraries bear special mention. The collections framework and the streams library (Items 45–48) should be part of every programmer’s basic toolkit, as should parts of the concurrency utilities in `java.util.concurrent`. This package contains both high-level utilities to simplify the task of multithreaded programming and low-level primitives to allow experts to write their own higher-level concurrent abstractions.”
+* **“To summarize, don’t reinvent the wheel.”**
