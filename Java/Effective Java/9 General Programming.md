@@ -174,3 +174,31 @@ public static void main(String[] args) {
   * “Using `BigDecimal` has the added advantage that it gives you full control over rounding, letting you select from eight rounding modes whenever an operation that entails rounding is performed. This comes in handy if you’re performing business calculations with legally mandated rounding behavior.”
   * “If performance is of the essence, you don’t mind keeping track of the decimal point yourself, and the quantities aren’t too big, use `int` or `long`.”
   * “If the quantities don’t exceed nine decimal digits, you can use `int`; if they don’t exceed eighteen digits, you can use `long`. If the quantities might exceed eighteen digits, use `BigDecimal`.”
+
+
+## Item 61: Prefer primitive types to boxed primitives
+
+* “Java has a two-part type system, consisting of *primitives*, such as `int`, `double`, and `boolean`, and *reference types*, such as `String` and `List`. Every primitive type has a corresponding reference type, called a boxed primitive. The boxed primitives corresponding to `int`, `double`, and `boolean` are `Integer`, `Double`, and `Boolean`.”
+* “There are three major differences between primitives and boxed primitives.”
+  * “First, primitives have only their values, whereas boxed primitives have identities distinct from their values.”
+  * “Second, primitive types have only fully functional values, whereas each boxed primitive type has one nonfunctional value, which is `null`, in addition to all the functional values of the corresponding primitive type.”
+  * “Last, primitives are more time- and space-efficient than boxed primitives.”
+* **“Applying the `==` operator to boxed primitives is almost always wrong.”**
+* “In practice, if you need a comparator to describe a type’s natural order, you should simply call `Comparator.naturalOrder()`, and if you write a comparator yourself, you should use the comparator construction methods, or the static compare methods on primitive types (Item 14).”
+
+
+```java
+Comparator<Integer> naturalOrder = (iBoxed, jBoxed) -> {
+    int i = iBoxed, j = jBoxed; // Auto-unboxing
+    return i < j ? -1 : (i == j ? 0 : 1);
+};
+```
+
+* “In nearly every case **when you mix primitives and boxed primitives in an operation, the boxed primitive is auto-unboxed**.”
+  * “If a null object reference is auto-unboxed, you get a `NullPointerException`.”
+* “So when should you use boxed primitives? They have several legitimate uses.”
+  * “The first is as elements, keys, and values in collections. You can’t put primitives in collections, so you’re forced to use boxed primitives.”
+  * “You must use boxed primitives as type parameters in parameterized types and methods (Chapter 5), because the language does not permit you to use primitives.”
+
+  * “Finally, you must use boxed primitives when making reflective method invocations (Item 65).”
+* **“In summary, use primitives in preference to boxed primitives whenever you have the choice. Primitive types are simpler and faster. If you must use boxed primitives, be careful! Autoboxing reduces the verbosity, but not the danger, of using boxed primitives. When your program compares two boxed primitives with the `==` operator, it does an identity comparison, which is almost certainly not what you want. When your program does mixed-type computations involving boxed and unboxed primitives, it does unboxing, and when your program does unboxing, it can throw a `NullPointerException`. Finally, when your program boxes primitive values, it can result in costly and unnecessary object creations.”**
