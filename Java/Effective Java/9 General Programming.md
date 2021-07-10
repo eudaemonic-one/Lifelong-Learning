@@ -390,3 +390,37 @@ private static void fatalError(String msg) {
 * “It is legitimate to use native methods to access platform-specific facilities, but it is seldom necessary: as the Java platform matured, it provided access to many features previously found only in host platforms.”
 * **“It is rarely advisable to use native methods for improved performance.”**
 * **“In summary, think twice before using native methods. It is rare that you need to use them for improved performance. If you must use native methods to access low-level resources or native libraries, use as little native code as possible and test it thoroughly. A single bug in the native code can corrupt your entire application.”**
+
+## Item 67: Optimize judiciously
+
+* “There are three aphorisms concerning optimization that everyone should know:”
+  * “More computing sins are committed in the name of efficiency (without necessarily achieving it) than for any other single reason—including blind stupidity.
+    —William A. Wulf [Wulf72]”
+  * “We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil.
+    —Donald E. Knuth [Knuth74]”
+  * “We follow two rules in the matter of optimization:
+    Rule 1. Don’t do it.
+    Rule 2 (for experts only). Don’t do it yet—that is, not until you have a perfectly clear and unoptimized solution.
+    —M. A. Jackson [Jackson75]”
+* **“Strive to write good programs rather than fast ones.”**
+  * “Don’t sacrifice sound architectural principles for performance.”
+  * “Good programs embody the principle of *information hiding*: where possible, they localize design decisions within individual components, so individual decisions can be changed without affecting the remainder of the system (Item 15).”
+  * “You must think about performance during the design process.”
+
+* **“Strive to avoid design decisions that limit performance.”**
+  * “The components of a design that are most difficult to change after the fact are those specifying interactions between components and with the outside world.”
+    * “Chief among these design components are APIs, wire-level protocols, and persistent data formats.”
+* **“Consider the performance consequences of your API design decisions.”**
+  * “Making a public type mutable may require a lot of needless defensive copying (Item 50).”
+  * “Similarly, using inheritance in a public class where composition would have been appropriate ties the class forever to its superclass, which can place artificial limits on the performance of the subclass (Item 18).”
+  * “As a final example, using an implementation type rather than an interface in an API ties you to a specific implementation, even though faster implementations may be written in the future (Item 64).”
+* “Luckily, it is generally the case that good API design is consistent with good performance. **It is a very bad idea to warp an API to achieve good performance.**”
+* **“Measure performance before and after each attempted optimization.”**
+  * “Often, attempted optimizations have no measurable effect on performance; sometimes, they make it worse.”
+  * “Profiling tools can help you decide where to focus your optimization efforts”
+  * “Another tool that deserves special mention is jmh, which is not a profiler but a *microbenchmarking framework* that provides unparalleled visibility into the detailed performance of Java code [JMH].”
+* “Java has a weaker *performance model*: The relative cost of the various primitive operations is less well defined.”
+  * “The “abstraction gap” between what the programmer writes and what the CPU executes is greater, which makes it even more difficult to reliably predict the performance consequences of optimizations.”
+* “Not only is Java’s performance model ill-defined, but it varies from implementation to implementation, from release to release, and from processor to processor.”
+
+* **“To summarize, do not strive to write fast programs—strive to write good ones; speed will follow. But do think about performance while you’re designing systems, especially while you’re designing APIs, wire-level protocols, and persistent data formats. When you’ve finished building the system, measure its performance. If it’s fast enough, you’re done. If not, locate the source of the problem with the aid of a profiler and go to work optimizing the relevant parts of the system. The first step is to examine your choice of algorithms: no amount of low-level optimization can make up for a poor choice of algorithm. Repeat this process as necessary, measuring the performance after every change, until you’re satisfied.”**
