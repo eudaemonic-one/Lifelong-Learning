@@ -308,3 +308,173 @@ LinkedHashSet<Son> sonSet = new LinkedHashSet<>();
   * “A final case in which there is no appropriate interface type is that of classes that implement an interface but also provide extra methods not found in the interface”
 
 * **“If there is no appropriate interface, just use the least specific class in the class hierarchy that provides the required functionality.”**
+
+## Item 65: Prefer interfaces to reflection
+
+* “The *core reflection facility*, `java.lang.reflect`, offers programmatic access to arbitrary classes. Given a `Class` object, you can obtain `Constructor`, `Method`, and `Field` instances representing the constructors, methods, and fields of the class represented by the `Class` instance. These objects provide programmatic access to the class’s member names, field types, method signatures, and so on.”
+* “Moreover, `Constructor`, `Method`, and `Field` instances let you manipulate their underlying counterparts *reflectively*: you can construct instances, invoke methods, and access fields of the underlying class by invoking methods on the `Constructor`, `Method`, and `Field` instances.”
+  * “For example, `Method.invoke` lets you invoke any method on any object of any class (subject to the usual security constraints).”
+  * “Reflection allows one class to use another, even if the latter class did not exist when the former was compiled.”
+* “This power, however, comes at a price:”
+  * “**You lose all the benefits of compile-time type checking**, including exception checking.”
+    * “If a program attempts to invoke a nonexistent or inaccessible method reflectively, it will fail at runtime unless you’ve taken special precautions.”
+  * **“The code required to perform reflective access is clumsy and verbose.”**
+  * **“Performance suffers.”**
+* “There are a few sophisticated applications that require reflection. Examples include code analysis tools and dependency injection frameworks. Even such tools have been moving away from reflection of late, as its disadvantages become clearer.”
+  * **“If you have any doubts as to whether your application requires reflection, it probably doesn’t.”**
+* **“You can obtain many of the benefits of reflection while incurring few of its costs by using it only in a very limited form.”**
+  * “For many programs that must use a class that is unavailable at compile time, there exists at compile time an appropriate interface or superclass by which to refer to the class (Item 64).”
+  * “If this is the case, you can **create instances reflectively and access them normally via their interface or superclass**.”
+
+
+```java
+// Reflective instantiation with interface access
+public static void main(String[] args) {
+    // Translate the class name into a Class object
+    Class<? extends Set<String>> cl = null;
+    try {
+        cl = (Class<? extends Set<String>>)  // Unchecked cast!
+                Class.forName(args[0]);
+    } catch (ClassNotFoundException e) {
+        fatalError("Class not found.");
+    }
+    // Get the constructor
+    Constructor<? extends Set<String>> cons = null;
+    try {
+        cons = cl.getDeclaredConstructor();
+    } catch (NoSuchMethodException e) {
+        fatalError("No parameterless constructor");
+    }
+    // Instantiate the set
+    Set<String> s = null;
+    try {
+        s = cons.newInstance();
+    } catch (IllegalAccessException e) {
+        fatalError("Constructor not accessible");
+    } catch (InstantiationException e) {
+        fatalError("Class not instantiable.");
+    } catch (InvocationTargetException e) {
+        fatalError("Constructor threw " + e.getCause());
+    } catch (ClassCastException e) {
+        fatalError("Class doesn't implement Set");
+    }
+    // Exercise the set
+    s.addAll(Arrays.asList(args).subList(1, args.length));
+    System.out.println(s);
+}
+private static void fatalError(String msg) {
+    System.err.println(msg);
+    System.exit(1);
+}
+```
+
+* “The toy program could easily be turned into a generic set tester that validates the specified `Set` implementation by aggressively manipulating one or more instances and checking that they obey the `Set` contract.”
+* “Similarly, it could be turned into a generic set performance analysis tool.”
+* “In fact, this technique is sufficiently powerful to implement a full-blown *service provider framework* (Item 1).”
+* “This example demonstrates two disadvantages of reflection. ”
+  * “First, the example can generate six different exceptions at runtime, all of which would have been compile-time errors if reflective instantiation were not used.”
+  * “The second disadvantage is that it takes twenty-five lines of tedious code to generate an instance of the class from its name, whereas a constructor invocation would fit neatly on a single line.”
+  * “The length of the program could be reduced by catching `ReflectiveOperationException`, a superclass of the various reflective exceptions that was introduced in Java 7.”
+  * “Once instantiated, the set is indistinguishable from any other `Set` instance.”
+* “If you compile this program, you’ll get an unchecked cast warning. This warning is legitimate, in that the cast to `Class<? extends Set<String>>` will succeed even if the named class is not a `Set` implementation, in which case the program with throw a `ClassCastException` when it instantiates the class. ”
+* “A legitimate, if rare, use of reflection is to manage a class’s dependencies on other classes, methods, or fields that may be absent at runtime.”
+  * “This can be useful if you are writing a package that must run against multiple versions of some other package.”
+  * “The technique is to compile your package against the minimal environment required to support it, typically the oldest version, and to access any newer classes or methods reflectively. ”
+  * “To make this work, you have to take appropriate action if a newer class or method that you are attempting to access does not exist at runtime. Appropriate action might consist of using some alternate means to accomplish the same goal or operating with reduced functionality.”
+* **“In summary, reflection is a powerful facility that is required for certain sophisticated system programming tasks, but it has many disadvantages. If you are writing a program that has to work with classes unknown at compile time, you should, if at all possible, use reflection only to instantiate objects, and access the objects using some interface or superclass that is known at compile time.”**
+
+## Item 66: Use native methods judiciously
+
+* “The Java Native Interface (JNI) allows Java programs to call *native methods*, which are methods written in *native programming languages* such as C or C++.”
+* “Historically, native methods have had three main uses. They provide access to platform-specific facilities such as registries. They provide access to existing libraries of native code, including legacy libraries that provide access to legacy data. Finally, native methods are used to write performance-critical parts of applications in native languages for improved performance.”
+* “It is legitimate to use native methods to access platform-specific facilities, but it is seldom necessary: as the Java platform matured, it provided access to many features previously found only in host platforms.”
+* **“It is rarely advisable to use native methods for improved performance.”**
+* **“In summary, think twice before using native methods. It is rare that you need to use them for improved performance. If you must use native methods to access low-level resources or native libraries, use as little native code as possible and test it thoroughly. A single bug in the native code can corrupt your entire application.”**
+
+## Item 67: Optimize judiciously
+
+* “There are three aphorisms concerning optimization that everyone should know:”
+  * “More computing sins are committed in the name of efficiency (without necessarily achieving it) than for any other single reason—including blind stupidity.
+    —William A. Wulf [Wulf72]”
+  * “We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil.
+    —Donald E. Knuth [Knuth74]”
+  * “We follow two rules in the matter of optimization:
+    Rule 1. Don’t do it.
+    Rule 2 (for experts only). Don’t do it yet—that is, not until you have a perfectly clear and unoptimized solution.
+    —M. A. Jackson [Jackson75]”
+* **“Strive to write good programs rather than fast ones.”**
+  * “Don’t sacrifice sound architectural principles for performance.”
+  * “Good programs embody the principle of *information hiding*: where possible, they localize design decisions within individual components, so individual decisions can be changed without affecting the remainder of the system (Item 15).”
+  * “You must think about performance during the design process.”
+
+* **“Strive to avoid design decisions that limit performance.”**
+  * “The components of a design that are most difficult to change after the fact are those specifying interactions between components and with the outside world.”
+    * “Chief among these design components are APIs, wire-level protocols, and persistent data formats.”
+* **“Consider the performance consequences of your API design decisions.”**
+  * “Making a public type mutable may require a lot of needless defensive copying (Item 50).”
+  * “Similarly, using inheritance in a public class where composition would have been appropriate ties the class forever to its superclass, which can place artificial limits on the performance of the subclass (Item 18).”
+  * “As a final example, using an implementation type rather than an interface in an API ties you to a specific implementation, even though faster implementations may be written in the future (Item 64).”
+* “Luckily, it is generally the case that good API design is consistent with good performance. **It is a very bad idea to warp an API to achieve good performance.**”
+* **“Measure performance before and after each attempted optimization.”**
+  * “Often, attempted optimizations have no measurable effect on performance; sometimes, they make it worse.”
+  * “Profiling tools can help you decide where to focus your optimization efforts”
+  * “Another tool that deserves special mention is jmh, which is not a profiler but a *microbenchmarking framework* that provides unparalleled visibility into the detailed performance of Java code [JMH].”
+* “Java has a weaker *performance model*: The relative cost of the various primitive operations is less well defined.”
+  * “The “abstraction gap” between what the programmer writes and what the CPU executes is greater, which makes it even more difficult to reliably predict the performance consequences of optimizations.”
+* “Not only is Java’s performance model ill-defined, but it varies from implementation to implementation, from release to release, and from processor to processor.”
+
+* **“To summarize, do not strive to write fast programs—strive to write good ones; speed will follow. But do think about performance while you’re designing systems, especially while you’re designing APIs, wire-level protocols, and persistent data formats. When you’ve finished building the system, measure its performance. If it’s fast enough, you’re done. If not, locate the source of the problem with the aid of a profiler and go to work optimizing the relevant parts of the system. The first step is to examine your choice of algorithms: no amount of low-level optimization can make up for a poor choice of algorithm. Repeat this process as necessary, measuring the performance after every change, until you’re satisfied.”**
+
+## Item 68: Adhere to generally accepted naming conventions
+
+* “The Java platform has a well-established set of *naming conventions*, many of which are contained in *The Java Language Specification* [JLS, 6.1].”
+* “Loosely speaking, naming conventions fall into two categories: typographical and grammatical.”
+* “There are only a handful of typographical naming conventions, covering packages, classes, interfaces, methods, fields, and type variables.”
+  * “Package and module names should be hierarchical with the components separated by periods.”
+    * “Components should consist of lowercase alphabetic characters and, rarely, digits.”
+    * “The name of any package that will be used outside your organization should begin with your organization’s Internet domain name with the components reversed, for example, `edu.cmu`, `com.google`, `org.eff`.”
+    * “Components should be short, generally eight or fewer characters.”
+      * “Meaningful abbreviations are encouraged, for example, `util` rather than `utilities`. Acronyms are acceptable, for example, `awt`. Components should generally consist of a single word or abbreviation.”
+    * “Additional components are appropriate for large facilities whose size demands that they be broken up into an informal hierarchy.”
+      * “For example, the `javax.util` package has a rich hierarchy of packages with names such as `java.util.concurrent.atomic`. Such packages are known as *subpackages*, although there is almost no linguistic support for package hierarchies.”
+  * “Class and interface names, including enum and annotation type names, should consist of one or more words, with the first letter of each word capitalized, for example, `List` or `FutureTask`.”
+    * “Abbreviations are to be avoided, except for acronyms and certain common abbreviations like `max` and `min`.”
+  * “Method and field names follow the same typographical conventions as class and interface names, except that the first letter of a method or field name should be lowercase, for example, `remove` or `ensureCapacity`.”
+    * “If an acronym occurs as the first word of a method or field name, it should be lowercase.”
+  * “The sole exception to the previous rule concerns “constant fields,” whose names should consist of one or more uppercase words separated by the underscore character, for example, `VALUES` or `NEGATIVE_INFINITY`.”
+    * “A constant field is a static final field whose value is immutable.”
+    * “For example, enum constants are constant fields. ”
+  * “Local variable names have similar typographical naming conventions to member names, except that abbreviations are permitted, as are individual characters and short sequences of characters whose meaning depends on the context in which they occur, for example, `i`, `denom`, `houseNum`.”
+  * “Input parameters are a special kind of local variable. They should be named much more carefully than ordinary local variables, as their names are an integral part of their method’s documentation.”
+  * “Type parameter names usually consist of a single letter.”
+    * “Most commonly it is one of these five: `T` for an arbitrary type, `E` for the element type of a collection, `K` and `V` for the key and value types of a map, and `X` for an exception.”
+    * “The return type of a function is usually `R`.”
+    * “A sequence of arbitrary types can be `T`, `U`, `V` or `T1`, `T2`, `T3`.”
+
+
+| Identifier Type    | Examples                                              |
+| ------------------ | ----------------------------------------------------- |
+| Package or Module  | `org.junit.jupiter.api`, `com.google.common.collect`  |
+| Class of Interface | `Stream`, `FutureTask`, `LinkedHashMap`, `HttpClient` |
+| Method or Field    | `remove`, `groupingBy`, `getCrc`                      |
+| Constant Field     | `MIN_VALUE`, `NEGATIVE_INFINITY`                      |
+| Local Variable     | `i`, `denom`, `houseNum`                              |
+| Type Parameter     | `T`, `E`, `K`, `V`, `X`, `R`, `U`, `V`, `T1`, `T2`    |
+
+* “Grammatical naming conventions are more flexible and more controversial than typographical conventions.”
+  * “Instantiable classes, including enum types, are generally named with a singular noun or noun phrase, such as `Thread`, `PriorityQueue`, or `ChessPiece`.”
+  * “Non-instantiable utility classes (Item 4) are often named with a plural noun, such as `Collectors` or `Collections`.”
+  * “Interfaces are named like classes, for example, `Collection` or `Comparator`, or with an adjective ending in able or ible, for example, `Runnable`, `Iterable`, or `Accessible`.”
+  * “Because annotation types have so many uses, no part of speech predominates. Nouns, verbs, prepositions, and adjectives are all common, for example, `BindingAnnotation`, `Inject`, `ImplementedBy`, or `Singleton`.”
+  * “Methods that perform some action are generally named with a verb or verb phrase (including object), for example, `append` or `drawImage`.”
+  * “Methods that return a `boolean` value usually have names that begin with the word `is` or, less commonly, `has`, followed by a noun, noun phrase, or any word or phrase that functions as an adjective, for example, `isDigit`, `isProbablePrime`, `isEmpty`, `isEnabled`, or `hasSiblings`.”
+  * “Methods that return a non-`boolean` function or attribute of the object on which they’re invoked are usually named with a noun, a noun phrase, or a verb phrase beginning with the verb `get`, for example, `size`, `hashCode`, or `getTime`.”
+  * “There is also a strong precedent for following this naming convention if a class contains both a setter and a getter for the same attribute. In this case, the two methods are typically named `getAttribute` and `setAttribute`.”
+  * “A few method names deserve special mention.”
+    * “Instance methods that convert the type of an object, returning an independent object of a different type, are often called `toType`, for example, `toString` or `toArray`.”
+    * “Methods that return a view (Item 6) whose type differs from that of the receiving object are often called `asType`, for example, `asList`.”
+    * “Methods that return a primitive with the same value as the object on which they’re invoked are often called `typeValue`, for example, `intValue`. ”
+    * “Common names for static factories include from, `of`, `valueOf`, `instance`, `getInstance`, `newInstance`, `getType`, and `newType` (Item 1, page 9).”
+  * “Grammatical conventions for field names are less well established and less important than those for class, interface, and method names because well-designed APIs contain few if any exposed fields.”
+    * “Fields of type boolean are often named like boolean accessor methods with the initial is omitted, for example, `initialized`, `composite`.”
+    * “Fields of other types are usually named with nouns or noun phrases, such as `height`, `digits`, or `bodyStyle`.”
