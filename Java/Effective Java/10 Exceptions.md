@@ -13,3 +13,24 @@
   * “If an object is to be accessed concurrently without external synchronization or is subject to externally induced state transitions, you must use an optional or distinguished return value, as the object’s state could change in the interval between the invocation of a state-testing method and its state-dependent method. Performance concerns may dictate that an optional or distinguished return value be used if a separate state-testing method would duplicate the work of the state-dependent method.”
   * “All other things being equal, a state-testing method is mildly preferable to a distinguished return value. It offers slightly better readability, and incorrect use may be easier to detect: if you forget to call a state-testing method, the state-dependent method will throw an exception, making the bug obvious; if you forget to check for a distinguished return value, the bug may be subtle. ”
 * **“In summary, exceptions are designed for exceptional conditions. Don’t use them for ordinary control flow, and don’t write APIs that force others to do so.”**
+
+## Item 70: Use checked exceptions for recoverable conditions and runtime exceptions for programming errors
+
+* “Java provides three kinds of throwables: *checked exceptions*, *runtime exceptions*, and *errors*.”
+* “The cardinal rule in deciding whether to use a checked or an unchecked exception is this: **use checked exceptions for conditions from which the caller can reasonably be expected to recover**.”
+  * “By throwing a checked exception, you force the caller to handle the exception in a catch clause or to propagate it outward.”
+  * “Each checked exception that a method is declared to throw is therefore a potent indication to the API user that the associated condition is a possible outcome of invoking the method.”
+* “There are two kinds of unchecked throwables: runtime exceptions and errors.”
+  * “They are identical in their behavior: both are throwables that needn’t, and generally shouldn’t, be caught.”
+  * “If a program does not catch such a throwable, it will cause the current thread to halt with an appropriate error message.”
+* **“Use runtime exceptions to indicate programming errors.”**
+  * “The great majority of runtime exceptions indicate precondition violations. A *precondition violation* is simply a failure by the client of an API to adhere to the contract established by the API specification.”
+* “While the Java Language Specification does not require it, there is a strong convention that *errors* are reserved for use by the JVM to indicate resource deficiencies, invariant failures, or other conditions that make it impossible to continue execution. ”
+  * “Therefore, all of the unchecked throwables you implement should subclass `RuntimeException` (directly or indirectly).”
+  * “Not only shouldn’t you define `Error` subclasses, but with the exception of `AssertionError`, you shouldn’t throw them either.”
+* “API designers often forget that exceptions are full-fledged objects on which arbitrary methods can be defined. The primary use of such methods is to provide code that catches the exception with additional information concerning the condition that caused the exception to be thrown.”
+  * “In the absence of such methods, programmers have been known to parse the string representation of an exception to ferret out additional information. ”
+
+  * “This is extremely bad practice (Item 12).”
+  * “Because checked exceptions generally indicate recoverable conditions, it’s especially important for them to provide methods that furnish information to help the caller recover from the exceptional condition.”
+* **“To summarize, throw checked exceptions for recoverable conditions and unchecked exceptions for programming errors. When in doubt, throw unchecked exceptions. Don’t define any throwables that are neither checked exceptions nor runtime exceptions. Provide methods on your checked exceptions to aid in recovery.”**
