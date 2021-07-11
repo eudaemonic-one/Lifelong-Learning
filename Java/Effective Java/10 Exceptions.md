@@ -65,3 +65,49 @@
 * “If an exception fits your needs, go ahead and use it, but only if the conditions under which you would throw it are consistent with the exception’s documentation: reuse must be based on documented semantics, not just on name.”
 * “Also, feel free to subclass a standard exception if you want to add more detail (Item 75), but remember that exceptions are serializable (Chapter 12). That alone is reason not to write your own exception class without good reason.”
 * “Throw `IllegalStateException` if no argument values would have worked, otherwise throw `IllegalArgumentException`.”
+
+## Item 73: Throw exceptions appropriate to the abstraction
+
+* “It is disconcerting when a method throws an exception that has no apparent connection to the task that it performs.”
+  * “This often happens when a method propagates an exception thrown by a lower-level abstraction.”
+  * “Not only is it disconcerting, but it pollutes the API of the higher layer with implementation details.”
+  * “If the implementation of the higher layer changes in a later release, the exceptions it throws will change too, potentially breaking existing client programs.”
+* “To avoid this problem, **higher layers should catch lower-level exceptions and, in their place, throw exceptions that can be explained in terms of the higher-level abstraction**.”
+
+
+```java
+// Exception Translation
+try {
+    ... // Use lower-level abstraction to do our bidding
+} catch (LowerLevelException e) {
+    throw new HigherLevelException(...);
+}
+```
+
+* “A special form of exception translation called *exception chaining* is called for in cases where the lower-level exception might be helpful to someone debugging the problem that caused the higher-level exception. The lower-level exception (the cause) is passed to the higher-level exception, which provides an accessor method (`Throwable`’s `getCause` method) to retrieve the lower-level exception:”
+
+```java
+// Exception Chaining
+try {
+    ... // Use lower-level abstraction to do our bidding
+} catch (LowerLevelException cause) {
+    throw new HigherLevelException(cause);
+} 
+```
+
+* “The higher-level exception’s constructor passes the cause to a *chaining-aware* superclass constructor, so it is ultimately passed to one of `Throwable`’s chaining-aware constructors, such as `Throwable(Throwable)`:”
+
+
+```java
+// Exception with chaining-aware constructor
+class HigherLevelException extends Exception {
+    HigherLevelException(Throwable cause) {
+        super(cause);
+    }
+}
+```
+
+* **“While exception translation is superior to mindless propagation of exceptions from lower layers, it should not be overused.”**
+  * “Where possible, the best way to deal with exceptions from lower layers is to avoid them, by ensuring that lower-level methods succeed.”
+* “If it is impossible to prevent exceptions from lower layers, the next best thing is to have the higher layer silently work around these exceptions, insulating the caller of the higher-level method from lower-level problems.”
+* **“In summary, if it isn’t feasible to prevent or to handle exceptions from lower layers, use exception translation, unless the lower-level method happens to guarantee that all of its exceptions are appropriate to the higher level. Chaining provides the best of both worlds: it allows you to throw an appropriate higher-level exception, while capturing the underlying cause for failure analysis (Item 75).”**
