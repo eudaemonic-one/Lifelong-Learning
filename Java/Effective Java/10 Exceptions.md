@@ -34,3 +34,16 @@
   * “This is extremely bad practice (Item 12).”
   * “Because checked exceptions generally indicate recoverable conditions, it’s especially important for them to provide methods that furnish information to help the caller recover from the exceptional condition.”
 * **“To summarize, throw checked exceptions for recoverable conditions and unchecked exceptions for programming errors. When in doubt, throw unchecked exceptions. Don’t define any throwables that are neither checked exceptions nor runtime exceptions. Provide methods on your checked exceptions to aid in recovery.”**
+
+## Item 71: Avoid unnecessary use of checked exceptions
+
+* “Many Java programmers dislike checked exceptions, but used properly, they can improve APIs and programs. Unlike return codes and unchecked exceptions, they *force* programmers to deal with problems, enhancing reliability. That said, overuse of checked exceptions in APIs can make them far less pleasant to use.”
+* “If a method throws a single checked exception, this exception is the sole reason the method must appear in a `try` block and can’t be used directly in streams.”
+* “The easiest way to eliminate a checked exception is to return an *optional* of the desired result type (Item 55).”
+  * “Instead of throwing a checked exception, the method simply returns an empty optional.”
+  * “The disadvantage of this technique is that the method can’t return any additional information detailing its inability to perform the desired computation.”
+  * “Exceptions, by contrast, have descriptive types, and can export methods to provide additional information (Item 70).”
+* “You can also turn a checked exception into an unchecked exception by breaking the method that throws the exception into two methods, the first of which returns a `boolean` indicating whether the exception would be thrown.”
+  * “This refactoring is not always appropriate, but where it is, it can make an API more pleasant to use.”
+
+* **“In summary, when used sparingly, checked exceptions can increase the reliability of programs; when overused, they make APIs painful to use. If callers won’t be able to recover from failures, throw unchecked exceptions. If recovery may be possible and you want to *force* callers to handle exceptional conditions, first consider returning an optional. Only if this would provide insufficient information in the case of failure should you throw a checked exception.”**
