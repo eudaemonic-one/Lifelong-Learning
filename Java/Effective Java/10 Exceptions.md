@@ -47,3 +47,21 @@
   * “This refactoring is not always appropriate, but where it is, it can make an API more pleasant to use.”
 
 * **“In summary, when used sparingly, checked exceptions can increase the reliability of programs; when overused, they make APIs painful to use. If callers won’t be able to recover from failures, throw unchecked exceptions. If recovery may be possible and you want to *force* callers to handle exceptional conditions, first consider returning an optional. Only if this would provide insufficient information in the case of failure should you throw a checked exception.”**
+
+## Item 72: Favor the use of standard exceptions
+
+* “Reusing standard exceptions has several benefits.”
+  * “Chief among them is that it makes your API easier to learn and use because it matches the established conventions that programmers are already familiar with.”
+  * “A close second is that programs using your API are easier to read because they aren’t cluttered with unfamiliar exceptions.”
+  * “Last (and least), fewer exception classes means a smaller memory footprint and less time spent loading classes.”
+
+* “The most commonly reused exception type is `IllegalArgumentException` (Item 49). This is generally the exception to throw when the caller passes in an argument whose value is inappropriate.”
+* “Another commonly reused exception is `IllegalStateException`. This is generally the exception to throw if the invocation is illegal because of the state of the receiving object.”
+* “If a caller passes `null` in some parameter for which null values are prohibited, convention dictates that `NullPointerException` be thrown rather than `IllegalArgumentException`.”
+* “Similarly, if a caller passes an out-of-range value in a parameter representing an index into a sequence, `IndexOutOfBoundsException` should be thrown rather than `IllegalArgumentException`.”
+* “Another reusable exception is `ConcurrentModificationException`. It should be thrown if an object that was designed for use by a single thread (or with external synchronization) detects that it is being modified concurrently.”
+* “A last standard exception of note is `UnsupportedOperationException`. This is the exception to throw if an object does not support an attempted operation.”
+* **“Do not reuse `Exception`, `RuntimeException`, `Throwable`, or Error directly.”**
+* “If an exception fits your needs, go ahead and use it, but only if the conditions under which you would throw it are consistent with the exception’s documentation: reuse must be based on documented semantics, not just on name.”
+* “Also, feel free to subclass a standard exception if you want to add more detail (Item 75), but remember that exceptions are serializable (Chapter 12). That alone is reason not to write your own exception class without good reason.”
+* “Throw `IllegalStateException` if no argument values would have worked, otherwise throw `IllegalArgumentException`.”
