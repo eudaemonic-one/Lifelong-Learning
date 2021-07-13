@@ -58,3 +58,141 @@ private void readObjectNoData() throws InvalidObjectException {
   * “They use compiler-generated *synthetic fields* to store references to *enclosing instances* and to store values of local variables from enclosing scopes. How these fields correspond to the class definition is unspecified, as are the names of anonymous and local classes.”
   * “A *static member class* can, however, implement `Serializable`.”
 * **“To summarize, the ease of implementing `Serializable` is specious. Unless a class is to be used only in a protected environment where versions will never have to interoperate and servers will never be exposed to untrusted data, implementing `Serializable` is a serious commitment that should be made with great care. Extra caution is warranted if a class permits inheritance.”**
+
+## Item 87: Consider using a custom serialized form
+
+* **“Do not accept the default serialized form without first considering whether it is appropriate.”**
+* “The ideal serialized form of an object contains only the *logical* data represented by the object. It is independent of the physical representation.”
+  * **“The default serialized form is likely to be appropriate if an object’s physical representation is identical to its logical content.”**
+
+```java
+// Good candidate for default serialized form
+public class Name implements Serializable {
+    /**
+     * Last name. Must be non-null.
+     * @serial
+     */
+    private final String lastName;
+
+    /**
+     * First name. Must be non-null.
+     * @serial
+     */
+    private final String firstName;
+    /**
+     * Middle name, or null if there is none.
+     * @serial
+     */
+    private final String middleName;
+
+    ... // Remainder omitted
+}
+```
+
+* **“Even if you decide that the default serialized form is appropriate, you often must provide a `readObject` method to ensure invariants and security.”**
+* “Note that there are documentation comments on the `lastName`, `firstName`, and `middleName` fields, even though they are private. That is because these private fields define a public API, which is the serialized form of the class, and this public API must be documented. The presence of the `@serial` tag tells Javadoc to place this documentation on a special page that documents serialized forms.”
+
+
+```java
+// Awful candidate for default serialized form
+public final class StringList implements Serializable {
+    private int size = 0;
+    private Entry head = null;
+
+    private static class Entry implements Serializable {
+        String data;
+        Entry  next;
+        Entry  previous;
+    }
+
+    ... // Remainder omitted
+}
+```
+
+* **“Using the default serialized form when an object’s physical representation differs substantially from its logical data content has four disadvantages:”**
+  * **“It permanently ties the exported API to the current internal representation.”**
+  * **“It can consume excessive space.”**
+  * **“It can consume excessive time.”**
+  * **“It can cause stack overflows.”**
+* “Here is a revised version of `StringList` with `writeObject` and `readObject` methods that implement this serialized form. As a reminder, the `transient` modifier indicates that an instance field is to be omitted from a class’s default serialized form:”
+
+
+```java
+// StringList with a reasonable custom serialized form
+public final class StringList implements Serializable {
+    private transient int size   = 0;
+    private transient Entry head = null;
+
+    // No longer Serializable!
+    private static class Entry {
+        String data;
+        Entry  next;
+        Entry  previous;
+    }
+
+    // Appends the specified string to the list
+    public final void add(String s) { ... }
+
+    /**
+     * Serialize this {@code StringList} instance.
+     *
+     * @serialData The size of the list (the number of strings
+     * it contains) is emitted ({@code int}), followed by all of
+     * its elements (each a {@code String}), in the proper
+     * sequence.
+     */
+    private void writeObject(ObjectOutputStream s)
+            throws IOException {
+        s.defaultWriteObject();
+        s.writeInt(size);
+
+        // Write out all elements in the proper order.
+        for (Entry e = head; e != null; e = e.next)
+            s.writeObject(e.data);
+    }
+
+    private void readObject(ObjectInputStream s)
+            throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        int numElements = s.readInt();
+
+        // Read in all elements and insert them in list
+        for (int i = 0; i < numElements; i++)
+            add((String) s.readObject());
+    }
+
+    ... // Remainder omitted
+}
+```
+
+* “The first thing `writeObject` does is to invoke `defaultWriteObject`, and the first thing `readObject` does is to invoke `defaultReadObject`, even though all of `StringList`’s fields are transient.”
+  * “Had the earlier version’s `readObject` method failed to invoke `defaultReadObject`, the deserialization would fail with a `StreamCorruptedException`.”
+* **“Before deciding to make a field nontransient, convince yourself that its value is part of the logical state of the object.”**
+  * “If you use a custom serialized form, most or all of the instance fields should be labeled `transient`, as in the `StringList` example above.”
+* “If you are using the default serialized form and you have labeled one or more fields `transient`, remember that these fields will be initialized to their *default values* when an instance is deserialized”
+  * “If these values are unacceptable for any transient fields, you must provide a `readObject` method that invokes the `defaultReadObject` method and then restores transient fields to acceptable values (Item 88).”
+  * “Alternatively, these fields can be lazily initialized the first time they are used (Item 83).”
+* “Whether or not you use the default serialized form, **you must impose any synchronization on object serialization that you would impose on any other method that reads the entire state of the object**.”
+
+```java
+// writeObject for synchronized class with default serialized form
+private synchronized void writeObject(ObjectOutputStream s)
+        throws IOException {
+    s.defaultWriteObject();
+}
+```
+
+* “If you put synchronization in the `writeObject` method, you must ensure that it adheres to the same lock-ordering constraints as other activities, or you risk a resource-ordering deadlock [Goetz06, 10.1.5].”
+* **“Regardless of what serialized form you choose, declare an explicit serial version UID in every serializable class you write.”**
+  * “This eliminates the serial version UID as a potential source of incompatibility (Item 86).”
+
+  * “If no serial version UID is provided, an expensive computation is performed to generate one at runtime.”
+
+```java
+private static final long serialVersionUID = randomLongValue;
+```
+
+* “If you write a new class, it doesn’t matter what value you choose for `randomLongValue`. You can generate the value by running the `serialver` utility on the class, but it’s also fine to pick a number out of thin air.”
+* “If you ever want to make a new version of a class that is incompatible with existing versions, merely change the value in the serial version UID declaration.”
+  * **“Do not change the serial version UID unless you want to break compatibility with all existing serialized instances of a class.”**
+* **“To summarize, if you have decided that a class should be serializable (Item 86), think hard about what the serialized form should be. Use the default serialized form *only* if it is a reasonable description of the logical state of the object; otherwise design a custom serialized form that aptly describes the object. You should allocate as much time to designing the serialized form of a class as you allocate to designing an exported method (Item 51). Just as you can’t eliminate exported methods from future versions, you can’t eliminate fields from the serialized form; they must be preserved forever to ensure serialization compatibility. Choosing the wrong serialized form can have a permanent, negative impact on the complexity and performance of a class.”**
