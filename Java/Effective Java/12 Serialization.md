@@ -319,3 +319,81 @@ public enum Elvis {
     * “If it is protected or public, it will apply to all subclasses that do not override it.”
     * “If a `readResolve` method is protected or public and a subclass does not override it, deserializing a subclass instance will produce a superclass instance, which is likely to cause a `ClassCastException`.”
 * **“To summarize, use enum types to enforce instance control invariants wherever possible. If this is not possible and you need a class to be both serializable and instance-controlled, you must provide a `readResolve` method and ensure that all of the class’s instance fields are either primitive or transient.”**
+
+## Item 90: Consider serialization proxies instead of serialized instances
+
+* “First, design a private static nested class that concisely represents the logical state of an instance of the enclosing class. This nested class is known as the *serialization proxy* of the enclosing class.”
+  * “It should have a single constructor, whose parameter type is the enclosing class.”
+  * “This constructor merely copies the data from its argument: it need not do any consistency checking or defensive copying.”
+  * “Both the enclosing class and its serialization proxy must be declared to implement `Serializable`.”
+
+
+```java
+// Serialization proxy for Period class
+private static class SerializationProxy implements Serializable {
+    private final Date start;
+    private final Date end;
+
+    SerializationProxy(Period p) {
+        this.start = p.start;
+        this.end = p.end;
+    }
+
+    private static final long serialVersionUID =
+        234098243823485285L; // Any number will do (Item  87)
+}
+```
+
+* “Next, add the following `writeReplace` method to the enclosing class.”
+  * “The presence of this method on the enclosing class causes the serialization system to emit a `SerializationProxy` instance instead of an instance of the enclosing class.”
+* “With this `writeReplace` method in place, the serialization system will never generate a serialized instance of the enclosing class, but an attacker might fabricate one in an attempt to violate the class’s invariants. To guarantee that such an attack would fail, merely add this `readObject` method to the enclosing class:”
+
+
+```java
+// writeReplace method for the serialization proxy pattern
+private Object writeReplace() {
+    return new SerializationProxy(this);
+}
+```
+
+* “Finally, provide a `readResolve` method on the `SerializationProxy` class that returns a logically equivalent instance of the enclosing class. The presence of this method causes the serialization system to translate the serialization proxy back into an instance of the enclosing class upon deserialization.”
+
+```java
+// readResolve method for Period.SerializationProxy
+private Object readResolve() {
+    return new Period(start, end);    // Uses public constructor
+}
+```
+
+* “Unlike the two previous approaches, this one allows the fields of `Period` to be final, which is required in order for the `Period` class to be truly immutable (Item 17). And unlike the two previous approaches, this one doesn’t involve a great deal of thought.”
+* “There is another way in which the serialization proxy pattern is more powerful than defensive copying in `readObject`. The serialization proxy pattern allows the deserialized instance to have a different class from the originally serialized instance.”
+
+
+```java
+// EnumSet's serialization proxy
+private static class SerializationProxy <E extends Enum<E>>
+        implements Serializable {
+    // The element type of this enum set.
+    private final Class<E> elementType;
+
+    // The elements contained in this enum set.
+    private final Enum<?>[] elements;
+
+    SerializationProxy(EnumSet<E> set) {
+        elementType = set.elementType;
+        elements = set.toArray(new Enum<?>[0]);
+    }
+
+    private Object readResolve() {
+        EnumSet<E> result = EnumSet.noneOf(elementType);
+        for (Enum<?> e : elements)
+            result.add((E)e);
+        return result;
+    }
+
+    private static final long serialVersionUID =
+        362491234563181265L;
+}
+```
+
+* **“In summary, consider the serialization proxy pattern whenever you find yourself having to write a `readObject` or `writeObject` method on a class that is not extendable by its clients. This pattern is perhaps the easiest way to robustly serialize objects with nontrivial invariants.”**
