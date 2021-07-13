@@ -407,3 +407,45 @@ synchronized (obj) {
   * “It will always yield correct results because it guarantees that you’ll wake the threads that need to be awakened. You may wake some other threads, too, but this won’t affect the correctness of your program.”
 * “Even if these preconditions are satisfied, there may be cause to use `notifyAll` in place of `notify`. Just as placing the `wait` invocation in a loop protects against accidental or malicious notifications on a publicly accessible object, using `notifyAll` in place of `notify` protects against accidental or malicious waits by an unrelated thread.”
 * **“There is seldom, if ever, a reason to use `wait` and `notify` in new code.”**
+
+## Item 82: Document thread safety
+
+* **“The presence of the `synchronized` modifier in a method declaration is an implementation detail, not a part of its API.”**
+  * “It does not reliably indicate that a method is thread-safe.”
+* **“To enable safe concurrent use, a class must clearly document what level of thread safety it supports.”**
+  * “Immutable—Instances of this class appear constant. No external synchronization is necessary.”
+    * “Examples include `String`, `Long`, and `BigInteger` (Item 17).”
+  * “Unconditionally thread-safe—Instances of this class are mutable, but the class has sufficient internal synchronization that its instances can be used concurrently without the need for any external synchronization.”
+    * “Examples include `AtomicLong` and `ConcurrentHashMap`.”
+
+  * “Conditionally thread-safe—Like unconditionally thread-safe, except that some methods require external synchronization for safe concurrent use.”
+    * “Examples include the collections returned by the `Collections.synchronized` wrappers, whose iterators require external synchronization.”
+  * “Not thread-safe—Instances of this class are mutable. To use them concurrently, clients must surround each method invocation (or invocation sequence) with external synchronization of the clients’ choosing.”
+    * “Examples include the general-purpose collection implementations, such as `ArrayList` and `HashMap`.”
+  * “Thread-hostile—This class is unsafe for concurrent use even if every method invocation is surrounded by external synchronization.”
+    * “Thread hostility usually results from modifying static data without synchronization.”
+    * “When a class or method is found to be thread-hostile, it is typically fixed or deprecated.”
+    * “The `generateSerialNumber` method in Item 78 would be thread-hostile in the absence of internal synchronization, as discussed on page 322.”
+  * “These categories (apart from thread-hostile) correspond roughly to the *thread safety annotations* in *Java Concurrency in Practice*, which are `Immutable`, `ThreadSafe`, and `NotThreadSafe` [Goetz06, Appendix A].”
+* “Documenting a conditionally thread-safe class requires care. You must indicate which invocation sequences require external synchronization, and which lock (or in rare cases, locks) must be acquired to execute these sequences.”
+* “The description of a class’s thread safety generally belongs in the class’s doc comment, but methods with special thread safety properties should describe these properties in their own documentation comments.”
+* “It is not necessary to document the immutability of enum types.”
+* “Unless it is obvious from the return type, static factories must document the thread safety of the returned object, as demonstrated by `Collections.synchronizedMap` (above).”
+* “To prevent this denial-of-service attack, you can use a *private lock object* instead of using synchronized methods (which imply a publicly accessible lock):”
+
+
+```java
+// Private lock object idiom - thwarts denial-of-service attack
+private final Object lock = new Object();
+
+public void foo() {
+    synchronized(lock) {
+        ...
+    }
+}
+```
+
+* “We are applying the advice of Item 17, by minimizing the mutability of the lock field.”
+  * **“Lock fields should always be declared final.”**
+* “The private lock object idiom can be used only on *unconditionally* thread-safe classes. Conditionally thread-safe classes can’t use this idiom because they must document which lock their clients are to acquire when performing certain method invocation sequences.”
+* **“To summarize, every class should clearly document its thread safety properties with a carefully worded prose description or a thread safety annotation. The `synchronized` modifier plays no part in this documentation. Conditionally thread-safe classes must document which method invocation sequences require external synchronization and which lock to acquire when executing these sequences. If you write an unconditionally thread-safe class, consider using a private lock object in place of synchronized methods. This protects you against synchronization interference by clients and subclasses and gives you more flexibility to adopt a sophisticated approach to concurrency control in a later release.”**
