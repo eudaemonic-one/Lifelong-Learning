@@ -196,3 +196,36 @@ private static final long serialVersionUID = randomLongValue;
 * “If you ever want to make a new version of a class that is incompatible with existing versions, merely change the value in the serial version UID declaration.”
   * **“Do not change the serial version UID unless you want to break compatibility with all existing serialized instances of a class.”**
 * **“To summarize, if you have decided that a class should be serializable (Item 86), think hard about what the serialized form should be. Use the default serialized form *only* if it is a reasonable description of the logical state of the object; otherwise design a custom serialized form that aptly describes the object. You should allocate as much time to designing the serialized form of a class as you allocate to designing an exported method (Item 51). Just as you can’t eliminate exported methods from future versions, you can’t eliminate fields from the serialized form; they must be preserved forever to ensure serialization compatibility. Choosing the wrong serialized form can have a permanent, negative impact on the complexity and performance of a class.”**
+
+## Item 88: Write `readObject` methods defensively
+
+* **“When an object is deserialized, it is critical to defensively copy any field containing an object reference that a client must not possess.”**
+  * “Therefore, every serializable immutable class containing private mutable components must defensively copy these components in its `readObject` method.”
+
+```java
+// readObject method with defensive copying and validity checking
+private void readObject(ObjectInputStream s)
+        throws IOException, ClassNotFoundException {
+    s.defaultReadObject();
+
+    // Defensively copy our mutable components
+    start = new Date(start.getTime());
+    end   = new Date(end.getTime());
+
+    // Check that our invariants are satisfied
+    if (start.compareTo(end) > 0)
+        throw new InvalidObjectException(start +" after "+ end);
+}
+```
+
+* “Note that the defensive copy is performed prior to the validity check and that we did not use `Date`’s `clone` method to perform the defensive copy. Both of these details are required to protect `Period` against attack (Item 50). Note also that defensive copying is not possible for final fields.”
+* “To use the `readObject` method, we must make the `start` and `end` fields nonfinal. This is unfortunate, but it is the lesser of two evils. With the new `readObject` method in place and the `final` modifier removed from the `start` and `end` fields, the `MutablePeriod` class is rendered ineffective.”
+* “Alternatively, you can use the *serialization proxy pattern* (Item 90). This pattern is highly recommended because it takes much of the effort out of safe deserialization.”
+* **“Like a constructor, a `readObject` method must not invoke an overridable method, either directly or indirectly (Item 19).”**
+  * “If this rule is violated and the method in question is overridden, the overriding method will run before the subclass’s state has been deserialized.”
+* **“To summarize, anytime you write a `readObject` method, adopt the mind-set that you are writing a public constructor that must produce a valid instance regardless of what byte stream it is given. Do not assume that the byte stream represents an actual serialized instance.”**
+* **“Here, in summary form, are the guidelines for writing a `readObject` method:”**
+  * “For classes with object reference fields that must remain private, defensively copy each object in such a field. Mutable components of immutable classes fall into this category.”
+  * “Check any invariants and throw an `InvalidObjectException` if a check fails. The checks should follow any defensive copying.”
+  * “If an entire object graph must be validated after it is deserialized, use the `ObjectInputValidation` interface (not discussed in this book).”
+  * “Do not invoke any overridable methods in the class, directly or indirectly.”
