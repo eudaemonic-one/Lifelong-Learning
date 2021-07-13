@@ -13,3 +13,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 8. Methods](./Effective%20Java/8%20Methods.md)
   * [Chapter 9. General Programming](./Effective%20Java/9%20General%20Programming.md)
   * [Chapter 10. Exceptions](./Effective%20Java/10%20Exceptions.md)
+  * [Chapter 11. Concurrency](./Effective%20Java/11%20Concurrency.md)
