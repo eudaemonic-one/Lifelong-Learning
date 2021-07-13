@@ -25,6 +25,8 @@ My personal notes on everything, from coding to philosophy.
 * [Golang](./Golang/): Note of Go language and Gin framework.
   * [Golang go-to Guide](./Golang/Go-go-to-Guide/): Note of Go language basics and how to write Go programs.
   * [Gin](./Golang/Gin): Note of web framework Go-Gin.
+* [Java](./Java/): Note of Java's language idioms and programming best practices (design patterns also included).
+  * [Effective Java](./Java/Effective%20Java/)
 * [LeetCode](./LeetCode/): Solution set of LeetCode algorithms problems and Note of useful tricks and expressions, and also self-defined solution models.
 * [Machine Learning](./Machine-Learning/): Note of machine learning theory and implementations of ML algorithms.
   * [CMU Course 10301/601 Introduction to Machine Learning (Master's)](./Machine-Learning/cmu-10601/)
@@ -46,3 +48,4 @@ My personal notes on everything, from coding to philosophy.
 * 500 commits: May 18, 2020
 * 600 commits: Oct 26, 2020
 * 700 commits: Mar 28, 2021
+* 800 commits: Jul 13, 2021
