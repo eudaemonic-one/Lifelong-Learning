@@ -449,3 +449,73 @@ public void foo() {
   * **“Lock fields should always be declared final.”**
 * “The private lock object idiom can be used only on *unconditionally* thread-safe classes. Conditionally thread-safe classes can’t use this idiom because they must document which lock their clients are to acquire when performing certain method invocation sequences.”
 * **“To summarize, every class should clearly document its thread safety properties with a carefully worded prose description or a thread safety annotation. The `synchronized` modifier plays no part in this documentation. Conditionally thread-safe classes must document which method invocation sequences require external synchronization and which lock to acquire when executing these sequences. If you write an unconditionally thread-safe class, consider using a private lock object in place of synchronized methods. This protects you against synchronization interference by clients and subclasses and gives you more flexibility to adopt a sophisticated approach to concurrency control in a later release.”**
+
+## Item 83: Use lazy initialization judiciously
+
+* “*Lazy initialization* is the act of delaying the initialization of a field until its value is needed. If the value is never needed, the field is never initialized. This technique is applicable to both static and instance fields.”
+* “If a field is accessed only on a fraction of the instances of a class *and* it is costly to initialize the field, then lazy initialization may be worthwhile.”
+  * **“The only way to know for sure is to measure the performance of the class with and without lazy initialization.”**
+* “In the presence of multiple threads, lazy initialization is tricky. ”
+  * “If two or more threads share a lazily initialized field, it is critical that some form of synchronization be employed, or severe bugs can result (Item 78).”
+* **“Under most circumstances, normal initialization is preferable to lazy initialization.”**
+* “**If you use lazy initialization to break an initialization circularity, use a synchronized accessor** because it is the simplest, clearest alternative:”
+
+
+```java
+// Lazy initialization of instance field - synchronized accessor
+private FieldType field;
+
+private synchronized FieldType getField() {
+    if (field == null)
+        field = computeFieldValue();
+    return field;
+}
+```
+
+* **“If you need to use lazy initialization for performance on a static field, use the *lazy initialization holder class idiom*.”**
+
+```java
+// Lazy initialization holder class idiom for static fields
+private static class FieldHolder {
+    static final FieldType field = computeFieldValue();
+}
+
+private static FieldType getField() { return FieldHolder.field; }
+```
+
+* “When `getField` is invoked for the first time, it reads `FieldHolder.field` for the first time, causing the initialization of the `FieldHolder` class.”
+* **“If you need to use lazy initialization for performance on an instance field, use the *double-check idiom*.”**
+  * “This idiom avoids the cost of locking when accessing the field after initialization (Item 79).”
+
+```java
+// Double-check idiom for lazy initialization of instance fields
+private volatile FieldType field;
+
+private FieldType getField() {
+    FieldType result = field;
+    if (result == null) {  // First check (no locking)
+        synchronized(this) {
+            if (field == null)  // Second check (with locking)
+                field = result = computeFieldValue();
+        }
+    }
+    return result;
+}
+```
+
+* “Occasionally, you may need to lazily initialize an instance field that can tolerate repeated initialization. If you find yourself in this situation, you can use a variant of the double-check idiom that dispenses with the second check. It is, not surprisingly, known as the *single-check idiom*.”
+
+```java
+// Single-check idiom - can cause repeated initialization!
+private volatile FieldType field;
+
+private FieldType getField() {
+    FieldType result = field;
+    if (result == null)
+        field = result = computeFieldValue();
+    return result;
+}
+```
+
+* “All of the initialization techniques discussed in this item apply to primitive fields as well as object reference fields.”
+* **“In summary, you should initialize most fields normally, not lazily. If you must initialize a field lazily in order to achieve your performance goals or to break a harmful initialization circularity, then use the appropriate lazy initialization technique. For instance fields, it is the double-check idiom; for static fields, the lazy initialization holder class idiom. For instance fields that can tolerate repeated initialization, you may also consider the single-check idiom.”**
