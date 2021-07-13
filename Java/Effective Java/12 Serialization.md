@@ -229,3 +229,93 @@ private void readObject(ObjectInputStream s)
   * “Check any invariants and throw an `InvalidObjectException` if a check fails. The checks should follow any defensive copying.”
   * “If an entire object graph must be validated after it is deserialized, use the `ObjectInputValidation` interface (not discussed in this book).”
   * “Do not invoke any overridable methods in the class, directly or indirectly.”
+
+
+## Item 89: For instance control, prefer enum types to `readResolve`
+
+```java
+public class Elvis {
+    public static final Elvis INSTANCE = new Elvis();
+    private Elvis() {  ... }
+
+    public void leaveTheBuilding() { ... }
+}
+```
+
+* “As noted in Item 3, this class would no longer be a singleton if the words `implements Serializable` were added to its declaration. It doesn’t matter whether the class uses the default serialized form or a custom serialized form (Item 87), nor does it matter whether the class provides an explicit readObject method (Item 88). Any `readObject` method, whether explicit or default, returns a newly created instance, which will not be the same instance that was created at class initialization time.”
+* “The `readResolve` feature allows you to substitute another instance for the one created by `readObject` [Serialization, 3.7]. ”
+  * “If the class of an object being deserialized defines a `readResolve` method with the proper declaration, this method is invoked on the newly created object after it is deserialized. The object reference returned by this method is then returned in place of the newly created object.”
+* “If the Elvis class is made to implement `Serializable`, the following `readResolve` method suffices to guarantee the singleton property:”
+
+
+```java
+// readResolve for instance control - you can do better!
+private Object readResolve() {
+    // Return the one true Elvis and let the garbage collector
+    // take care of the Elvis impersonator.
+    return INSTANCE;
+}
+```
+
+* “This method ignores the deserialized object, returning the distinguished `Elvis` instance that was created when the class was initialized. Therefore, the serialized form of an `Elvis` instance need not contain any real data; all instance fields should be declared transient.”
+* “In fact, **if you depend on `readResolve` for instance control, all instance fields with object reference types must be declared `transient`**.”
+
+
+```java
+// Broken singleton - has nontransient object reference field!
+public class Elvis implements Serializable {
+    public static final Elvis INSTANCE = new Elvis();
+    private Elvis() { }
+
+    private String[] favoriteSongs =
+        { "Hound Dog", "Heartbreak Hotel" };
+    public void printFavorites() {
+        System.out.println(Arrays.toString(favoriteSongs));
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
+} 
+```
+
+```java
+public class ElvisStealer implements Serializable {
+    static Elvis impersonator;
+    private Elvis payload;
+
+    private Object readResolve() {
+        // Save a reference to the "unresolved" Elvis instance
+        impersonator = payload;
+
+        // Return object of correct type for favoriteSongs field
+        return new String[] { "A Fool Such as I" };
+    }
+    private static final long serialVersionUID = 0;
+}
+```
+
+* “If you write your serializable instance-controlled class as an enum, Java guarantees you that there can be no instances besides the declared constants, unless an attacker abuses a privileged method such as `AccessibleObject.setAccessible`. Any attacker who can do that already has sufficient privileges to execute arbitrary native code, and all bets are off.”
+
+
+```java
+// Enum singleton - the preferred approach
+public enum Elvis {
+    INSTANCE;
+    private String[] favoriteSongs =
+        { "Hound Dog", "Heartbreak Hotel" };
+    public void printFavorites() {
+        System.out.println(Arrays.toString(favoriteSongs));
+    }
+}
+```
+
+* “The use of `readResolve` for instance control is not obsolete. If you have to write a serializable instance-controlled class whose instances are not known at compile time, you will not be able to represent the class as an enum type.”
+* **“The accessibility of `readResolve` is significant.”**
+  * “If you place a `readResolve` method on a final class, it should be private.”
+  * “If you place a `readResolve` method on a nonfinal class, you must carefully consider its accessibility.”
+    * “If it is private, it will not apply to any subclasses.”
+    * “If it is package-private, it will apply only to subclasses in the same package.”
+    * “If it is protected or public, it will apply to all subclasses that do not override it.”
+    * “If a `readResolve` method is protected or public and a subclass does not override it, deserializing a subclass instance will produce a superclass instance, which is likely to cause a `ClassCastException`.”
+* **“To summarize, use enum types to enforce instance control invariants wherever possible. If this is not possible and you need a class to be both serializable and instance-controlled, you must provide a `readResolve` method and ensure that all of the class’s instance fields are either primitive or transient.”**
