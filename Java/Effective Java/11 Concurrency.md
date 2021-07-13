@@ -280,3 +280,33 @@ private void notifyElementAdded(E element) {
 * “If a method modifies a static field and there is any possibility that the method will be called from multiple threads, you must synchronize access to the field internally (unless the class can tolerate nondeterministic behavior).”
   * “It is not possible for a multithreaded client to perform external synchronization on such a method, because unrelated clients can invoke the method without synchronization.”
 * “In summary, to avoid deadlock and data corruption, never call an alien method from within a synchronized region. More generally, keep the amount of work that you do from within synchronized regions to a minimum. When you are designing a mutable class, think about whether it should do its own synchronization. In the multicore era, it is more important than ever not to oversynchronize. Synchronize your class internally only if there is a good reason to do so, and document your decision clearly (Item 82).”
+
+
+## Item 80: Prefer executors, tasks, and streams to threads
+
+```java
+ExecutorService exec = Executors.newSingleThreadExecutor();
+exec.execute(runnable);
+exec.shutdown();
+```
+
+* “You can do *many* more things with an executor service.”
+  * “you can wait for a particular task to complete (with the `get` method)”
+  * “you can wait for any or all of a collection of tasks to complete (using the `invokeAny` or `invokeAll` methods)”
+  * “you can wait for the executor service to terminate (using the `awaitTermination` method)”
+  * “you can retrieve the results of tasks one by one as they complete (using an `ExecutorCompletionService`)”
+  * “you can schedule tasks to run at a particular time or to run periodically (using a `ScheduledThreadPoolExecutor`)”
+* “If you want more than one thread to process requests from the queue, simply call a different static factory that creates a different kind of executor service called a *thread pool*.”
+  * “You can create a thread pool with a fixed or variable number of threads.”
+  * “The `java.util.concurrent.Executors` class contains static factories that provide most of the executors you’ll ever need.”
+  * “If, however, you want something out of the ordinary, you can use the `ThreadPoolExecutor` class directly. This class lets you configure nearly every aspect of a thread pool’s operation.”
+* “Choosing the executor service for a particular application can be tricky.”
+  * “For a small program, or a lightly loaded server, `Executors.newCachedThreadPool` is generally a good choice because it demands no configuration and generally “does the right thing.”
+  * “In a heavily loaded production server, you are much better off using `Executors.newFixedThreadPool`, which gives you a pool with a fixed number of threads, or using the `ThreadPoolExecutor` class directly, for maximum control.”
+* “When you work directly with threads, a `Thread` serves as both a unit of work and the mechanism for executing it.”
+* “In the executor framework, the unit of work and the execution mechanism are separate. The key abstraction is the unit of work, which is the *task*.”
+  * “There are two kinds of tasks: `Runnable` and its close cousin, `Callable` (which is like `Runnable`, except that it returns a value and can throw arbitrary exceptions).”
+  * “In essence, the Executor Framework does for execution what the Collections Framework did for aggregation.”
+* “In Java 7, the Executor Framework was extended to support fork-join tasks, which are run by a special kind of executor service known as a fork-join pool.”
+  * “A fork-join task, represented by a `ForkJoinTask` instance, may be split up into smaller subtasks, and the threads comprising a `ForkJoinPool` not only process these tasks but “steal” tasks from one another to ensure that all threads remain busy, resulting in higher CPU utilization, higher throughput, and lower latency.”
+  * “Parallel streams (Item 48) are written atop fork join pools and allow you to take advantage of their performance benefits with little effort, assuming they are appropriate for the task at hand.”
