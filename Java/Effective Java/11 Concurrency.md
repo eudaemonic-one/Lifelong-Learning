@@ -310,3 +310,100 @@ exec.shutdown();
 * “In Java 7, the Executor Framework was extended to support fork-join tasks, which are run by a special kind of executor service known as a fork-join pool.”
   * “A fork-join task, represented by a `ForkJoinTask` instance, may be split up into smaller subtasks, and the threads comprising a `ForkJoinPool` not only process these tasks but “steal” tasks from one another to ensure that all threads remain busy, resulting in higher CPU utilization, higher throughput, and lower latency.”
   * “Parallel streams (Item 48) are written atop fork join pools and allow you to take advantage of their performance benefits with little effort, assuming they are appropriate for the task at hand.”
+
+
+## Item 81: Prefer concurrency utilities to `wait` and `notify`
+
+* **“Given the difficulty of using `wait` and `notify` correctly, you should use the higher-level concurrency utilities instead.”**
+* “The higher-level utilities in `java.util.concurrent` fall into three categories: the Executor Framework, which was covered briefly in Item 80; concurrent collections; and synchronizers.”
+* “The concurrent collections are high-performance concurrent implementations of standard collection interfaces such as `List`, `Queue`, and `Map`. To provide high concurrency, these implementations manage their own synchronization internally (Item 79). ”
+  * “Therefore, **it is impossible to exclude concurrent activity from a concurrent collection; locking it will only slow the program**.”
+
+```java
+// Concurrent canonicalizing map atop ConcurrentMap - not optimal
+private static final ConcurrentMap<String, String> map =
+        new ConcurrentHashMap<>();
+
+public static String intern(String s) {
+    String previousValue = map.putIfAbsent(s, s);
+    return previousValue == null ? s : previousValue;
+}
+```
+
+```java
+// Concurrent canonicalizing map atop ConcurrentMap - faster!
+public static String intern(String s) {
+    String result = map.get(s);
+    if (result == null) {
+        result = map.putIfAbsent(s, s);
+        if (result == null)
+            result = s;
+    }
+    return result;
+}
+```
+
+* **“Use `ConcurrentHashMap` in preference to `Collections.synchronizedMap`.”**
+  * “Simply replacing synchronized maps with concurrent maps can dramatically increase the performance of concurrent applications.”
+* “Some of the collection interfaces were extended with *blocking operations*, which wait (or *block*) until they can be successfully performed.”
+  * “For example, `BlockingQueue` extends `Queue` and adds several methods, including `take`, which removes and returns the head element from the queue, waiting if the queue is empty.”
+  * “This allows blocking queues to be used for *work queues* (also known as *producer-consumer queues*), to which one or more *producer threads* enqueue work items and from which one or more *consumer threads* dequeue and process items as they become available.”
+* “*Synchronizers* are objects that enable threads to wait for one another, allowing them to coordinate their activities.”
+  * “The most commonly used synchronizers are `CountDownLatch` and `Semaphore`. Less commonly used are `CyclicBarrier` and `Exchanger`. The most powerful synchronizer is `Phaser`.”
+
+* “Countdown latches are single-use barriers that allow one or more threads to wait for one or more other threads to do something.”
+  * “The sole constructor for `CountDownLatch` takes an int that is the number of times the `countDown` method must be invoked on the latch before all waiting threads are allowed to proceed.”
+  * “For example, suppose you want to build a simple framework for timing the concurrent execution of an action. This framework consists of a single method that takes an executor to execute the action, a concurrency level representing the number of actions to be executed concurrently, and a runnable representing the action. All of the worker threads ready themselves to run the action before the timer thread starts the clock. When the last worker thread is ready to run the action, the timer thread “fires the starting gun,” allowing the worker threads to perform the action. As soon as the last worker thread finishes performing the action, the timer thread stops the clock. Implementing this logic directly on top of `wait` and `notify` would be messy to say the least, but it is surprisingly straightforward on top of `CountDownLatch`:”
+
+```java
+// Simple framework for timing concurrent execution
+public static long time(Executor executor, int concurrency,
+            Runnable action) throws InterruptedException {
+    CountDownLatch ready = new CountDownLatch(concurrency);
+    CountDownLatch start = new CountDownLatch(1);
+    CountDownLatch done  = new CountDownLatch(concurrency);
+
+    for (int i = 0; i < concurrency; i++) {
+        executor.execute(() -> {
+            ready.countDown(); // Tell timer we're ready
+            try {
+                start.await(); // Wait till peers are ready
+                action.run();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                done.countDown();  // Tell timer we're done
+            }
+        });
+    }
+
+    ready.await();     // Wait for all workers to be ready
+    long startNanos = System.nanoTime();
+    start.countDown(); // And they're off!
+    done.await();      // Wait for all workers to finish
+    return System.nanoTime() - startNanos;
+}
+```
+
+* “The executor passed to the `time` method must allow for the creation of at least as many threads as the given concurrency level, or the test will never complete. This is known as a *thread starvation deadlock* [Goetz06, 8.1.1].”
+* “If a worker thread catches an `InterruptedException`, it reasserts the interrupt using the idiom `Thread.currentThread().interrupt()` and returns from its run method. This allows the executor to deal with the interrupt as it sees fit. ”
+* “Note that `System.nanoTime` is used to time the activity.”
+  * “For interval timing, always use `System.nanoTime` rather than `System.currentTimeMillis`.”
+* “The `wait` method is used to make a thread wait for some condition. It must be invoked inside a synchronized region that locks the object on which it is invoked. Here is the standard idiom for using the `wait` method:”
+
+```java
+// The standard idiom for using the wait method
+synchronized (obj) {
+    while (<condition does not hold>)
+        obj.wait(); // (Releases lock, and reacquires on wakeup)
+    ... // Perform action appropriate to condition
+}
+```
+
+* **“Always use the wait loop idiom to invoke the `wait` method; never invoke it outside of a loop.”**
+* “A related issue is whether to use `notify` or `notifyAll` to wake waiting threads. (Recall that `notify` wakes a single waiting thread, assuming such a thread exists, and `notifyAll` wakes all waiting threads.)”
+  * “It is sometimes said that you should ***always* use `notifyAll`**. This is reasonable, conservative advice. ”
+
+  * “It will always yield correct results because it guarantees that you’ll wake the threads that need to be awakened. You may wake some other threads, too, but this won’t affect the correctness of your program.”
+* “Even if these preconditions are satisfied, there may be cause to use `notifyAll` in place of `notify`. Just as placing the `wait` invocation in a loop protects against accidental or malicious notifications on a publicly accessible object, using `notifyAll` in place of `notify` protects against accidental or malicious waits by an unrelated thread.”
+* **“There is seldom, if ever, a reason to use `wait` and `notify` in new code.”**
