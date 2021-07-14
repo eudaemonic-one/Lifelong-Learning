@@ -10,3 +10,17 @@
 * problem: when to apply the pattern.
 * solution: elements that make up the design, thier relationships, responsibilities, and collaborations.
 * Consequence: results and tradeoffs of applying the pattern.
+
+## 1.2 Design Patterns in Smalltalk MVC
+
+* Model/View/Controller (MVC)
+* MVC decouples views and models by establishing a subscribe/notify protocol between them.
+  * “A view must ensure that its appearance reflects the state of the model.”
+  * “Whenever the model’s data changes, the model notifies views that depend on it.”
+  * “In response, each view gets an opportunity to update itself. ”
+* Views can be nested.
+* MVC let you change the way a view responds to user input without changing its visual presentation.
+* The View-Controller relationship is an example of the Strategy design pattern.
+  * A Strategy is an object that represents an algorithm.
+* MVC uses other design patterns, such as Factory Method to specify the default controller class for a view and Decorator to add scrolling to a view.
+  * But the main relationships in MVC are given by the Observer, Composite, and Strategy design patterns.
