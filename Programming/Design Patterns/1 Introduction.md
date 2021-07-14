@@ -24,3 +24,19 @@
   * A Strategy is an object that represents an algorithm.
 * MVC uses other design patterns, such as Factory Method to specify the default controller class for a view and Decorator to add scrolling to a view.
   * But the main relationships in MVC are given by the Observer, Composite, and Strategy design patterns.
+
+## 1.3 Describing Design Patterns
+
+* Pattern Name and Classification: essence and scheme.
+* Intent: rationale and what design issue to address.
+* Also Known As: other names.
+* Motivation: a scenario that illustrate a design problem.
+* Applicability: where to apply.
+* Structure: a graphical representation.
+* Participants: classes and/or objects.
+* Collaborations: how participants carry out their responsibility.
+* Consequences: trade-offs and results of using the pattern.
+* Implementation: pitfalls, hints, or techniques of implementing the pattern.
+* Sample Code: code fragments.
+* Known Uses: examples found in real systems.
+* Related Patterns: closedly related patterns.
