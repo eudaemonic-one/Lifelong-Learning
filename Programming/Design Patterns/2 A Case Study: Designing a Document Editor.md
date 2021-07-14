@@ -66,3 +66,20 @@
 * **Strategy Pattern**
   * “Encapsulating an algorithm in an object is the intent of the Strategy (315) pattern.”
     * “Compositors are strategies; they encapsulate different formatting algorithms.”
+
+
+## 2.4 Embellishing the User Interface
+
+* **Transparent Enclosure**
+  * Inheritance extension -> no rearranging embellishments at run-time -> explosion of subclasses.
+  * Object composition -> more workable and flexible extension.
+  * Have the border contain the glyph makes sense because no modification is required to the corresponding Glyph subclass.
+  * Transparant enclosure: single-child composition, compatible interfaces.
+    * The enclosure delegates all its operations to its component.
+* **Monoglyph**
+  * MonoGlyph extends Glyph to serve as an abstract class for embellishment glyphs.
+    * “MonoGlyph stores a reference to a component and forwards all requests to it that makes MonoGlyph totally transparent to clients by default. ”
+    * MonoGlyph subclasses reimplement at least one of these forwarding operations.
+* **Decorator Pattern**
+  * “The Decorator pattern captures class and object relationships that support embellishment by transparent enclosure.”
+    * “In the Decorator pattern, embellishment refers to anything that adds responsibilities to an object.”
