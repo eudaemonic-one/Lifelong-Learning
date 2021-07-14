@@ -66,3 +66,30 @@
 * **Strategy**: Define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it.
 * **Template Method**: Define the skeleton of an algorithm in an operation, deferring some steps to subclasses. Template Method lets subclasses redefine certain steps of an algorithm without changing the algorithm's structure.
 * **Visitor**: Represent an operation to be performed on the elements of an object structure. Visitor lets you define a new operation without changing the classes of the elements on which it operates.
+
+## 1.5 Organizing the Catalog
+
+|           |            | Purpose          |                  |                         |
+| --------- | ---------- | ---------------- | ---------------- | ----------------------- |
+|           |            | **Creational**   | **Structural**   | **Behavioral**          |
+| **Scope** | **Class**  | Factory Method   | Adapter (class)  | Interpreter             |
+|           |            |                  |                  | Template Method         |
+|           | **Object** | Abstract Factory | Adapter (object) | Chain of Responsibility |
+|           |            | Builder          | Bridge           | Command                 |
+|           |            | Prototype        | Composite        | Iterator                |
+|           |            | Singleton        | Decorator        | Mediator                |
+|           |            |                  | Facade           | Memento                 |
+|           |            |                  | Flyweight        | Observer                |
+|           |            |                  | Proxy            | State                   |
+|           |            |                  |                  | Strategy                |
+|           |            |                  |                  | Visitor                 |
+
+* “Class patterns deal with relationships between classes and their subclasses. These relationships are established through inheritance, so they are static—fixed at compile-time.”
+* “Object patterns deal with object relationships, which can be changed at run-time and are more dynamic.”
+* “Creational class patterns defer some part of object creation to subclasses, while Creational object patterns defer it to another object.”
+* “The Structural class patterns use inheritance to compose classes, while the Structural object patterns describe ways to assemble objects.”
+* “The Behavioral class patterns use inheritance to describe algorithms and flow of control, whereas the Behavioral object patterns describe how a group of objects cooperate to perform a task that no single object can carry out alone.”
+* “Clearly there are many ways to organize design patterns.”
+  * “Some patterns are often used together.”
+  * “Some patterns are alternatives.”
+  * “Some patterns result in similar designs even though the patterns have different intents.”
