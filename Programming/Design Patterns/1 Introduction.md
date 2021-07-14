@@ -93,3 +93,60 @@
   * “Some patterns are often used together.”
   * “Some patterns are alternatives.”
   * “Some patterns result in similar designs even though the patterns have different intents.”
+
+## 1.6 How Design Patterns Solve Design Problems
+
+* **Finding Appropriate Objects**
+  * Decomposing a system into objects -> encapsulation, granularity, dependency, flexibility, performance, evolution, reusability, and on and on.
+  * No counterparts in the real world -> flexible design.
+  * Design patterns -> identify less-obvious abstractions -> more flexible and resusable.
+* **Determining Object Granularity**
+  * How do we decide what should be an object?
+* **Specifying Object Interfaces**
+  * Interface: the complete set of requests that can be sent to the object.
+  * “We speak of an object as having the type “Window” if it accepts all requests for the operations defined in the interface named “Window.”
+
+  * “An object may have many types, and widely different objects can share a type.”
+  * Dynamic Binding: the run-time association of a request to an object.
+  * Polymorphism: can substitute objects that have identical interfaces for each other at run-time.
+  * Design patterns -> define interfaces by identifying their key elements and the kinds of data that get sent across an interface -> specify relationships between interfaces.
+* **Specifying Object Implementation**
+  * OMT-based notation
+    * Class: rectangle with class name in the bold, operations, data comes after the operations. Return types and instance variable types are optional.
+    * Instantiates: a dashed arrowhead points to the class of the instantiated objects.
+    * Inheritance: a vertical line from a subclass and a triangle pointing to a parent class.
+      * The names of abstract classes appear in slanted type.
+  * “Programming to an Interface, not an Implementation”
+    * “Class inheritance defines an object’s implementation in terms of another object’s implementation. In short, it’s a mechanism for code and representation sharing. In contrast, interface inheritance (or subtyping) describes when an object can be used in place of another.”
+  * “Don’t declare variables to be instances of particular concrete classes. Instead, commit only to an interface defined by an abstract class.”
+
+* **Putting Reuse Mechanisms to Work**
+  * Inheritance versus Composition
+    * Object Inheritance -> let you define the implementation of one class in terms of another's -> internals of parent classes are often visible to subclasses.
+    * Object Composition -> assemble or compose objects to get more complex functionality -> no internal details of objects are visible.
+    * Implementation dependencies -> problems when reuse a subclass (must rewrite parent class when inherited implementation not appropriate for new problem domains) -> limit flexibility and reusability -> cure if to inherit only from abstract classes.
+    * “**Favor object composition over class inheritance** helps you keep each class encapsulated and focused on one task. Your classes and class hierarchies will remain small and will be less likely to grow into unmanageable monsters.”
+  * Delegation
+    * A receiving object delegates operations to its delegate.
+    * Delegation -> easy to compose behaviors at run-time and to change the way they're composed -> dynamic, highly parameterized software -> efficiency depends on teh context.
+  * Inheritance versus Parameterized Types
+    * Generics / Templates: Define a type without specifying all other types it uses and the unspecified ones are supplied as parameters at the point of use.
+    * Let you change the types that a class can use, not at run-time.
+* **Relating Run-Time and Compile-Time Structure**
+  * Run-time structure has little resemblance to its code structure.
+  * Frozen code structure -> Compile-time.
+  * Aggregation: one object owns or is responsible for another object and they have identical lifetimes.
+  * Acquaintance: acquainted objects merely request operations of each other and suggest much looser coupling between objects.
+* **Designing for Change**
+  * “The key to maximizing reuse lies in anticipating new requirements and changes to existing requirements, and in designing your systems so that they can evolve accordingly.”
+  * “Those changes might involve class redefinition and reimplementation, client modification, and retesting.”
+  * Common causes of redesign:
+    * “Creating an object by specifying a class explicitly.”
+    * “Dependence on specific operations.”
+    * “Dependence on hardware and software platform.”
+    * “Dependence on object representations or implementations.”
+    * “Algorithm dependencies.”
+    * “Tight coupling.”
+    * “Extending functionality by subclassing.”
+    * “Inability to alter classes conveniently.”
+* Design patterns play in the development of three broad classes of software: application programs, toolkits, and frameworks.
