@@ -83,3 +83,24 @@
 * **Decorator Pattern**
   * “The Decorator pattern captures class and object relationships that support embellishment by transparent enclosure.”
     * “In the Decorator pattern, embellishment refers to anything that adds responsibilities to an object.”
+
+
+## 2.5 Supporting Multiple Look-and-Feel Standards
+
+* Diversity -> enforce uniformity between applications.
+* Standards -> guidelines for how applications appear and react to the user.
+* Design goals -> to make Lexi conform to multiple standards and easy to support newly introduced standards.
+* **Abstracting Object Creation**
+  * Two sets of widget glyph classes:
+    * “A set of abstract Glyph subclasses for each category of widget glyph.”
+      * “For example, an abstract class ScrollBar will augment the basic glyph interface to add general scrolling operations; Button is an abstract class that adds button-oriented operations; and so on.”
+    * “A set of concrete subclasses for each abstract subclass that implement different look-and-feel standards.”
+      * “For example, ScrollBar might have Motif ScrollBar and PMScrollBar subclasses that implement Motif and Presentation Manager-style scroll bars, respectively.”
+  * Avoid making explicit calls to create widgets.
+* **Factories and Product Classes**
+  * `ScrollBar* sb = guiFactory->CreateScrollBar();`
+  * GUIFactory is an abstract class that defines a general interface for creating widget glyphs.
+  * “Regardless of how and when we decide to initialize `guiFactory`, we know that once we do, the application can create the appropriate look and feel without modification.”
+* **Abstract Factory Pattern**
+  * Abstract Factory Pattern creates families of related product objects without instantiating classes directly, which is appropriate when the number and general kinds of product objects stay constant, and there are differences in specific product families.
+    * Choose among families by instantiating a particular concrete factory.
