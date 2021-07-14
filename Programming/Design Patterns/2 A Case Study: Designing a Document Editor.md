@@ -41,3 +41,28 @@
 
 * Composite Pattern
   * “The Composite pattern captures the essence of recursive composition in object-oriented terms.”
+
+
+## 2.3 Formatting
+
+* **Encapsulating the Formatting Algorithm**
+  * “Because Lexi is a WYSIWYG editor, an important trade-off to consider is the balance between formatting quality and formatting speed.”
+  * “Because formatting algorithms tend to be complex, it’s also desirable to keep them well-contained or—better yet—completely independent of the document structure.”
+  * “We should design Lexi so that it’s easy to change the formatting algorithm at least at compile-time, if not at run-time as well.”
+    * “More specifically, we’ll define a separate class hierarchy for objects that encapsulate formatting algorithms.”
+* **Compositor and Composition**
+  * “We’ll define a **Compositor** class for objects that can encapsulate a formatting algorithm. The interface (Table 2.2) lets the compositor know *what* glyphs to format and *when* to do the formatting.”
+    * “The glyphs it formats are the children of a special Glyph subclass called Composition.”
+    * “A composition gets an instance of a Compositor subclass (specialized for a particular linebreaking algorithm) when it is created, and it tells the compositor to `Compose` its glyphs when necessary.”
+    * “An unformatted Composition object contains only the visible glyphs that make up the document’s basic content. It doesn’t contain glyphs that determine the document’s physical structure, such as Row and Column.”
+    * “When the composition needs formatting, it calls its compositor’s `Compose` operation. The compositor in turn iterates through the composition’s children and inserts new Row and Column glyphs according to its linebreaking algorithm.”
+
+
+| Responsibility | Operations                          |
+| -------------- | ----------------------------------- |
+| what to format | `void SetComposition(Composition*)` |
+| when to format | `virtual void Compose()`            |
+
+* **Strategy Pattern**
+  * “Encapsulating an algorithm in an object is the intent of the Strategy (315) pattern.”
+    * “Compositors are strategies; they encapsulate different formatting algorithms.”
