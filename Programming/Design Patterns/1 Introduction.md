@@ -188,3 +188,18 @@
 |            | Template Method         | steps of an algorithms                                       |
 |            | Visitor                 | operations that can be applied to object(s) without changing their class(es) |
 
+## 1.8 How to Use a Design Pattern
+
+* “Read the pattern once through for an overview.”
+  * “Pay particular attention to the Applicability and Consequences sections to ensure the pattern is right for your problem.”
+* “Go back and study the Structure, Participants, and Collaborations sections.”
+* “Look at the Sample Code section to see a concrete example of the pattern in code.”
+* “Choose names for pattern participants that are meaningful in the application context.”
+  * “The names for participants in design patterns are usually too abstract to appear directly in an application. Nevertheless, it’s useful to incorporate the participant name into the name that appears in the application. That helps make the pattern more explicit in the implementation.”
+* “Define the classes.”
+  * “Declare their interfaces, establish their inheritance relationships, and define the instance variables that represent data and object references.”
+  * “Identify existing classes in your application that the pattern will affect, and modify them accordingly.”
+
+* “Define application-specific names for operations in the pattern.”
+  * “Use the responsibilities and collaborations associated with each operation as a guide.”
+* “Implement the operations to carry out the responsibilities and collaborations in the pattern.”
