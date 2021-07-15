@@ -137,3 +137,26 @@
   * The intent behind Bridge is to allow separate class hierarchies to work together even as they evolve independently.
     * One for logical notion, another capturing different implementations.
     * Enhance logical abstractions without touching environment-dependent code.
+
+## 2.7 User Operations
+
+* Goal: multiple user interfaces to the same operations + change the interface in the future + implenentors want lightweight dependencies + support limited number of undo and redo of most *but not all* its functionality.
+* **Encapsulating a Request**
+  * MenuItem: subclass of Glyph + respond to a request from a client.
+  * Define a subclass of MenuItem for every user operation -> proliferation of subclass implementations work + coupling teh request to a particular user interface.
+  * Parameterize menu items by the request they should fulfill within an *object* -> use inheritance to extend and reuse the request's implementation + a place to store state and implement undo/redo.
+* **Command Class and Subclasses**
+  * **Command**: an abstract class to provide an interface for issuing a request.
+    * “The basic interface consists of a single abstract operation called “Execute.”
+    * “Subclasses of Command implement Execute in different ways to fulfill different requests. ”
+  * Give each menu item an instance of Command subclass suitable for that menu item.
+* **Undoability**
+  * Add Unexecute operation to Command's interface -> reverse effects of a preceding Execute operation using whatever undo information Execute stored.
+  * No net effect if execute a command -> no need for a undo request.
+    * To determine if a command is undoable -> add an abstract Reversible operation to the Command interface.
+* **Command History**
+  * Define a **command history**: a list of commands that have been executed.
+  * To redo a command that's just been undone, we do the same thing in reverse.
+* **Command Pattern**
+  * The Command pattern -> prescribe a uniform interface for issuing requests + shield clients from the request's implementation.
+  * A command may delegate all, part, none of the request's implementation to other objects.
