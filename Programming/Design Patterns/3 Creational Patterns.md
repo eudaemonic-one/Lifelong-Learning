@@ -173,3 +173,60 @@
 * **Related Patterns**
   * Abstract Factory is often implemented with factory methods.
   * Factory methods are usually called within Template Methods.
+
+## Object Creational: Prototype
+
+* **Intent**
+  * Specify the kinds of objects to create using a prototypical instance, and create new objects by copying this prototype.
+* **Motivation**
+  * GraphicTool needs to know how to create instances of music classes.
+  * Subclass GraphicTool for each kind of music object -> proliferation of subclasses that differ only in music object type.
+  * Solution -> make GraphicTool create a new Graphic by copying or cloning an instance of a Graphic subclass.
+  * GraphicTool is parameterized by the prototype it should clone and add to the document.
+
+![pg118fig01](images/3 Creational Patterns/pg118fig01.jpg)
+
+* **Applicability**
+  * Use when a system should be independent of how its products are created, composed, and represented; and
+    * when the classes to instantiate are specified at run-time; or
+    * to avoid building a class hierarchy of factories that parallels the class hierarchy of products; or
+    * when instances of a class can have one of only a few different combinations of state.
+* **Structure**
+
+![pg119fig01](images/3 Creational Patterns/pg119fig01.jpg)
+
+* **Participants**
+  * **Prototype**
+    * declares an interface for cloning itself.
+  * **ConcretePrototype**
+    * implements an operation for cloning itself.
+  * **Client**
+    * creates a new object by asking a prototype to clone itself.
+* **Collaborations**
+  * A client asks a prototype to cloen itself.
+* **Consequences**
+  * Like AbstractFactory and Builder:
+    * It hides the concrete product classes from the client.
+    * Let a client work with application-specific classes without modification.
+  * Adding and removing products at run-time.
+    * By registering a prototypical instance.
+  * Specifying new objects by varying values.
+    * Define new behavior through object composition -> delegating responsibility to the prototype -> highly dynamic.
+  * Specifying new objects by varying structure.
+    * Many applications build objects from parts and subparts.
+  * Reduced subclassing.
+    * Clone a prototype instead of asking a factory method to make a new object.
+  * Configuring an application with classes dynamically.
+* **Implementation**
+  * Using a prototype manager.
+    * Keep a registry of available prototypes when the number of prototypes isn't fixed.
+  * Implementing the Clone operation.
+    * Shallow copy versus deep copy.
+    * Must ensure the clone's components are clones of the prototype's components.
+  * Initializing clones.
+    * Pass parameters in the Clone operation -> inconsistent cloning interface.
+    * Define operations for (re)setting key pieces of state -> use them immediately after cloning -> if not, introduce an `Initialize` operation that takes parameters as arguments and sets the clone's initialization state accordingly.
+    * Beware of deep-copying Clone operations -> delete copies before reinitializing them.
+* **Related Patterns**
+  * Prototype and Abstract Factory are competing patterns in some ways.
+    * An Abstract Factory might store a set of prototypes from which to clone and return product objects.
