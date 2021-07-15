@@ -264,3 +264,19 @@
     * Hide the operation that creates the instance behind a class operation that guarantees only one instance is created.
   * Subclassing the Singleton class.
     * Flexible approach uses a registry of singletons.
+
+## Discussion of Creational Patterns
+
+* Two common ways to parameterize a system:
+  * Subclass the class that creates the objects.
+    * e.g., Factory Method pattern.
+    * Drawback: require creating a new subclass just to change the class of the product.
+  * Define an object that's responsible for knowing the class of the product objects, and make it a parameter of the system.
+    * e.g., Abstract Factory, Builder, Prototype.
+    * Abstract Factory has the factory object producing objects of several classes.
+    * Builder has the factory object building a complex product incrementally.
+    * Prototype has the factory object by copying a prototype object.
+* Which pattern is best depends on many factors.
+  * Factory Method -> more customizable, a little more complicated.
+  * Abstract Factory, Prototype, Builder -> even more flexible, more complex.
+  * Designs often start from Factory Method and evolve toward others.
