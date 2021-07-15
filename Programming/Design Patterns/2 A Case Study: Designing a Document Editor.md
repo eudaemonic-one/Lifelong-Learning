@@ -104,3 +104,36 @@
 * **Abstract Factory Pattern**
   * Abstract Factory Pattern creates families of related product objects without instantiating classes directly, which is appropriate when the number and general kinds of product objects stay constant, and there are differences in specific product families.
     * Choose among families by instantiating a particular concrete factory.
+
+## 2.6 Supporting Multiple Window Systems
+
+* **Encapsulating Implementation Dependencies**
+  * Encapsulated Window class:
+    * “They provide operations for drawing basic geometric shapes.”
+    * “They can iconify and de-iconify themselves.”
+    * “They can resize themselves.”
+    * “They can (re)draw their contents on demand”
+  * “The Window class must span the functionality of windows from different window systems.”
+
+| Responsibility        | Operations                      |
+| --------------------- | ------------------------------- |
+| **window management** | `virtual void Redraw()`         |
+|                       | `virtual void Raise()`          |
+|                       | `virtual void Lower()`          |
+|                       | `virtual void Iconify()`        |
+|                       | `virtual void Deiconify()`      |
+|                       | ...                             |
+| **graphics**          | `virtual void DrawLine(...)`    |
+|                       | `virtual void DrawRect(...)`    |
+|                       | `virtual void DrawPolygon(...)` |
+|                       | `virtual void DrawText(...)`    |
+|                       | ...                             |
+
+* **Window and WindowImp**
+  * Define a separate **WindowImp** class hierarchy -> hide different window system implementations.
+  * WindowImp: abstract class -> encapsulate window system dependent code.
+  * Each window object with an instance of a WindowImp subclass for that system.
+* **Bridge Pattern**
+  * The intent behind Bridge is to allow separate class hierarchies to work together even as they evolve independently.
+    * One for logical notion, another capturing different implementations.
+    * Enhance logical abstractions without touching environment-dependent code.
