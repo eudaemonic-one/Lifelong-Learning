@@ -230,3 +230,37 @@
 * **Related Patterns**
   * Prototype and Abstract Factory are competing patterns in some ways.
     * An Abstract Factory might store a set of prototypes from which to clone and return product objects.
+
+## Object Creational: Singleton
+
+* **Intent**
+  * Ensure a class only has one instance, and provide a global point of access to it.
+* **Motivation**
+  * Make the class itself responsible for keeping track of its sole instance.
+* **Applicability**
+  * Use when
+    * there must be exactly one instance of a class, and it must be accessible to clients from a well-known access point.
+    * when the sole instance should be extensible by subclassing, and clients should be able to use an extended instance without modifying their code.
+* **Structure**
+
+![pg127fig01](images/3 Creational Patterns/pg127fig01.jpg)
+
+* **Participants**
+  * **Singleton**
+    * defines an Instance operation that lets clients access its unique instance.
+    * may be responsible for creating its own unique instance.
+* **Collaboration**
+  * Clients access a Singleton instance solely through Singleton's Instance operation.
+* **Consequences**
+  * Controlled access to sole instance.
+  * Reduced name space.
+  * Permits refinement of operations and representation.
+    * Allow to extend the Singleton class.
+  * Permits a variable number of instances.
+  * More flexible than class operations.
+    * Use static member functions.
+* **Implementation**
+  * Ensuring a unique instance.
+    * Hide the operation that creates the instance behind a class operation that guarantees only one instance is created.
+  * Subclassing the Singleton class.
+    * Flexible approach uses a registry of singletons.
