@@ -160,3 +160,86 @@
 * **Command Pattern**
   * The Command pattern -> prescribe a uniform interface for issuing requests + shield clients from the request's implementation.
   * A command may delegate all, part, none of the request's implementation to other objects.
+
+## 2.8 Spelling Checking and Hyphenation
+
+* Design problem: textual analysis, specifically checking for misspellings and introducing hyphenation points.
+* Design goal: a diverse set of algorithms for space/time/quality trade-offs + avoid coupling analysis with document structure.
+* Puzzles:
+  * accessing the information to be analyzed
+  * doing the analysis
+* **Accessing Scattered Information**
+  * Access mechanism must accommodate differing data structures, and we must support different kinds of traversals, such as preorder, postorder, and inorder.
+* **Encapsulating Access and Traversal**
+  * The approach of adding abstract operations to Glyph's interface still has problems:
+    * Can't support new traversals.
+    * Have to change existing declarations.
+    * Hard to modify or extend without changing lots of classes.
+    * Difficult to reuse the mechanism to traverse other kinds of object structures.
+    * Can't have more than one traversal in progress on a structure.
+
+```cpp
+void First(Traversal kind)
+void Next()
+bool IsDone()
+Glyph* GetCurrent()
+void Insert(Glyph*)
+  
+Glyph* g;
+for (g->First(PREORDER); !g->IsDone(); g->Next()) {
+  Glyph* current = g->GetCurrent();
+  // do some analysis
+}
+```
+
+* **Iterator Class and Subclasses**
+  * **Iterator**: A general interface for access and traversal.
+    * Each Iterator subclass has a reference to the structure it traverses.
+  * “A glyph subclass that has children will override CreateIterator to return an instance of a different Iterator subclass.”
+
+
+```cpp
+Glyph* g;
+Iterator<Glyph*>* i = g->CreateIterator();
+for (i->First(); !i->IsDone(); i->Next()) {
+  Glyph* child = i->CurrentItem();
+  // do something with current child
+}
+```
+
+* **Iterator Pattern**
+  * The Iterator pattern supports access and traversal over object structures.
+    * Applicable to composite structures and collections.
+    * Abstract the traversal algorithm and shield clients from the internal structure.
+* **Traversal versus Traversal Actions**
+  * We want to accumulate information during the traversal.
+    * We can actually reuse the same set of iterators for different analyses.
+  * Analysis must be able to distinguish different kinds of glyphs.
+  * Put the analytical capability into the glyph classes -> interface expands with every new analytical capability -> obscure the basic Glyph interface.
+* **Encapsulating the Analysis**
+  * A separate object -> use in conjunction with an iterator -> perform analysis at each point in the traversal.
+  * But how the analysis object distinguishes different kinds of glyphs without resorting to type casts or downcasts?
+    * We can add `void CheckMe(SpellingChecker&)` to the Glyph class where, in turn, the `SpellingChecker` class includes an operation like `CheckGlyphSubclass` for every Glyph subclass.
+    * It seems we have to add an operation like `CheckMe(SpellingChecker&)` to Glyph and its subclasses whenever we add a new kind of analysis.
+    * But we can actually give all analysis classes the same interface -> an analysis-independent operation on the Glyph subclass.
+* **Vistor Class and Subclasses**
+  * Concrete subclasses of `Visitor` perform different analyses.
+  * `CheckMe` for Glyph -> `Accept` -> takes a `Visitor&` as argument -> reflect the fact that it can accept any visitor.
+  * New analysis requires a new subclass of `Visitor`.
+
+```cpp
+class Visitor {
+public:
+  virtual void VisitCharacter(Character*) { }
+  virtual void VisitRow(Row*) { }
+  virtual void VisitImage(Image*) { }
+  // ... and so forth
+}
+```
+
+* **Visitor Pattern**
+  * The Visitor pattern support an open-ended number of analyses of the object structure without having to change the object classes themselves.
+    * Applicable to composites or any object structure.
+  * Visitors can work across class hierarchies.
+  * Suitable when performing different operations on a stable class structure.
+    * But whenever you add a subclass to the structure -> have to update all visitor interfaces to include a `Visit...` operation for that subclass.
