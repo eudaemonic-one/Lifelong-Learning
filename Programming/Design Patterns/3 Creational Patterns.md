@@ -121,3 +121,55 @@
     * Empty methods -> let clients override the ones needed.
 * **Related Patterns**
   * A Composite is what the builder often builds.
+
+## Class Creational: Factory Method
+
+* **Intent**
+  * Define an interface for creating an object, but let subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.
+* **Also Known As**
+  * Virtual Constructor
+* **Motivation**
+  * The framework cannot instantiate because it only knows about abstract classes that know little about implementation.
+  * The Factory Method pattern encapsulates the knowledge of subclasses of the abstract class.
+* **Applicability**
+  * Use when
+    * a class can't anticipate the class of objects it muct create.
+    * a class wants its subclasses to specify the objects it creates.
+    * classes delegate responsibility to one of several helper subclasses, and you want to localize the knowledge of which helper subclass is the delegate.
+* **Structure**
+
+![pg108fig01](images/3 Creational Patterns/pg108fig01.jpg)
+
+* **Participants**
+  * **Product**
+    * defines the interface of objects the factory method creates.
+  * **ConcreteProduct**
+    * implements the Product interface.
+  * **Creator**
+    * declares the factory method, which returns an object of type Product.
+    * may call the factory method to create a Product object.
+  * **ConcreteCreator**
+    * overrides the factory method to return an instance of a ConcreteProduct.
+* **Collaborations**
+  * Creator relies on its subclasses to define the factory method so that it returns an instance of the appropriate ConcreteProduct.
+* **Consequences**
+  * Factory methods eliminate the need to bind application-specific classes into your code.
+  * Clients might have to subclass the Creator class just to create a particular ConcreteProduct object.
+  * Provides hooks for subclasses.
+  * Connects parallel class hierarchies.
+
+![pg110fig01](images/3 Creational Patterns/pg110fig01.jpg)
+
+* **Implementation**
+  * Two major varieties.
+    * the Creator is abstract.
+    * the Creator is concrete with default implementations for the factory method.
+  * Parameterized factory methods.
+    * The factory method takes a parameter that identifies the kind of object to create.
+  * Language-specific variants and issues.
+  * Using templates to avoid subclassing.
+    * With template -> clients supply the product class -> no subclassing of Creator is required.
+  * Naming conventions.
+* **Related Patterns**
+  * Abstract Factory is often implemented with factory methods.
+  * Factory methods are usually called within Template Methods.
