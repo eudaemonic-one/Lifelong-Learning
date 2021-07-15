@@ -243,3 +243,14 @@ public:
   * Visitors can work across class hierarchies.
   * Suitable when performing different operations on a stable class structure.
     * But whenever you add a subclass to the structure -> have to update all visitor interfaces to include a `Visit...` operation for that subclass.
+
+## 2.9 Summary
+
+* Composite to represent the document's physical structure.
+* Strategy to allow different formatting algorithms.
+* Decorator for embellishing the user interface.
+* Abstract Factory for supporting multiple look-and-feel standards.
+* Bridge to allow multiple window platforms.
+* Command for undoable user operations.
+* Iterator for accessing and traversing object structures.
+* Visitor for allowing an open-ended number of analytical capabilities without complicating the document structure's implementation.
