@@ -71,3 +71,53 @@
 * **Related Patterns**
   * Factory Method -> implement AbstractFactory classes.
   * A concrete factory -> always a Singleton.
+
+## Object Creational: Builder
+
+* **Intent**
+  * Separate the construction of a complex object from its representation so that the same construction process can create different representations.
+* **Motivation**
+  * The problem with open-ended number of components to build one object -> the need to add a new component without modifying the object.
+* **Applicability**
+  * Use when
+    * “the algorithm for creating a complex object should be independent of the parts that make up the object and how they’re assembled.”
+    * “the construction process must allow different representations for the object that’s constructed.”
+
+* **Structure**
+
+![pg98fig01](images/3 Creational Patterns/pg98fig01.jpg)
+
+* **Participants**
+  * **Builder**
+    * specifies an abstract interface for creating parts of a Product object.
+  * **ConcreteBuilder**
+    * constructs and assembles parts of the product by implementing the Builder interface.
+    * defines and keeps track of the representation it creates.
+    * provides an interface for retrieving the product.
+  * **Director**
+    * constructs an object using the Builder interface.
+  * **Product**
+    * represents the complex object under construction.
+    * includes classes that define the constituent parts, including interfaces for assembling the parts into the final result.
+* **Collaborations**
+  * The client creates the Director object and configures it with the desired Builder object.
+  * Director notifies the builder whenever a part of the product should be built.
+  * Builder handles requests from the director and adds parts to the product.
+  * The client retrieves the product from the builder.
+
+![pg99fig01](images/3 Creational Patterns/pg99fig01-6379149.jpg)
+
+* **Consequences**
+  * It lets you vary a product's internal representation.
+  * It isolates code for construction and representation.
+  * It gives you finer control over the construction process.
+* **Implementation**
+  * Assembly and construction interface.
+    * Builders construct their products in step-by-step fashion.
+    * A model of appending requests is usually sufficient.
+  * Why no abstract class for products?
+    * The produced products differ greatly -> no need to have a common parent class.
+  * Empty methods as default in Builder.
+    * Empty methods -> let clients override the ones needed.
+* **Related Patterns**
+  * A Composite is what the builder often builds.
