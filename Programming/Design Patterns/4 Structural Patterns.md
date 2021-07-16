@@ -192,3 +192,60 @@
   * Often the component-parent link is used for a Chain of Responsibility.
   * Decorator: often used with Composite, often have a common parent class if used together.
   * Flyweight lets you share components, but they can no longer refer to parents.
+
+## Object Structural: Decorator
+
+* **Intent**
+  * Attach additional responsibilities to an object dynamically -> a flexible alternative to subclassing for extending functionality.
+* **Also Known As**
+  * Wrapper
+* **Motivation**
+  * Extend functionality with inheritance is made statically -> inflexible.
+  * Enclose the component in another object (decorator) -> decorator conforms to the interface + decorator forwards requests to the component + add operations for specific functionality before and/or after forwarding + transparency enables unlimited recursive nesting decorators.
+* **Applicability**
+  * Use when
+    * to add responsibility to individual objects dynamically and transparently, that is, without affecting other objects.
+    * for responsibilities that can be withdrawn.
+    * when extension by subclassing is impractical.
+* **Structure**
+
+![pg177fig01](images/4 Structural Patterns/pg177fig01.jpg)
+
+* **Participants**
+  * **Component**
+    * defines the interface for objects that can have responsibilities added to them dynamically.
+  * **ConcreteComponent**
+    * defines an object to which additional responsibilities can be attached.
+  * **Decorator**
+    * maintains a reference to a Component object and defines an interface that conforms to Component's interface.
+  * **ConcreteDecorator**
+    * adds responsibilities to the component.
+* **Collaborations**
+  * Decorator forwards requests to its Component object + optionally perform addtional operations before and after forwarding the request.
+* **Consequences**
+  * More flexibility than static inheritance.
+    * Attach and/or detach decorators -> add and/or remove responsibilities at run-time.
+    * Easy to add a property twice.
+  * Avoids feature-laden classes high up in the hierarchy.
+    * Pay-as-you-go: functionality can be composed from necessary but simple pieces.
+  * A decorator and its component aren't identical.
+    * You shouldn't rely on object identity when you use decorators.
+  * Lots of little objects.
+    * Decorator pattern -> lots of little objects differing only in the way they are interconnected -> easy to customize, but hard to learn and debug.
+* **Implementation**
+  * Interface conformance.
+    * Decorator must conform to the interface being decorated.
+  * Omitting the abstract Decorator class.
+    * If only need to add one responsibility -> no need to define an abstract Decorator class.
+  * Keeping Component classes lightweight.
+    * Focus on defining an interface, but not storing data.
+    * Minimize the feature scope of Component classes.
+  * Changing the skin of an object versus changing its guts.
+    * An alternative is to change the object's guts: Strategy pattern.
+    * if (the component class is heavyweight) -> Strategy > Decorator.
+    * Strategy pattern: alter or extend the component's functionality by replacing the strategy object + the component itself knows about possible extensions.
+    * The Strategy-based approach might require modifying the component to accommodate new extensions.
+* **Related Patterns**
+  * Adapter: A decorator is different from an adapter in that decorator only changes an object's responsibilities, not its interface; an adapter will give an object a completely new interface.
+  * Composite: A decorator can be viewed as a degenerate composite with only one component. However, a decorator adds additional responsibilities, not intended for object aggregation.
+  * Strategy: A decorator lets you change the skin of an object; a strategy lets you change the guts.
