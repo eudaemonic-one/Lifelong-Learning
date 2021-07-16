@@ -249,3 +249,50 @@
   * Adapter: A decorator is different from an adapter in that decorator only changes an object's responsibilities, not its interface; an adapter will give an object a completely new interface.
   * Composite: A decorator can be viewed as a degenerate composite with only one component. However, a decorator adds additional responsibilities, not intended for object aggregation.
   * Strategy: A decorator lets you change the skin of an object; a strategy lets you change the guts.
+
+## Object Structural: Facade
+
+* **Intent**
+  * Provide a unified interface to a set of interfaces in a subsystem -> higher-level interface -> easy to use.
+* **Motivation**
+  * Dividing a system into subsystems helps reduce complexity.
+  * Design goal: minimize the communication and dependencies between subsystems.
+  * Introduce a **facade** object -> single, simplified interface -> more general facilities of a subsystem.
+
+![pg185fig01](images/4 Structural Patterns/pg185fig01.jpg)
+
+* **Applicability**
+  * Use when
+    * you want to provide a simple interface to a complex subsystem.
+      * patterns -> more and smaller classes -> more reusable and easier to customize -> harder to learn and use + some clients don't need to customize them.
+    * there are many dependencies between clients and the implementation classes of an abstraction.
+      * deoupling the subsystem from clients and other subsystems.
+    * you want to layer your subsystems.
+      * Facade: entry point to each subsystem level.
+* **Structure**
+
+![pg187fig01](images/4 Structural Patterns/pg187fig01.jpg)
+
+* **Participants**
+  * **Facade**
+    * knows which subsystem classes are responsible for a request.
+    * delegates client requests to appropriate subsystem objects.
+  * **subsystem classes**
+    * implement subsystem functionality.
+    * handle work assigned by the Facade object.
+    * have no knowledge of the facade; that is, they keep no references to it.
+* **Collaborations**
+  * Clients communicate with the subsystem by sending requests to Facade, which forwards them to the appropriate subsystem object(s).
+  * Clients that use the facade don't have to access its subsystem objects directly.
+* **Consequences**
+  * Shield clients feom subsystem components -> reduce number of objects that clients deal with -> easy to use.
+  * Promote weak coupling between the subsystem and its clients.
+  * It doesn't prevent applications from using subsystem classes.
+* **Implementation**
+  * Reducing client-subsystem coupling.
+    * Making Facade an abstract class with concrete subclasses -> different implementations of a subsystem.
+    * An alternative to subclassing is to configure a Facade object with different subsystem objects.
+  * Public versus private subsystem classes.
+* **Related Patterns**
+  * Abstract Factory can be used as an alternative to Facade to hide platform-specific classes.
+  * Usually only one Facade object is required -> Facade objects are often Singletons.
