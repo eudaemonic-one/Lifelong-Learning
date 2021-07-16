@@ -67,3 +67,55 @@
 * **Related Patterns**
   * Bridge separates an interface from its implementation, while an adapter changes the interface of an existing object.
   * Decorator enhances another object without changing its interface.
+
+## Object Structural: Bridge
+
+* **Intent**
+  * Decouple an abstraction from its implementation so that the two can vary independently.
+* **Also Known As**
+  * Handle/Body
+* **Motivation**
+  * One abstraction has many implementations -> define the interface to the abstraction -> concrete subclasses implement it in different ways -> bind implementation to the abstraction permanently -> difficult to modify, extend, reuse abstractions and implementations independently.
+  * Clients should be able to create an object without committing to a concrete implementation -> putting abstraction and its implementation in separate class hierarchies.
+  * The relationship between abstraction and implementation is called a **bridge**.
+* **Applicability**
+  * Use when
+    * you want to avoid a permanent binding between an abstraction and its implementation.
+    * both the abstractions and their implementations should be extensible by subclassing.
+    * changes in the implementation of an abstraction should have no impact on clients.
+    * you have a proliferation of classes within a hierarchy and need to split an object into two parts.
+    * you want to share an implementation among multiple objects, and this fact should be hidden from the client.
+* **Structure**
+
+![pg153fig01](images/4 Structural Patterns/pg153fig01.jpg)
+
+* **Participants**
+  * **Abstraction**
+    * defines the abstraction's interface.
+  * **RefinedAbstraction**
+    * Extends the interface defined by Abstraction.
+  * **Implementor**
+    * defines the interface for implementation classes.
+      * typically primitive operations.
+  * **ConcreteImplementor**
+    * implements the Implementor interface and defines its concrete implementation.
+* **Collaborations**
+  * Abstraction forwards client requests to its Implementor object.
+* **Consequences**
+  * Decoupling interface and implementation.
+    * Eliminate compile-time dependencies on the implementation -> even possible for an object to change its implementation at run-time.
+  * Improved extensibility.
+  * Hiding implementation details from clients.
+* **Implementation**
+  * Only one Implementor.
+    * where there's only one implementation -> degenerate into one-to-one relationship.
+  * Creating the right Implementor object.
+    * Decide between them based on parameters passed to its constructor.
+    * Choose a default implementation initially and change it later according to usage.
+    * Delegate the decision to another object altogether.
+  * Sharing implementors.
+  * Using multiple inheritance.
+    * Use C++ to inherit publicly from Abstraction and privately from a ConcreteImplementor.
+* **Related Patterns**
+  * An Abstract Factory can create and configure a particular Bridge.
+  * Bridge is used up-front in a design.
