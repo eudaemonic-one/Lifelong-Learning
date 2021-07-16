@@ -119,3 +119,76 @@
 * **Related Patterns**
   * An Abstract Factory can create and configure a particular Bridge.
   * Bridge is used up-front in a design.
+
+## Object Structural: Composite
+
+* **Intent**
+  * Compose objects into tree structures to represent part-whole hierarchies -> treat individual objects and compositions of objects uniformly.
+* **Motivation**
+  * Distinguish objects -> complex.
+  * Composite pattern: recursive composition -> no distinction.
+    * abstract class == primitives + containers.
+* **Applicability**
+  * Use when
+    * you want to represent part-whole hierarchies of objects.
+    * you want clients to be able to ignore the difference between compositions of objects and individual objects.
+* **Structure**
+
+![pg164fig02](images/4 Structural Patterns/pg164fig02.jpg)
+
+![pg165fig01](images/4 Structural Patterns/pg165fig01.jpg)
+
+* **Participants**
+  * **Component**
+    * declares the interface for objects in the composition.
+    * implements default behavior for the interface common to all classes, as appropriate.
+    * declares an interface for accessing and managing its child components.
+    * (optional) defines an interface for accessing a component's parent in the recursive structure, and implements it if that's appropriate.
+  * **Leaf**
+    * represents leaf objects in the composition that have no children.
+    * Defines behavior for primitive objects in the composition.
+  * **Composite**
+    * defines behavior for components having children.
+    * stores child components.
+    * implements child-related operations in the Component interface.
+  * **Client**
+    * manipulates objects in the composition through the Component interface.
+* **Collaborations**
+  * Clients use the Component class interface to interact with objects in the compositie structure.
+    * If the recipient is a Leaf, then the request is handled directly.
+    * If the recipient is a Composite, then it usually forwards requests to its child components, possibly performing addtional operations before and/or after forwarding.
+* **Consequences**
+  * defines class hierarchies consisting of primitive objects and composite objects.
+  * makes the client simple.
+  * makes it easier to add new kinds of components.
+  * can make your design overly general.
+    * can not restrict the components of a composite -> can not rely on the type system to enforce constraints -> run-time checks needed.
+* **Implementation**
+  * Explicit parent references.
+    * Maintain references from child to parent -> simplify the traversal and management of a composite structure.
+    * Parent references help support the Chain of Responsibility pattern.
+    * Define the parent reference in the Component class.
+    * Maintain the invariant that all children of a composite have as their parent the composite that in turn has them as children.
+    * Ensure to change a component's parent *only* when it's being added or removed from a composite.
+  * Sharing components.
+    * The Flyweight pattern solves the problem.
+  * Maximizing the Component interface.
+    * Define as many common operations for Composite and Leaf classes as possible.
+  * Declaring the child management operations.
+    * Transparency > safety.
+  * Should Component implement a list of Components?
+    * Storing child incurs a space penalty.
+  * Child ordering.
+    * The Iterator pattern can guide you in managing the sequence of children.
+  * Caching to improve performance.
+    * Cache traversal or search information about children for efficiency.
+    * Changes to a component -> invalidate the caches of its parent.
+  * Who should delete components?
+    * If without garbage collection -> Composite responsible for deleting its children when it's destroyed.
+    * Leaf objects are immutable and thus can be shared.
+  * What's the best data structure for storing components?
+    * Not necessary use a general-purpose data structure.
+* **Related Patterns**
+  * Often the component-parent link is used for a Chain of Responsibility.
+  * Decorator: often used with Composite, often have a common parent class if used together.
+  * Flyweight lets you share components, but they can no longer refer to parents.
