@@ -126,3 +126,64 @@
   * Composite: implement MacroCommands.
   * Memento: keep state the command requires to undo its effect.
   * A command that must be copied before being placed on the history list acts as a Prototype.
+
+## Class Behavioral: Interpreter
+
+* **Intent**
+  * Given a language, define a representation for its grammer along with an interpreter that uses the representation to interpret sentences in the language.
+* **Motivation**
+  * Express problems as sentences in a simple language -> interpret these sentences with an interpreter.
+  * The pattern describes how to define a grammar, represent a particular expression, and how to interpret the expression.
+
+![248prog01](images/5 Behavioral Patterns/248prog01.jpg)
+
+* **Applicability**
+  * Use when there is a language to interpret, and you can represent statements in the language as abstract syntax trees. It works best when
+    * the grammar is simple.
+      * parser generator: a better alternative for complex grammer hierarchy.
+    * efficiency is not a critical concern.
+      * translating languages > interpreting parse trees.
+* **Structure**
+
+![pg245fig01](images/5 Behavioral Patterns/pg245fig01.jpg)
+
+* **Participants**
+  * **AbstractExpression**
+    * declares an abstract Interpret operation that is common to all nodes in the abstract syntax tree.
+  * **TerminalExpression**
+    * implements an Interpret operation associated with terminal symbols in the grammar.
+    * an instance is required for every terminal symbol in a sentence,
+  * **NonterminalExpression**
+    * one such class is required for every rule in the grammar.
+    * maintains instance variables of type AbstractExpression for each of the symbols.
+    * implements an Interpret operation for nonterminal symbols in the grammar.
+  * **Context**
+    * contains information that's global to the interpreter.
+  * **Client**
+    * builds an abstract syntax tree representing a particular sentence in the language that the grammar defines.
+    * invokes the Interpret operation.
+* **Collaborations**
+  * The client builds the sentence as an abstract syntax tree of NonterminalExpression and TerminalExpression instances. Then the client initializes the context and invokes the Interpret operation.
+  * Each NonterminalExpression node defines Interpret in terms of Interpret on each subexpression. The Interpret operation of each TerminalExpression defines the base case in the recursion.
+  * The Interpret operations at each node use the context to store and access the state of the interpreter.
+* **Consequences**
+  * It's easy to change and extend the grammar.
+    * Use inheritance to change or extend.
+    * Modify existing expression incrementally.
+    * Define new expressions as variations on old ones.
+  * Implementing the grammar is easy, too.
+  * Complex grammars are hard to maintain.
+  * Adding new ways to interpret expressions.
+    * e.g., pretty printing, type-checking.
+* **Implementation**
+  * Creating the abstract syntax tree.
+    * By a table-driven parse, hand-crafted parser, or directly by the client.
+  * Defining the Interpret operation.
+    * Use a visitor to avoid defining operations on every grammar class.
+  * Sharing terminal symbols with the Flyweight pattern.
+    * Terminal nodes don't store information about their position, while parent nodes pass them the context during interpretation -> Flyweight pattern applies.
+* **Related Patterns**
+  * Composite: The abstract syntax tree is an instance of the Composite pattern.
+  * Flyweight: share terminal symbols.
+  * Iterator: traverse the structure.
+  * Visitor: maintain the behavior in each node in one class.
