@@ -57,3 +57,72 @@
       * Define request kinds and parameters by subclassing.
 * **Related Patterns**
   * Often applied in conjunction with Composite.
+
+## Object Behavioral: Command
+
+* **Intent**
+  * Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue, or log requests, and support undoable operations.
+* **Also Known As**
+  * Action, Transaction
+* **Motivation**
+  * It's necessary to issue requests to objects without knowing anything about the operation being requested or the receiver of the request.
+  * Command pattern: turn request into an object -> can be stored and passed around.
+  * Command declares an interface for executing operations (Execute), while the receiver has the knowledge to carry out the request.
+  * MacroCommand: a concrete Command subclass executing a sequence of Commands.
+* **Applicability**
+  * Use when
+    * parameterize objects by an action to perform.
+      * **callback**: register a function to be called at a later point.
+    * specify, queue, and execute requests at different times.
+      * let you transfer the request to a different process and fulfill the request there.
+    * support undo.
+      * Execute: store state for reversing its effects.
+      * Executed commands are stored in a history list.
+    * support logging changes so that they can be reapplied in case of a system crash.
+      * support load and store operations -> persistent log of changes -> reloading logged commands from disk and reexecuting them with Execute.
+    * structure a system aroung high-level operations built on primitives operations.
+      * **transaction**: encapsulate a set of operations + common interface + easy to extend.
+* **Structure**
+
+![pg236fig01](images/5 Behavioral Patterns/pg236fig01.jpg)
+
+* **Participants**
+  * **Command**
+    * declares an interface for executing an operation.
+  * **ConcreteCommand**
+    * defines a binding between a Receiver object and an action.
+    * implements Execute by invoking the corresponding operation(s) on Receiver.
+  * **Client**
+    * creates a ConcreteCommand object and sets its receiver.
+  * **Invoker**
+    * asks the command to carry out the request.
+  * **Receiver**
+    * knows how to perform the operations associated with carrying out a request.
+* **Collaborations**
+  * The client creates a ConcreteCommand object and specifies its receiver.
+  * An Invoker object stores the ConcreteCommand object.
+  * The invoker issues a request by calling Execute on the command.
+  * The ConcreteCommand object invokes operations on its receiver to carry out the request.
+
+![pg237fig01](images/5 Behavioral Patterns/pg237fig01.jpg)
+
+* **Consequences**
+  * Command decouples the object that invokes the operation from the one that knows how to perform it.
+  * Commands are first-class object and thus can be manipulated and extended.
+  * You can assemble commands into a composite command.
+  * It's easy to add new Commands.
+* **Implementation**
+  * How intelligent should a command be?
+    * Depends on its knowledge to find the receiver dynamically.
+  * Supporting undo and redo.
+    * Store additional state in ConcreteCommand.
+    * Last command versus history list.
+    * An undoable command might have to be copied before it can be placed on the history list.
+  * Avoiding error accumulation in the undo process.
+    * Errors can accumulate as commands are executed, unexecuted, and reexecuted repeatedly -> eventual state diverges from the original ones.
+    * The Memento patterns: give the command access to the state information without exposing the internals of other objects.
+  * Using C++ templates.
+* **Related Patterns**
+  * Composite: implement MacroCommands.
+  * Memento: keep state the command requires to undo its effect.
+  * A command that must be copied before being placed on the history list acts as a Prototype.
