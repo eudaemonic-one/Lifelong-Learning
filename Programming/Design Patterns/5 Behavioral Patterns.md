@@ -187,3 +187,70 @@
   * Flyweight: share terminal symbols.
   * Iterator: traverse the structure.
   * Visitor: maintain the behavior in each node in one class.
+
+## Object Behavioral: Iterator
+
+* **Intent**
+  * Provide a way to access the elements of an aggregate object sequentially without exposing its underlying representation.
+* **Also Known As**
+  * Cursor
+* **Motivation**
+  * Give a way to access elements without exposing internal structure.
+  * Traverse an aggregate object in different ways.
+  * **Iterator**: access + traverse out of an aggregate object.
+* **Applicability**
+  * Use when
+    * to access an aggregate object's contents without exposing its internal representation.
+    * to support multiple traversals of aggregate object.
+    * to provide a uniform interface for traversing different aggregate structures (polymorphic iteration).
+* **Structure**
+
+![pg259fig01](images/5 Behavioral Patterns/pg259fig01.jpg)
+
+* **Participants**
+  * **Iterator**
+    * defines an interface for accessing and traversing elements.
+  * **ConcreteIterator**
+    * implements the Iterator interface.
+    * keeps track of the current position in the traversal of the aggregate.
+  * **Aggregate**
+    * defines an interface for creating an Iterator object.
+  * **ConcreteAggregate**
+    * implements the Iterator creation interface to return an instance of the proper ConcreteIterator.
+* **Collaborations**
+  * A ConcreteIterator keeps track of the current object in the aggregate and can compute the succeeding object in the traversal.
+* **Consequences**
+  * It supports variations in the traversaal of an aggregate.
+    * Replace the iterator instance to change the traversal algorithm.
+  * Iterators simplify the Aggregate interface.
+  * More than one traversal can be pending on an aggregate.
+* **Implementation**
+  * Who controls the iteration?
+    * external iterator: clients advance the traversal and request the next element explicitly from the iterator.
+    * internal iterator: the client hands an internal operation to perform, and the iterator applies operation to every element in the aggregate.
+    * external iterators > internal iterators.
+  * Who defines the traversal algorithm?
+    * cursor: the aggregate defines the traversal algorithm and use the iterator to store the state of the iteration -> might violate the encapsulation of the aggregate.
+  * How robust is the iterator?
+    * modify an aggregate during traversal -> dangerous.
+    * simple solution: copy the aggregate and traverse the copy -> expensive.
+    * **robust iterator**: insertions, removals won't interfere with traversal.
+  * Additional Iterator operations.
+    * minimal interface: First, Next, IsDone, CurrentItem.
+    * additional operations: Previous, SkipTo.
+  * Using polymorphic iterators in C++.
+    * polymorphic iterators: allocated dynamically by a factory method + have their cost.
+    * The client is responsible for deleting the polymorphic iterators -> error-prone to forget to free heap-allocated iterator objects.
+  * Iterators may have priviledged access.
+    * The iterator and the aggregate are tightly coupled.
+    * The Iterator class can include `protected` operations for accessing important but publicly unavailable members of the aggregate -> Iterator subclasses gain privileged access to the aggregate.
+  * Iterators for composites.
+    * Use an internal iterator -> record current position by calling itself recursively -> suitable for recursive aggregate structures.
+    * cursor-based iterator: a better alternative if a Composite have an interface for moving from a node to its siblings, parents, and children.
+    * Common traversal patterns: preorder, postorder, inorder, breadth-first.
+  * Null iterators.
+    * **NullIterator**: a degenerate iterator -> *always* done with traversal -> handling boundary conditions.
+* **Related Patterns**
+  * Composite: often applied to recursive structures such as Composite.
+  * Factory Method: instantiate the appropriate Iterator subclass with factory methods -> polymorphic iterators.
+  * Memento: in conjunction with the Iterator pattern -> capture the state of an iteration.
