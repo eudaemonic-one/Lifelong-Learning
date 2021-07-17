@@ -296,3 +296,62 @@
 * **Related Patterns**
   * Abstract Factory can be used as an alternative to Facade to hide platform-specific classes.
   * Usually only one Facade object is required -> Facade objects are often Singletons.
+
+## Object Structural: Flyweight
+
+* **Intent**
+  * Use sharing to support large numbers of fine-grained objects efficiently.
+* **Motivation**
+  * A **flyweight** is a shared object that can be used in multiple contexts simultaneously.
+    * Acts as an independent object in each context.
+    * Stores intrinsic state that's independent of the context.
+  * Client objects are responsible for passing extrinsic state to the flyweight when it needs it.
+* **Applicability**
+  * Depends heavily on how and where it's used.
+  * Use when *all* of the following are true:
+    * An application uses a large number of objects.
+    * Storage costs are high because of the sheer quantity of objects.
+    * Most object state can be made extrinsic.
+    * Many groups of objects may be replcxaed by relatively few shared objects once extrinsic state is removed.
+    * The application doesn't depend on object identity.
+* **Structure**
+
+![pg198fig01](images/4 Structural Patterns/pg198fig01.jpg)
+
+![pg198fig02](images/4 Structural Patterns/pg198fig02.jpg)
+
+* **Participants**
+  * **Flyweight**
+    * declares an interface through which flyweights can receive and act on extrinsic state.
+  * **ConcreteFlyweight**
+    * implements the Flyweight interface and adds storage for intrinsic state, if any.
+  * **UnsharedConcreteFlyweight**
+    * not all Flyweight subclasses need to be shared.
+  * **FlyweightFactory**
+    * creates and manages flyweight objects.
+    * ensures that flyweights are shared properly.
+      * Supplies an existing instance or creates one, if none exists.
+  * **Client**
+    * maintained a reference to flyweight(s).
+    * computes or stores the extrinsic state of flyweight(s).
+* **Collaboration**
+  * State that a flyweight needs to function must be characterized as either intrinsic or extrinsic. Intrinsic state is stored in the ConcreteFlyweight object; extrinsic state is stored or computed by Client objects. Client s pass this state to the flyweight when they invoke its operations.
+  * Clients should not instantiate ConcreteFlyweights directly. Clients must obtain ConcreteFlyweight objects exclusively from the FlyweightFactory object to ensure they are shared properly.
+* **Consequences**
+  * Run-time costs: transferring, finding, and/or computing extrinsic state.
+    * Offset by space savings.
+  * Storage savings:
+    * the reduction in the total number of instances that comes from sharing.
+    * the amount of intrinsic state per object.
+    * whether extrinsic state is computed or stored.
+  * Sharing reduces the cost of intrinsic state, and you trade extrinsic state for computation time.
+* **Implementation**
+  * Removing extrinsic state.
+    * Ideally, extrinsic state can be computed from a separate object structure, one with far smaller storage requirements.
+  * Managing shared objects.
+    * FlyweightFactory: locate a particular flyweight + look up flyweights.
+    * Might reclaim storage through reference counting or garbage collection.
+    * Or, keep around flyweights permanently if the number is fixed and small.
+* **Related Patterns**
+  * Often combined with Composite to implement a logically hierarchical structure in terms of a directed-acyclic graph with shared leaf nodes.
+  * Often best to implement State and Strategy objects as flyweights.
