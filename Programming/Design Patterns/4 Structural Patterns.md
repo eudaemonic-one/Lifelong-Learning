@@ -355,3 +355,54 @@
 * **Related Patterns**
   * Often combined with Composite to implement a logically hierarchical structure in terms of a directed-acyclic graph with shared leaf nodes.
   * Often best to implement State and Strategy objects as flyweights.
+
+## Object Structural: Proxy
+
+* **Intent**
+  * Provide a surrogate or placeholder for another object to control access to it.
+* **Also Known As**
+  * Surrogate
+* **Motivation**
+  * To defer the full cost of instance creation and instiantiation until we actually need to use it.
+    * This optimization shouldn't impact the implementation.
+    * The solution is to use a proxy.
+* **Applicability**
+  * Use when
+    * A **remote proxy** provides a local representative for an object in a different address space.
+    * A **virtual proxy** creates expensive objects on demand.
+    * A **protection proxy** controls access to the original object,
+    * A **smart reference** is a replacement for a bare pointer that performs additional actions when an object is accessed. Typical uses include:
+      * counting the number of references.
+      * loading a persistent object into memory when it's first referenced.
+      * checking the lock status of the real object.
+* **Structure**
+
+![pg209fig01](images/4 Structural Patterns/pg209fig01.jpg)
+
+![pg209fig02](images/4 Structural Patterns/pg209fig02.jpg)
+
+* **Participants**
+  * **Proxy**
+    * maintains a reference that lets the proxy access the real subject.
+    * provides an interface identical to Subject's so that a proxy can by subsitituted for the real subject.
+    * controls access to the real subject and may be responsible for creating an deleting it.
+    * remote proxies: encoding a request and its arguments and sending the encoded request to the real subject in a different address space.
+    * virtual proxies: cache additional information about the real subject so that they can postpone accessing it.
+    * protection proxies: checks that the caller has the access permissions required to perform a request.
+  * **Subject**
+    * defines the common interface for RealSubject and Proxy so that a Proxy can be used anywhere a RealSubject is expected.
+  * **RealSubject**
+    * defines the real object that the proxy represents.
+* **Collaborations**
+  * Proxy forwards requests to RealSubject when appropriate, depending on the kind of proxy.
+* **Consequences**
+  * A remote proxy can hide the fact that an object resides in a different address space.
+  * A virtual proxy can perform optimizations such as creating an object on demand.
+  * Both protection proxies and smart references allow additional housekeeping tasks when an object is accessed.
+  * Copy-on-write: copy when modified + be reference counted -> reduce the cost of copying heavyweight subjects significantly.
+* **Implementation**
+  * Proxy doesn't always have to know the type of real subject.
+* **Related Patterns**
+  * Adapter: An adapter provides a different interface, while a proxy provides the same interface but may perform operations differently.
+  * Decorator: A decorator adds responsibilities, while a proxy controls access to an object.
+  * A protection proxy might be implemented exactly like a decorator.
