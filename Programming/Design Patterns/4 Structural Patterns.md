@@ -406,3 +406,23 @@
   * Adapter: An adapter provides a different interface, while a proxy provides the same interface but may perform operations differently.
   * Decorator: A decorator adds responsibilities, while a proxy controls access to an object.
   * A protection proxy might be implemented exactly like a decorator.
+
+## Discussion of Structural Patterns
+
+* **Adapter versus Bridge**
+  * Common attributes:
+    * Promote flexibility by another level of indirection.
+    * Forward requests to this object from a differeng interface.
+  * Key different lies in their intents:
+    * Adapter: makes two existing and independently designed classes work together without reimplementing one or the other.
+    * Bridge: bridges an abstraction and its implementations + accommodates new implementations.
+  * Facade defines a *new* interface, whereas an adapter reuses an old interface.
+* **Composite versus Decorator versus Proxy**
+  * Similar structure with open-ended number of objects and both rely on recursive composition.
+  * Decorator: add responsibilities without subclassing -> avoid explosion of subclasses.
+  * Composite: treat objects uniformly, multiple as one, focus on representation.
+  * These intents are distinct but complementary.
+  * Proxy's intent is to provide a stand-in when it's inconvenient to accesse the subject.
+  * Proxy: the subject defines the key functionality, the proxy provides (or refuses) access to it.
+    * Focuses on one relationship statically, that is, between the proxy and its subject.
+  * Decorator: the component provides part of the functionality, decorators furnish the rest.
