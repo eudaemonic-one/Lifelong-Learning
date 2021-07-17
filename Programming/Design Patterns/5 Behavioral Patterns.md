@@ -305,3 +305,59 @@
 * **Related Patterns**
   * Colleagues can communicate with the mediator using the Observer pattern.
 
+## Object Behavioral: Memento
+
+* **Intent**
+  * Without violating encapsulation, capture and externalize an object's internal state so that the object can be restored to this state later/
+* **Also Known As**
+  * Token
+* **Motivation**
+  * Implementing checkpoints and undo mechanisms -> save state information somewhere -> restore objects to their previous states in the future.
+  * **memento**: stores a snapshot of the internal state of the memento's **originator**.
+* **Applicability**
+  * Use when
+    * a snapshot of an object's state must be saved so that it can be restored to that state later, *and*
+    * a direct interface to obtaining the state would expose implementation details and break the object's encapsulation.
+* **Structure**
+
+![pg285fig01](images/5 Behavioral Patterns/pg285fig01.jpg)
+
+* **Participants**
+  * **Memento**
+    * stores internal state of the Originator object.
+    * protects against access by objects other than the originator.
+      * Caretaker sees a *narrow* interface to the Memento, it can only pass the memento to other objects.
+      * Originator sees a wide interface, one that lets it access all the data necessary to restore itself to its previous state.
+      * Ideally, only the originator that produced the memento would be permitted to access the memento's internal state.
+  * **Originator**
+    * creates a memento containing a snapshot of its current internal state.
+    * uses the memento to restore its internal state.
+  * **Caretaker**
+    * is responsible for the memento's safekeeping.
+    * never operates on or examines the contents of a memento.
+* **Collaborations**
+  * A caretaker requests a memento from an originator, holds it for a time, and passes it back to the originator.
+  * Mementos are passive. Only the originator that created a memento will assign or retrieve its state.
+
+![pg286fig01](images/5 Behavioral Patterns/pg286fig01.jpg)
+
+* **Consequences**
+  * Preserving encapsulation boundaries.
+    * Shields other objects from complex Originator internals.
+  * It simplifies Originator.
+    * If Originator keeps the versions of internal state, it puts all the storage management burden on Originator.
+    * Caretaker keeps clients from having to notify originators when they're done.
+  * Using mementos might be expensive.
+    * Mementos might incur considerable overhead if a large amounts of copy is a must.
+  * Defining narrow and wide interfaces.
+    * Difficult for some languages to ensure the interface gap.
+  * Hidden costs in caring for mementos.
+    * A caretaker might incur large storage costs.
+* **Implementation**
+  * Language support.
+    * Wide interface versus narrow interface.
+  * Storing incremental changes.
+    * incremental change: the history list defines a specific order in which commands can be undone and redone.
+* **Related Patterns**
+  * Command: Commands can use mementos to maintain state for undoable operations.
+  * Iterator: Mementos can be used for iteration.
