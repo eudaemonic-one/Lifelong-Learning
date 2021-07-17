@@ -254,3 +254,54 @@
   * Composite: often applied to recursive structures such as Composite.
   * Factory Method: instantiate the appropriate Iterator subclass with factory methods -> polymorphic iterators.
   * Memento: in conjunction with the Iterator pattern -> capture the state of an iteration.
+
+## Object Behavioral: Mediator
+
+* **Intent**
+  * Define an object that encapsulates how a set of objects interact -> keeping objects from referring to each other explicitly -> promote loose coupling -> vary their interaction independently.
+* **Motivation**
+  * Proliferating interconnections -> can not work without others' support -> reduce reusability.
+  * **mediator**: a separate object encapsulating collective behavior.
+    * Controlling and coordinating the interactions of a group of objects.
+    * Keeps object in the group from referring to each other explicitly.
+    * The objects only know the mediator -> reducing the number of interconnections.
+* **Applicability**
+  * Use when
+    * a set of objects communicate in well-defined but complex ways.
+    * reusing an object is difficult because it refers to and communicates with many other objects.
+    * a behavior that's distributed between several classes should be customizable without a lot of subclassing.
+* **Structure**
+
+![pg276fig01](images/5 Behavioral Patterns/pg276fig01.jpg)
+
+![pg276fig02](images/5 Behavioral Patterns/pg276fig02.jpg)
+
+* **Participants**
+  * **Mediator**
+    * defines an interface for communicating with Colleague objects.
+  * **ConcreteMediator**
+    * implements cooperative behavior by coordinating Colleague objects.
+    * knows and maintains its colleague.
+  * **Colleague classes**
+    * each Colleague class knows its Mediator object.
+    * each colleague communicates with its mediator whenever it would have otherwise communicated with another colleague.
+* **Collaborations**
+  * Colleagues send and receive requests from a Mediator object. The mediator implements the cooperative behavior by routing requests between the appropriate colleague(s).
+* **Consequences**
+  * It limits subclassing.
+    * A mediator localizes behavior -> subclassing Mediator only to change behavior.
+  * It decouples colleagues.
+  * It simplifies object protocols.
+    * One-to-many: easier to understand, maintain, and extend.
+  * It abstracts how objects cooperate.
+  * It centralizes control.
+    * mediator: monolith -> hard to maintain.
+* **Implementation**
+  * Omitting the abstract Mediator class.
+    * There's no need to define an abstract Mediator class if colleagues work with only one mediator.
+  * Colleague-Mediator communication.
+    * Observer pattern: the colleague sends notifications to the mediator whenever they change state -> the mediator propagates the effects to other colleagues.
+    * A specialized notification interface.
+* **Related Patterns**
+  * Colleagues can communicate with the mediator using the Observer pattern.
+
