@@ -434,3 +434,107 @@
   * Combining the Subject and Observer classes.
 * **Related Patterns**
   * Mediator: By encapsulating complex update semantics, the ChangeManager acts as a mediator between subjects and observers.
+
+## Object Behavioral: State
+
+* **Intent**
+  * Allow an object to alter its behavior when its internal state changes. The object will appear to change its class.
+* **Also Known As**
+  * Objects for States
+* **Motivation**
+  * Introduce an abstract class to represent the states, which declares an interface common to all operational states and subclasses implement state-specific behavior.
+* **Applicability**
+  * Use in either of the following cases:
+    * An object's behavior depends on its state, and it must change its behavior at run-time depending on that state.
+    * Operations have large, multipart conditional statements that depend on the object's state.
+      * State: usually represented by enumerated constants.
+      * Multiple operations contain the same conditional structure -> conditional into a separate class.
+* **Structure**
+
+![pg306fig01](images/5 Behavioral Patterns/pg306fig01.jpg)
+
+* **Participants**
+  * **Context**
+    * defines the interface of interest to clients.
+    * maintains an instance of a ConcreteState subclass that defines the current state.
+  * **State**
+    * defines an interface for encapsulating the bebavior associated with a particular state of the Context.
+  * **ConcreteState subclasses**
+    * each subclass implements a behavior associated with a state of the Context.
+* **Collaborations**
+  * Context delegates state-specific requests to the current ConcreteState object.
+  * A context may pass itself as an argument to the State object handling the request to let it access the context if necessary.
+  * Context is the primary interface for clients to configure states.
+  * Either Context or the ConcreteState subclasses can decide which state succeeds another and under what circumstances.
+* **Consequences**
+  * It localizes state-specific behavior and partitions behavior for different states.
+    * Easy to add new states and transitions -> define new subclasses.
+    * Structure state-specific code -> no monolithic statements.
+  * It makes state transition explicit.
+    * atomic transition: rebinding one State variable.
+  * State objects can be shared.
+    * states: flyweights with no intrinsic state, only behavior.
+* **Implementation**
+  * Who defines the state transition?
+    * Let State subclasses specify their successor state and when to make the transition -> decentralizing the transition logica -> easy to modify or extend the logic + implementation dependencies between subclasses.
+  * A table-based alternative.
+    * Focus on defining state transitions.
+    * A table look-up is often less efficient than a function call.
+  * Creating and destroying State objects.
+    * to create State objects only when they are needed and destroy them thereafter *versus* creating them ahead of time and never destroying them.
+  * Using dynamic inheritance.
+* **Related Patterns**
+  * Flyweight: explains when and how State objects can be shared.
+
+## Object Behavioral: Strategy
+
+* **Intent**
+  * Define a family of algorithms, encapsulate each one, and make them interchangeable -> let the algorithm vary independently from client that use it.
+* **Also Known As**
+  * Policy
+* **Motivation**
+  * Define classes that encapsulate different algorithms.
+  * **Strategy**: an encapsulated algorithm.
+* **Applicability**
+  * Use when
+    * many related class differ only in their behavior.
+    * you need different variants of an algorithm.
+    * an algorithm uses data that clients shouldn't know about.
+    * a class defines many behaviors, and these appear as multiple conditional statements in its operation.
+* **Structure**
+
+![pg316fig01](images/5 Behavioral Patterns/pg316fig01.jpg)
+
+* **Participants**
+  * **Strategy**
+    * declares an interface common to all supported algorithm.
+  * **ConcreteStrategy**
+    * implements the algorithm using the Strategy interface.
+  * **Context**
+    * is configured with a ConcreteStrategy object.
+    * maintains a reference to a Strategy object.
+    * may define an interface that lets Strategy access its data.
+* **Collaborations**
+  * Strategy and Context interact to implement the chosen algorithm.
+    * Context: pass data and/or itself to strategy operations.
+  * A context forwards requests from its clients to its strategy. Clients usually create and pass a ConcreteStrategy object to the context; thereafter, clients interact with the context exclusively.
+* **Consequences**
+  * Families of related algorithms.
+  * An alternative to subclassing.
+  * Strategies eliminate conditional statements.
+  * A choice of implementations.
+  * Clients must be aware of different Strategies.
+  * Communication overhead between Strategy and Context.
+    * Some ConcreteStrategies won't use all the information passed to them.
+  * Increased number of objects.
+    * Share strategies as stateless objects -> reduce overhead.
+* **Implementation**
+  * Defining the Strategy and Context interfaces.
+    * Have Context pass data in parameters to Strategy operations.
+    * Have Context pass itself as an argument, and the strategy requests data from the context explicitly.
+  * Strategies as template parameters.
+    * Bind a Strategy to its Context statically -> efficiency.
+  * Making Strategy objects optional.
+    * Default behavior.
+* **Related Patterns**
+  * Flyweight: Strategy objects often make good flyweights.
