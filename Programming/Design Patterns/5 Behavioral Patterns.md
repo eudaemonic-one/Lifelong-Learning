@@ -538,3 +538,41 @@
     * Default behavior.
 * **Related Patterns**
   * Flyweight: Strategy objects often make good flyweights.
+
+## Class Behavioral: Template Method
+
+* **Intent**
+  * Define the skeleton of an algorithm in an operation, deferring some steps to subclasses -> let subclasses redefine certain steps of an algorithm witout changing the algorithm's structure.
+* **Motivation**
+  * **template method**: define each step with ordering in terms of abstract operations -> subclasses override it to provide concrete behavior.
+* **Applicability**
+  * Use when
+    * to implement the invariant parts of an algorithm once and leave it up to subclasses to implement the behavior that can vary.
+    * when common behavior among subclasses should be factored and localized in a common class to avoid code duplication.
+    * to control subclasses extentions.
+      * hook operation: permitting extension only at specific points.
+* **Structure**
+
+![pg327fig01](images/5 Behavioral Patterns/pg327fig01.jpg)
+
+* **Participants**
+  * **AbstractClass**
+    * defines abstract **primitive operations** that concrete subclasses define to implement steps of an algorithm.
+    * implements a template method defining the skeleton of an algorithm.
+  * **ConcreteClass**
+    * implements the primitive operations to carry out subclass-specific steps of the algorithm.
+* **Collaborations**
+  * ConcreteClass relies on AbstractClass to implement the invariant steps of the algorithm.
+* **Consequences**
+  * Code reuse.
+  * the Hollywood principle: don't call us, we'll call you.
+* **Implementation**
+  * Using C++ access control.
+    * template method: not be overridden.
+  * Minimizing primitive operations.
+    * less override -> less tedious.
+  * Naming conventions.
+    * You can identify the operations that should be overridden by adding a prefix to their names.
+* **Related Patterns**
+  * Factory Methods: often called by template methods.
+  * Strategy: template methods use inheritance to vary part of an algorithm. Strategies use delegation to vary the entire algorithm.
