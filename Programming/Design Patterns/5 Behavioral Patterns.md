@@ -636,3 +636,32 @@
 * **Related Patterns**
   * Composite: Visitors can be used to apply an operation over an object structure defined by the Composite pattern.
   * Interpreter: Visitor may be applied to do the interpretation.
+
+## Discussion of Behavioral Patterns
+
+* **Encapsulating Variation**
+  * A theme of many behavioral patterns:
+    * a Strategy object encapsulates an algorithm.
+    * a State object encapsulates a state-dependent behavior.
+    * a Mediator object encapsulates the protocol between objects.
+    * an Iterator object encapsulates the way you access and traverse the components of an aggregate object.
+  * Chain of Responsibility: communicate between an open-ended number of objects -> not all define static communication relationships between classes.
+* **Objects as Arguments**
+  * Use an object as an argument.
+    * A Visitor object is the argument to a polymorphic Accept operation on the objects it visits.
+  * Command and Memento objects can be passed around and invoked at a later time.
+    * Command: polymorphic Execute operation.
+    * Memento: can only be passed as a value -> no polymorphic operations at all.
+* **Should Communication be Encapsulated or Distributed?**
+  * Mediator and Observer are competing patterns.
+    * Observer pattern: the Observer and the Subject must cooperate to maintain the constraint.
+    * Mediator pattern: centralizes the responsibility for maintaining a constraint.
+  * It is easier to make reusable Observer than Mediators.
+    * Observer: promote partitioning and loose coupling -> finer-grained classes.
+    * Easier to understand the flow of communication in Mediator.
+* **Decoupling Senders and Receivers**
+  * Command, Observer, Mediator, and Chain of Responsibility address how you decouple senders and receivers.
+    * Command: binding a sender and a receiver with a Command object -> let the sender work with different receivers + can reuse the Command object to parameterize a receiver with different senders.
+    * Observer: defining an interface for signaling changes in subjects -> looser binding -> a subject may have multiple observers -> best for decoupling objects when there are data dependencies between them.
+    * Mediator: having objects refer to each other indirectly through a Mediator object -> centralizing the communication -> the mediator implements own dispatching scheme -> reduce subclassing + decrease type safety.
+    * Chain of Responsibility: passing the request along a chain of potential receivers -> best for existing chain structure.
