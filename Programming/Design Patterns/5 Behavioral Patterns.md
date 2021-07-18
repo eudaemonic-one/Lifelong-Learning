@@ -576,3 +576,63 @@
 * **Related Patterns**
   * Factory Methods: often called by template methods.
   * Strategy: template methods use inheritance to vary part of an algorithm. Strategies use delegation to vary the entire algorithm.
+
+## Object Behavioral: Visitor
+
+* **Intent**
+  * Represent an operation to be performed on the elements of an object structure -> let you define a new operation without changing the classes of the elements on which it operates.
+* **Motivation**
+  * **visitor**: pass it to elements as it's traversed.
+  * an element accepts the visitor -> sends a request to the visitor and includes the element as an argument -> the visitor executes the operation for that element.
+  * with the visitor pattern, you define two class hierarchies:
+    * one for the elements being operated on and one for the visitors that define operations on the elements.
+    * you create a new operation by adding a new subclass to the visitor class hierarchy.
+* **Applicability**
+  * Use when
+    * an object structure contains many classes of objects with differing interfaces, and you want to perform operations on these objects that depend on their concrete classes.
+    * many distinct and unrelated operations need to be performed on objects in an object structure, and you want to avoid polluting their classes with these operations.
+    * the classes defining the object structure rarely change, but you often want to defien new operations over the structure.
+* **Structure**
+
+![pg334fig01](images/5 Behavioral Patterns/pg334fig01.jpg)
+
+* **Participants**
+  * **Visitor**
+    * declares a Visit operation for each class of ConcreteElement in the object structure.
+      * The operation's name and signature identifies the class that sends the Visit request to the visitor.
+  * **ConcreteVisitor**
+    * implements each operation declared by Visitor.
+      * Each operation implements a fragment of the algorithm defined for the corresponding class of object in the structure.
+      * ConcreteVisitor provides the context for the algorithm and stores its local state, which often accumulates results during the traversal of the structure.
+  * **Element**
+    * defines an Accept operation that takes a visitor as an argument.
+  * **ConcreteElement**
+    * implements an Accept operation.
+  * **ObjectStructure**
+    * can enumerate its elements.
+    * may provide a high-level interface to allow the visitor to visit its elements.
+    * may either be a composite or a collection such as a list or a set.
+* **Collaborations**
+  * A client that uses the Visitor pattern must create a ConcreteVisitor object and then traverse the object structure, visiting each element with the visitor.
+  * When an element is visited, it calls the Visitor operation that corresponds to its class. The element supplies itself as an argument to this operation to let the visitor access its state, if necessary.
+
+![pg335fig01](images/5 Behavioral Patterns/pg335fig01.jpg)
+
+* **Consequences**
+  * Visitor makes adding new operations easy.
+  * A visitor gathers related operations and separates unrelated ones.
+  * Adding new ConcreteElement classes is hard.
+    * Each new ConcreteElement gives rise to a new abstract operation on Visitor and a corresponding implementation in every ConcreteVisitor clas.
+  * Visiting across class hierarchies.
+    * An iterator can't work across object structures with different types of elements, while Visitor does not have this restriction.
+  * Accumulating State.
+  * Breaking encapsulations.
+    * The pattern forces you to provide public operations that access an element's internal state.
+* **Implementation**
+  * Double dispatch.
+    * double dispatch: depends on the Visitor's and the Element's type -> let visitors request different operations on each class of element.
+  * Who is responsible for traversing the object structure?
+    * in the object structure, in the visitor, or in a separate iterator.
+* **Related Patterns**
+  * Composite: Visitors can be used to apply an operation over an object structure defined by the Composite pattern.
+  * Interpreter: Visitor may be applied to do the interpretation.
