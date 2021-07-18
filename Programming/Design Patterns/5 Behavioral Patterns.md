@@ -361,3 +361,76 @@
 * **Related Patterns**
   * Command: Commands can use mementos to maintain state for undoable operations.
   * Iterator: Mementos can be used for iteration.
+
+## Object Behavioral: Observer
+
+* **Intent**
+  * Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.
+* **Also Known As**
+  * Dependents, Publish-Subscribe
+* **Motivation**
+  * Observer pattern: **subject** + **observer**.
+  * subject -> many dependent observers.
+  * subject undergoes a change -> notify all observers.
+  * each observer will query the subject to synchronize its state with the subject's state.
+  * **publish-subscribe**
+* **Applicability**
+  * Use in any of the following situations:
+    * When an abstraction has two aspects, one dependent on the other.
+    * When a change to one object requires changing others, and you don't know how many objects need to be changed.
+    * When an object should be able to notify other objects without making assumptions about who these objects are.
+* **Structure**
+
+![pg294fig01](images/5 Behavioral Patterns/pg294fig01.jpg)
+
+* **Participants**
+  * **Subject**
+    * knows its observers.
+    * provides an interface for attaching and detaching Observer objects.
+  * **Observer**
+    * defines an updating interface for objects that should be notified of changes in a subject.
+  * **ConcreteSubject**
+    * stores state of interest to ConcreteObserver objects.
+    * sends a notification to its observers when its state changes.
+  * **ConcreteObserver**
+    * maintains a reference to a ConcreteSubject object.
+    * stores state that should stay consistent with the subject's.
+    * implements the Observer updating interface to keep its state consistent with the subject's.
+* **Collaborations**
+  * ConcreteSubject notifies its observers whenever a change occurs that could make its observers' state inconsistent with its own.
+  * After being informed of a change in the concrete subject, a ConcreteObserver object may query the subject for information. ConcreteObserver uses this information to reconcile its state with that of the subject.
+
+![pg295fig01](images/5 Behavioral Patterns/pg295fig01.jpg)
+
+* **Consequences**
+  * Abstract coupling between Subject and Observer.
+    * Loosely coupled -> Subject and Observer can belong to different layers of abstraction.
+  * Support for broadcast communication.
+  * Unexpected updates.
+    * An operation on the subject -> a cascade of updates to observers and their dependent objects.
+    * Spurious update -> hard to track down.
+    * Simple update protocol provides no detail on *what* changed in the subject -> additional protocol required to deduce the changes.
+* **Implementation**
+  * Mapping subjects to their observers.
+    * Store references to observers explicitly in the subject -> expensive storage when there are many subjects and few observers.
+    * Solution: use associative look-up (e.g., hash table) -> overhead when accessing the observers.
+  * Observing more than one subject.
+    * Extend Update interface (like pass subject as a parameter) -> to know *which* subject is sending the notification.
+  * Who triggers the update?
+    * Have state-setting operations on Subject call Notify after they change the subject's state.
+    * Make clients responsible for calling Notify at the right time.
+  * Dangling references to deleted subjects.
+    * Make the subject notify its observers as it is deleted -> reset & avoid dangling references.
+  * Making sure Subject state is self-consistent before notification.
+    * Template methods in abstract Subject -> define a primitive operation for subclasses to override, and make Notify the last operation in the template method -> object is self-consistent.
+    * Good => document which Subject operations trigger notifications.
+  * Avoiding observer-specific update protocols: the push and pull models.
+    * push model versus pull models.
+  * Specifying modification of interest explicitly.
+    * Allow registering observers for specific events of interest.
+    * Use notion of **aspects** for Subject objects.
+  * Encapsulating complex update semantics.
+    * **Change-Manager**: an instance of the Medirator -> maintains relationships required between subjects and observers -> minimize the work to make observers relfect a change in their subject.
+  * Combining the Subject and Observer classes.
+* **Related Patterns**
+  * Mediator: By encapsulating complex update semantics, the ChangeManager acts as a mediator between subjects and observers.
