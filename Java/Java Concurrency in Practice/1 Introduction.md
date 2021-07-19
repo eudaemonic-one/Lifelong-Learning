@@ -31,3 +31,16 @@
 * **More Responsive User Interfaces.**
   * main event loop => event dispatch thread (EDT).
   * {long-running tasks} => {separate threads} => free the event thread to process UI events => UI more responsive.
+
+## 1.3 Risks of Threads
+
+* **Safety Hazards.**
+  * absence of synchronization => unpredictable ordering of operations => *race condition*.
+  * `@ThreadSafe`, `@NotThreadSafe`, `@Immutable`.
+  * Java provides synchronization => coordinate access to shared variables.
+* **Liveness Hazards.**
+  * liveness failure: unable to make forward progress.
+  * e.g., inadvertent infinite loop, deadlock, starvation, livelock.
+* **Performance Hazards.**
+  * performance issues: poor service time, responsiveness, throughput, resource consumption, or scalability.
+  * runtime overhead: context switches, synchronization mechanisms.
