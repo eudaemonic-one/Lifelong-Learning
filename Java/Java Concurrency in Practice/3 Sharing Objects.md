@@ -36,3 +36,18 @@
 
 ![c0039-01](images/3 Sharing Objects/c0039-01.jpg)
 
+## 3.2 Publication and Escape
+
+* *publish*: make an object available to code outside its current scope, while internals *not* published.
+* *escape*: publishing an object when it should not have been. 
+* Any object that is *reachable* from a published object by following some chain of nonprivate field references and method calls has also been published.
+* publication forms:
+  * => store a reference in a public static field.
+  * => return a reference from a nonprivate method.
+  * => publish an inner class instance (that contains a hidden reference to the enclosing instance).
+    * e.g., create and *start* a thread from one object's constructor.
+    * e.g., call an overrideable instance method from the constructor.
+
+![c0041-01](images/3 Sharing Objects/c0041-01.jpg)
+
+![c0042-01](images/3 Sharing Objects/c0042-01.jpg)
