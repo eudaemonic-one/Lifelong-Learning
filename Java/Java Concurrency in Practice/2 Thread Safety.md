@@ -66,3 +66,17 @@
   * reentrancy saves us from deadlock in situations like this:
 
 ![c0027-01](images/2 Thread Safety/c0027-01.jpg)
+
+## 2.4 Guarding State with Locks
+
+* If synchronization is used to coordinate access to a variable, it is needed *everywhere that variable is accessed*.
+* `@GuardedBy` => the variable guarded by that lock => all accesses to that variable with the *same* lock held.
+* Every object has a built-in lock => up to you to construct *locking protocols* or *synchronization policies*.
+* **common locking convention** := encapsulate all mutable state within an object + synchronize any code path that accesses mutable state using the object's intrinsic lock.
+  * For every invariant that involves more than one variable, *all* the variables must be guarded by the **same** lock.
+* Merely synchronizing every method => not enough to render atomic compound actions.
+  * This *put-if-absent* has a race condition => additional locking is required when multiple operations are combined into a compound action.
+
+![c0029-01](images/2 Thread Safety/c0029-01.jpg)
+
+* Synchronizing every method can lead to liveness and performance problems.
