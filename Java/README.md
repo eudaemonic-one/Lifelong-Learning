@@ -17,3 +17,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 12. Serialization](./Effective%20Java/12%20Serialization.md)
 * [Java Concurrency in Practice](./Java%20Concurrency%20in%20Practice/)
   * [Chapter 1. Introduction](./Java%20Concurrency%20in%20Practice/1%20Introduction.md)
+  * [Chapter 2. Thread Safety](./Java%20Concurrency%20in%20Practice/2%20Thread%20Safety.md)
