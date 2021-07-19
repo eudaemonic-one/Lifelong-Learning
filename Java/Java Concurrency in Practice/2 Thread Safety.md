@@ -40,3 +40,29 @@
 ![c0023-01](images/2 Thread Safety/c0023-01.jpg)
 
 * `java.util.concurrent.atomic` => *atomic variable* (e.g., `AtomicLong`, `AtomicReference`) => effecting atomic state transitions on numbers and object references.
+
+## 2.3 Locking
+
+![c0024-01](images/2 Thread Safety/c0024-01.jpg)
+
+* This approach is not thread-safe => two atomic references are individually thread-safe => race conditions.
+* preserve state consistency := update related state variables in a single atomic operation.
+* **Intrinsic Locks** (synchronized block)
+  * Java provides the `synchronized` block: a reference to an object that will serve as the *lock* + a block of code to be guarded by that lock.
+  * `synchronized` method: lock on which the method is being invoked.
+  * static `synchronized` method: use the `Class` object for the lock.
+  * *intrinsic locks*: automatically acquired before entering a `synchronized` block and automatically released when control exits the block.
+  * intrinsic locks in Java == *mutex* => at most one thread may own the lock.
+
+![c0025-01](images/2 Thread Safety/c0025-01.jpg)
+
+* `SynchronizedFactorizer` => inhibit multiple clients from using the servlet simultaneously => thread-safe, but with poor responsiveness => performance problem.
+
+![c0026-01](images/2 Thread Safety/c0026-01.jpg)
+
+* **Reentrancy**
+  * intrinsic locks are *reentrant* => if a thread tries to acquire a lock that it already holds, the request succeeds => locks are acquired on a per-thread basis.
+  * reentrancy implementation := an acquisition count + an owning thread.
+  * reentrancy saves us from deadlock in situations like this:
+
+![c0027-01](images/2 Thread Safety/c0027-01.jpg)
