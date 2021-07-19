@@ -51,3 +51,27 @@
 ![c0041-01](images/3 Sharing Objects/c0041-01.jpg)
 
 ![c0042-01](images/3 Sharing Objects/c0042-01.jpg)
+
+## 3.3 Thread Confinement
+
+* *thread confinement*: *not share* => thread-safe.
+* **Ad-hoc Thread Confinement**
+  * => entirely depend on the implementation.
+  * => must enforce a single-threaded subsystem.
+* **Stack Confinement**
+  * => an object can only be reached through local variables => *within-thread* or *thread-local* usage.
+  * => must ensure the referent does not escape.
+
+![c0044-01](images/3 Sharing Objects/c0044-01.jpg)
+
+* **`ThreadLocal`**
+  * => provide `get` and `set` accessor methods.
+  * => maintain a separate copy of the value for each thread that uses it => per-thread value with a value-holding object.
+  * used to prevent sharing in designs based on mutable Singleton or global variables.
+  * used when a frequently used operation requires a temporary object such as a buffer and wants to avoid reallocating the temporary object on each invocation.
+  * `ThreadLocal<T>` == `Map<Thread,T>`
+  * from a single-threaded application to a multi-threaded environment => convert shared global variables into `ThreadLocal`s => preserve thread safety.
+  * `ThreadLocal` => like global variables => detract from reusability, hidden coupling among classes.
+
+![c0045-01](images/3 Sharing Objects/c0045-01-6735737.jpg)
+
