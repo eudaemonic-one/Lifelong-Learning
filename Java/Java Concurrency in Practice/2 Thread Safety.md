@@ -80,3 +80,16 @@
 ![c0029-01](images/2 Thread Safety/c0029-01.jpg)
 
 * Synchronizing every method can lead to liveness and performance problems.
+
+## 2.5 Liveness and Performance
+
+* Synchronizing the entirety of the method => only one thread may execute it at once => requests may queue up and are handled sequentially => *poor concurrency*.
+* Exclude from `synchronized` blocks long-running operations that do not affect shared state => improved concurrency.
+* `CachedFactorizer` := two separate `synchronized` blocks
+  * one guards the check-then-act sequence about cached result.
+  * the other updates both cached number and factors.
+  * (synchronizing the entire method) *versus* (synchronizing the shortest possible code paths)
+
+![c0031-01](images/2 Thread Safety/c0031-01.jpg)
+
+* Avoid holding locks during lengthy computations or operations at risk of not completing quicklt such as network or console I/O.
