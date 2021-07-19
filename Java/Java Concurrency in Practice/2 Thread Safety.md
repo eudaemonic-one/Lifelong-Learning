@@ -22,3 +22,21 @@
 * Stateless objects are always thread-safe.
 
 ![c0018-01](images/2 Thread Safety/c0018-01.jpg)
+
+## 2.2 Atomicity
+
+![c0019-01](images/2 Thread Safety/c0019-01.jpg)
+
+* `UnsafeCountingFactorizer` =>susceptible to *lost updates* (*read-modify-write* operation) => *race condition* => not thread-safe.
+* **Race Conditions**
+  * => don't *always* result in failure.
+  * *check-then-act*: use a potentially stale observation to make a decision.
+  * *lazy initialization*: defer initializing an object until it is actually needed + ensuring it is initialized only once => might use *check-then-act*.
+
+![c0021-01](images/2 Thread Safety/c0021-01.jpg)
+
+* *compound actions* => if executed atomically => thread-safe.
+
+![c0023-01](images/2 Thread Safety/c0023-01.jpg)
+
+* `java.util.concurrent.atomic` => *atomic variable* (e.g., `AtomicLong`, `AtomicReference`) => effecting atomic state transitions on numbers and object references.
