@@ -75,3 +75,20 @@
 
 ![c0045-01](images/3 Sharing Objects/c0045-01-6735737.jpg)
 
+## 3.4 Immutability
+
+* *immutable* :=
+  * Its state cannot be modified after construction;
+  * All its fields are `final`; and
+  * It is *properly constructed* (the `this` reference does not escape during construction).
+  * => always thread-safe (invariants always hold), simple (controlled state space), safer (unmodifiable to untrusted code).
+
+![c0047-01](images/3 Sharing Objects/c0047-01.jpg)
+
+* **Final Fields**
+  * final fields can't be modified (although objects they refer to can be modifed if they are mutable).
+  * => *initialization safety* => immutable objects can be freely accessed and shared without synchronization
+
+![c0049-01](images/3 Sharing Objects/c0049-01.jpg)
+
+![c0050-01](images/3 Sharing Objects/c0050-01.jpg)
