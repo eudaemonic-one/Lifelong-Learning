@@ -44,3 +44,10 @@
 * **Performance Hazards.**
   * performance issues: poor service time, responsiveness, throughput, resource consumption, or scalability.
   * runtime overhead: context switches, synchronization mechanisms.
+
+## 1.4 Threads are Everywhere
+
+* JVM => threads for JVM housekeeping tasks (garbage collection, finalization) and a main thread for running the `main` method.
+* AWS and Swing => threads for managing user interface events.
+* `Timer` => threads for executing deferred tasks.
+* Component frameworks (servlets and RMI) => pools of threads and invoke component methods in these threads.
