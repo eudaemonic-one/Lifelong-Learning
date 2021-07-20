@@ -119,3 +119,19 @@
   * => add an additional level of locking using its own intrinsic lock.
 
 ![c0074-01](images/4 Composing Objects/c0074-01.jpg)
+
+## 4.5 Documenting Synchronization Policy
+
+* Document a class's thread safety guarantees for its clients; document its synchonization policy for its maintainers.
+* A synchronization policy documents:
+  * which variabales to make `volatile`
+  * which variables to guard with locks
+  * which lock(s) guard which variables
+  * which variables to make immutable or confine to a thread
+  * which operations must be atomic
+* Document:
+  * Implementation details for future maintainers.
+  * Publicly observable locking behavior of classes as specification.
+  * The thread safety guarantees made by a class.
+* **Interpreting Vague Documentation**
+  * Guess from the perspective of implementor.
