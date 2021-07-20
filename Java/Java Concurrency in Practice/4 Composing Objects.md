@@ -97,3 +97,25 @@
 
 ![c0070-01](images/4 Composing Objects/c0070-01.jpg)
 
+## 4.4 Adding Functionality to Existing Thread-safe Classes
+
+* The Java class library provides useful "building block" classes that can be extended to add some operations.
+* Use a different lock to guard its satte variables => change the synchronization policy => the subclass would silently break.
+
+![c0072-01](images/4 Composing Objects/c0072-01.jpg)
+
+* **Client-side Locking**
+  * Extend the functionality of the class by placing extension code in a helper class.
+  * The problem with `ListHelper` is that it synchronizes on the *wrong* lock => whatever lock the `List` uses to guard its state, it sure isn't the lock on the `ListHelper`.
+  * *client-side locking* => put locking code for class C into classes that are totally unrelated to C => fragile though, couple the bahaviors of both the base class and the derived class.
+
+![c0072-02](images/4 Composing Objects/c0072-02.jpg)
+
+![c0073-01](images/4 Composing Objects/c0073-01.jpg)
+
+* **Composition**
+  * => assume that once an object is passed to its constructor, the client will not use the underlying object directly again.
+  * => delegate operations to the underlying instance and add an atomic operation.
+  * => add an additional level of locking using its own intrinsic lock.
+
+![c0074-01](images/4 Composing Objects/c0074-01.jpg)
