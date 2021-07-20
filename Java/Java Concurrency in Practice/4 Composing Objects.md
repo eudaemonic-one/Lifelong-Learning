@@ -55,3 +55,45 @@
 ![c0063-01](images/4 Composing Objects/c0063-01.jpg)
 
 ![c0064-01](images/4 Composing Objects/c0064-01.jpg)
+
+## 4.3 Delegating Thread Safety
+
+* Composing classes out of objects that are thread-safe.
+  * e.g., `CountingFactorizer` *delegates* its thread safety responsibilities to the `AtomicLong`: `CountingFactorizer` is thread-safe because `AtomicLong` is.
+* **Example: Vehicle Tracker Using Delegation**
+  * a thread-safe `Map` implementation `ConcurrentHashMap` > `HashMap`
+  * an immutable `Point` > `MutablePoint`
+  * this implementation does not use any explicit synchronization.
+  * this version returns an unmodifiable but live view of the vehicle locatiosn instead of snapshot of the locations.
+  * if an unchanging view of the fleet is required, `getLoctaions` could instead return a shallow copy of the `locations` map.
+
+![c0064-02](images/4 Composing Objects/c0064-02.jpg)
+
+![c0065-01](images/4 Composing Objects/c0065-01.jpg)
+
+![c0066-01](images/4 Composing Objects/c0066-01.jpg)
+
+* **Independent State Variables**
+  * if underlying state variables are *independent* => we can delagate thread safety to them.
+  * `CopyOnWriteArrayList`: a thread-safe `List` implementation suited for managing listener lists.
+
+![c0066-02](images/4 Composing Objects/c0066-02.jpg)
+
+* **When Delegation Fails**
+  * When additional constraints are imposed
+    * e.g., that the first number be less than or equal to the second.
+    * Both `setLower` and `setUpper` are check-then-act sequences => insufficient locking to make them atomic.
+
+![c0067-01](images/4 Composing Objects/c0067-01.jpg)
+
+* **Publishing Underlying State Variables**
+  * If a state variable is thread-safe, does not participate in any invariants that constrain its value, and has no prohibited state transitions for any of its operations, then it can safely be published.
+* **Example: Vehicle Tracker that Publishes Its State**
+  * The contents of the `Map` are thread-safe mutable points rather than immutable ones.
+  * The `getLocation` method returns an unmodifiable copy of the underlying `Map` => callers can change the location of one of the vehicles by mutating the `SafePoint` values in the returned `Map`.
+  * Live nature may be a benefit or a drawback, depending on the requirements.
+
+![c0069-01](images/4 Composing Objects/c0069-01.jpg)
+
+![c0070-01](images/4 Composing Objects/c0070-01.jpg)
+
