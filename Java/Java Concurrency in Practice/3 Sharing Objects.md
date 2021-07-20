@@ -92,3 +92,45 @@
 ![c0049-01](images/3 Sharing Objects/c0049-01.jpg)
 
 ![c0050-01](images/3 Sharing Objects/c0050-01.jpg)
+
+## 3.5 Safe Publication
+
+* This improper publication could allow another thread to observe a *partially constructed object*.
+
+![c0050-02](images/3 Sharing Objects/c0050-02.jpg)
+
+* **Improper Publication: When Good Objects Go Bad**
+  * *not properly published*
+    * => see a stale value, and then see a `null` or other older value.
+    * => or, see an up-to-date value, but stale values.
+* **Immutable Objects and Initialization Safety**
+  * immutable objects: initialization safety => can be used safely by any thread without additional synchronization.
+* **Safe Publication Idioms**
+  * To publish an object safely, both the reference to the object and the object's state must be made visible at the same time.
+  * Safely publish by:
+    * => Initializing an object reference from a static initializer (easiest and safest way);
+    * => Storing a reference to it into a `volatile` field or `AtomicReference`;
+    * => Storing a reference to it into a `final` field of properly constructed object; or
+    * => Storing a reference to it into a field that is properly guarded by a lock.
+  * The thread-safe library collections:
+    * Placing a key or value in a `Hashtable`, `synchronizedMap`, or `ConcurrentMap` safely publishes it to any thread that retrieves it from the `Map`;
+    * Placing an element in a `Vector`, `CopyOnWriteArrayList`, `CopyOnWriteArraySet`, `synchronizedList`, or `synchronizedSet` safely publishes it to any thread that retrieves it from the collection;
+    * Placing an element on a `BlockingQueue` or a `ConcurrentLinkedQueue` safely publishes it to any thread that retrieves it from the queue.
+  * Other mechanisms including `Future` and `Exchanger` also consititue safe publication.
+* **Effectively Immutable Objects**
+  * *effectively immutable*: not technically immutable, but whose state will not be modified after publication.
+* **Mutable Objects**
+  * Immutable objects can be published through any mechanism;
+  * Effectively immutable objects must be safely published;
+  * Mutable objects must be safely published, and must be either threadsafe or guarded by a lock.
+* **Sharing Objects Safely**
+  * **Thread-confined.**
+    * Owned eclusively by and confined to one thread, and can be modified by its owning thread.
+  * **Shared read-only.**
+    * Can be accessed concurrently by multiple threads without additional synchronization, but cannoty be modified by any thread.
+    * Include immutable and effectively immutable objects.
+  * **Shared thread-safe.**
+    * Performs synchronization internally, so multiple threads can freely access it through its public interface without further synchronization.
+  * **Guarded.**
+    * Can be accessed only with a specific lock held.
+    * Include those that are encapsulated within other thread-safe objects and published objects that are known to be guarded by a specific lock.
