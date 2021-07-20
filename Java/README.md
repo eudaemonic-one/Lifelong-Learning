@@ -20,3 +20,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 2. Thread Safety](./Java%20Concurrency%20in%20Practice/2%20Thread%20Safety.md)
   * [Chapter 3. Sharing Objects](./Java%20Concurrency%20in%20Practice/3%20Sharing%20Objects.md)
   * [Chapter 4. Composing Objects](./Java%20Concurrency%20in%20Practice/4%20Composing%20Objects.md)
+  * [Chapter 5. Building Blocks](./Java%20Concurrency%20in%20Practice/5%20Building%20Blocks.md)
