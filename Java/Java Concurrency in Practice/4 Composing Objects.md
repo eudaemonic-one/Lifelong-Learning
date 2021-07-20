@@ -26,3 +26,32 @@
 * **State Ownership**
   * publish a mutable object => no longer have exclusive control => shared ownership.
   * collection classes owns the state of the collection infrastructure, but client codes owns the objects stored in the collection.
+
+## 4.2 Instance Confinement
+
+* *Instance confinement* := encapsulating data within an object.
+  * => confines access to the data to the object's method => combining with locking discipline => ensure used in a thread-safe manner.
+  * => flexible choices of locking strategy => build thread-safe classes.
+* Confined objects must not escape their intended scope.
+  * e.g., `Collections.synchronizedList` wraps `ArrayList` => Decorator pattern => the wrapper object holds the only reachable reference to the underlying collection => thread-safe collection.
+
+![c0059-01](images/4 Composing Objects/c0059-01.jpg)
+
+* **The Java Monitor Pattern**
+  * An object encapsulates all its mutable state and guards it with the object's own intrinsic lock.
+  * Using a private lock => client code cannot acquire it.
+
+![c0061-01](images/4 Composing Objects/c0061-01.jpg)
+
+* **Example: Tracking Fleet Variables**
+  * Even though `MutablePoint` is not thread-safe, the tracker class is.
+    * Neigher the map nor any of the mutable points it contains is ever published.
+    * This copies mutable data before returning it to the client.
+
+![c0061-02](images/4 Composing Objects/c0061-02.jpg)
+
+![c0062-01](images/4 Composing Objects/c0062-01.jpg)
+
+![c0063-01](images/4 Composing Objects/c0063-01.jpg)
+
+![c0064-01](images/4 Composing Objects/c0064-01.jpg)
