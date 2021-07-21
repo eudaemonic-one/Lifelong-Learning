@@ -147,3 +147,35 @@
       * e.g., one thread fills a buffer with data and the other consumes the data from the buffer.
 
 ![c0102-01](images/5 Building Blocks/c0102-01.jpg)
+
+## 5.6 Building an Efficient, Scalable Result Cache
+
+* A naive cache implementation => turn a performance bottleneck into a scalability bottleneck.
+* `Computable<A, V>` := input of type `A` and result of type `V`.
+* create a `Computable` wrapper that remembers the results of previous computation and encapsulates the caching process => `Memoizer1`
+  * `HashMap` is not thread-safe => sychronize the entire `compute` method => only one thread at a time can execute `compute` at all => very poor concurrency.
+
+![c0103-01](images/5 Building Blocks/c0103-01.jpg)
+
+* replace the `HashMap` with a `ConcurrentHashMap` => eliminating the serialization induced by synchronization => `Memoizer2`.
+  * => if one thread starts an expensive computation, others are not aware.
+  * => a window of vulnerability in which two threads calling `compute` at the same time might computing the same value.
+
+![c0105-01](images/5 Building Blocks/c0105-01.jpg)
+
+* want to represent the notion that some thread is computing for specific value => represent with `FutureTask` => `Memoizer3`.
+  * => if the appropriate calculation has not been started, it creates a `FutureTask`, registers it in the `Map`, and starts the computation;
+  * => otherwise it waits for the result of the existing computation.
+  * => still a small window of vulnerability => check-then-act sequence is nonatomic.
+
+![c0106-01](images/5 Building Blocks/c0106-01.jpg)
+
+* use atomic `putIfAbsent` method => closing the window of vulnerability => `Memoizer`
+  * caching a `Future` might pollute the cache => if a computation is cancelled or fails, future attempts will also indicate cancellation or failure => need to remove the `Future` from the cache at appropriate time.
+  * `Memoizer` does not address cache expiration => can be accomplished by using a subclass of `FutureTask` that associates an expiration time with each result and periodically scanning the cache for expired entires.
+
+![c0108-01](images/5 Building Blocks/c0108-01.jpg)
+
+* we can then add caching to the factorizing servlet `Factorizer`.
+
+![c0109-01](images/5 Building Blocks/c0109-01.jpg)
