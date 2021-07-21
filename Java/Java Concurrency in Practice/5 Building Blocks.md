@@ -81,3 +81,20 @@
   * Implementations := `ArrayDeque` and `LinkedBlockingDeque`
   * *work stealing* := every consumer has its own deque; if one exhausts the work, it can steal work from the *tail* of someone else's deque.
   * => well suited to problems in which consumers are also producers.
+
+## 5.4 Blocking and Interruptible Methods
+
+* Threads *block*, or pause, for:
+  * waiting for I/O completion,
+  * waiting to acquire a lock,
+  * waiting to wake up from `Thread.sleep`,
+  * waiting for the result of a computation in another thread.
+* Thread states := `BLOCKED`, `WAITING`, `TIMED_WAITING`.
+* `InterruptedException` thrown by `put` and `take` of `BlockingQueue` and `Thread.sleep`.
+* `InterruptedException` => it is a blocking method =>it will make an effort to stop blocking early if it is *interrupted*.
+* Respond to interruption:
+  * Propagate the InterruptedException.
+  * Restore the interrupt.
+    * e.g., restore the interrupted status by calling `interrupt` on the current thread.
+
+![c0094-01](images/5 Building Blocks/c0094-01.jpg)
