@@ -52,3 +52,32 @@
   * => effectively immutable => after safely published => create and republish a new copy of the collection every time it is modified => reasonable to use *only* when iteration is far more common than modification.
     * e.g., event-notification systems => iterating a lits of registered listeners and calling each one of them.
   * The iterators returned by `CopyOnWriteArrayList` do not throw `ConcurrentModificationException` and return the elements exactly as they were at the time the iteartor was created.
+
+## 5.3 Blocking Queues and the Producer-consumer Pattern
+
+* Blocking queues provides
+  * blocking `put` and `take` methods.
+  * timed equivalents `offer` and `poll`.
+* Queues can be
+  * bounded => blocking.
+  * unbounded: never full => never blocks.
+* *Producer-consumer* design pattern
+  * supported by blocking queues.
+  * producers: place data onto the queue as it becomes available.
+  * consumers: retrieve data from the queue when they are ready to take the appropriate action.
+* `BlockingQueue` implementations
+  * ``LinkedBlockingQueue`, `ArrayBlockingQueue` analogous to `LinkedList` and `ArrayList`, but with better concurrent performance.
+  * `PriorityBlockingQueue` is a priority-ordered queue.
+  * `SynchronousQueue` provides no storage space, but maintains a list of queued *threads* waiting to enqueue or dequeue an element => producers handoff task to consumers directly.
+* **Example: Desktop Search**
+
+![c0091-01](images/5 Building Blocks/c0091-01.jpg)
+
+* **Serial Thread Confinement**
+  * a thread-confined object is owned exclusively by a single thread, but that ownership can be transferred by publishing it safely.
+  * Object pools exploit thread confinement => transfer ownership from thread to thread.
+* **Deques and Work Stealing**
+  * `Deque` and `BlockingDeque` extends `Queue` and `BlockingQueue`.
+  * Implementations := `ArrayDeque` and `LinkedBlockingDeque`
+  * *work stealing* := every consumer has its own deque; if one exhausts the work, it can steal work from the *tail* of someone else's deque.
+  * => well suited to problems in which consumers are also producers.
