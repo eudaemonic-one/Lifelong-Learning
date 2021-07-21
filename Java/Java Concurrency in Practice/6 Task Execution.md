@@ -79,3 +79,62 @@
     * => objects are returned by the time associated with their delay.
 
 ![c0124-01](images/6 Task Execution/c0124-01.jpg)
+
+## 6.3 Finding Exploitable Parallelism
+
+* **Example: Sequential Page Renderer**
+  * As text markup is encountered, render it into the image buffer; as image references are encountered, fetch the image over the network and draw it into the image buffer as well.
+  * The simplest approach is to process sequentially, but firstly leaving placeholders and going back to replace associated placeholders with appropriate content.
+
+![c0125-01](images/6 Task Execution/c0125-01.jpg)
+
+* **Result-bearing Tasks: `Callable` and `Future`**
+  * `Runnable` can not return a value or throw checked exceptions.
+  * deferred computations := executing a database query, fetching a resource over the network, or computing a complicated function.
+  * `Callable` => it expects the main entry point `call`, will return a value and anticipates that it might throw an exception => suitable for deferred computations.
+  * `Future`: represents the lifecycle of a task and provides methods to test whether the task has completed or been cancelled, retrieve its result, and cancel the task.
+    * `Future.get()` returns immediately or throws an `Exception` if the task has already completed, but if not it blocks until the task completes.
+    * If the task completes by throwing an exception, `get` rethrows it wrapped in an `ExecutionException`; if it was cancelled, get throws `CancellationException`. If `get` throws `ExecutionException`, the underlying exception can be retrieved with `getCause`.
+  * Create a `Future`:
+    * The `submit` methods in `ExecutorService` all return a `Future`.
+    * You can explicitly instantiate a `FutureTask` for a given `Runnable` or `Callable`.
+    * `ExecutorService` implementations can override `newTaskFor` in `AbstractExecutorService` to control instantiation of the `Future`.
+
+![c0126-01](images/6 Task Execution/c0126-01.jpg)
+
+* **Example: Page Renderer with Future**
+  * divide the work into two tasks, one that renders the text (CPU-bounded) and one that downloads all the images (I/O-bounded).
+
+![c0128-01](images/6 Task Execution/c0128-01.jpg)
+
+* **Limitations of Parallelizing Heterogeneous Tasks**
+  * Heterogeneous tasks might have disparate sizes.
+  * The real performance payoff of dividing a program's workload into tasks comes when there are a large number of independent *homogeneous* tasks that can be processed concurrently.
+* **CompletionService: Executor Meets BlockingQueue**
+  * `CompletionService` := `Executor` + `BlockingQueue`
+    * submit `Callable` tasks to it => use queue-like methods `take` and `poll` to retrieve completed results, packaged as `Futures`, as they become availability.
+  * `ExecutorCompletionService` implements `CompletionService`, delgating the computation to an `Executor`.
+    * The constructor creates a `BlockingQueue` to hold completed results.
+    * `FutureTask` has a `done` method that is called when the computation completes.
+    * Submitted task is wrapped with a `QueueingFuture` (a subclass of `FutureTask` that overrides `done` to place the result on the `BlockingQueue`).
+    * The `take` and `poll` methods delegate to the `BlockingQueue`, blocking if results are not yet available.
+  *  Multiple `ExecutorCompletionService` can share a single `Executor` => it is sensible to create an `ExecutorCompletionService` that is private to a particular computation while sharing a common `Executor`.
+
+![c0129-01](images/6 Task Execution/c0129-01.jpg)
+
+* **Example: Page Renderer with CompletionService**
+  * create a separate task for downloading *each* image and execute them in a thread pool => turning the sequential download into a parallel one => reduces total runtime.
+  * fetch results from the `CompletionService` and rendering each image as soon as it is available => a dynamic and responsive user interface.
+
+![c0130-01](images/6 Task Execution/c0130-01.jpg)
+
+* **Placing Time Limits on Tasks**
+  * The timed version of `Future.get` returns as soon as the result is ready, but throws `TimeoutException` if the result is not ready within the timeout period.
+  * `Future` can help; if a timed `get` completes with a `TimeoutException`, you can cancel the task through the `Future`.
+
+![c0132-01](images/6 Task Execution/c0132-01.jpg)
+
+* **Example: A Travel Reservations Portal**
+  * `invokeAll`: submit multiple tasks to an `ExecutorService` and returns a collection of `Future`s.
+
+![c0134-01](images/6 Task Execution/c0134-01.jpg)
