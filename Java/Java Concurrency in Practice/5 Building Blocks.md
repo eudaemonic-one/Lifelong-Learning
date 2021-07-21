@@ -98,3 +98,52 @@
     * e.g., restore the interrupted status by calling `interrupt` on the current thread.
 
 ![c0094-01](images/5 Building Blocks/c0094-01.jpg)
+
+## 5.5 Synchronizers
+
+* *synchronizer*: an object that coordinates the control flow of threads based on its state.
+  * e.g., blocking queues, semaphores, barriers, latches.
+* **Latches**
+  * a synchronizer that can delay the progress of threads until it reaches its *terminal state*.
+  * used when
+    * ensuring that a computation does not proceed until resources it needs have been initialized.
+    * ensuring that a service does not start until other services on which it depends have started.
+    * waiting until all the parties involved in an activity.
+  * `CountDownLatch` := a positive number representing the number of events to wait for.
+    * `countDown` decrements the counter => an event has occurred.
+    * `await` blocks and waits for the counter to reach zero, or the waiting thread is interrupted, or the wait times out.
+    * => allow one or more threads to wait for a set of events to occur.
+
+![c0096-01](images/5 Building Blocks/c0096-01.jpg)
+
+* **FutureTask**: acts like a latch, implements `Future`, which describes an abstract result-bearing computation.
+  * implemented with a `Callable`, the result-breaing equivalent of `Runnable`.
+  * `Future.get` returns the result immediately if it is completed, or blocks until the task transitions to the completed state.
+  * => waits and conveys the result from the executing thread => guarantees the result to be safely published.
+  * => can represent asynchronous tasks or any potentially lengthy computation that can be started before the results are needed.
+
+![c0097-01](images/5 Building Blocks/c0097-01.jpg)
+
+* **Semaphores**
+  * => control the number of activities that can access a certain resource or perform a given action *at the same time*.
+  * => can be used to implement resource pools or to impose a bound on a collection.
+    * e.g., database connection pools, bounded buffer.
+  * `Semaphore` := a set of virtual *permits* => activities acquire or release permits.
+    * binary semaphore == *mutex*
+  * => can turn any collection into a blocking bounded collection.
+
+![c0100-01](images/5 Building Blocks/c0100-01.jpg)
+
+* **Barriers**
+  * wait for *other threads* come together at a barrier *at the same time*.
+  * `CyclicBarrier`: allows a fixed number of parties to rendezvous repeatedly at a *barrier point*.
+    * => useful in parallel iterative algorithms that break down a problem into a fixed number of independent subproblems.
+    * `await` until *all* the threads have reached the barrier point
+      * => if times out or a thread is interrupted, all calls to `await` terminate with `BrokenBarrierException`.
+      * => if successfully passed, release the barrier and return a unique arrival index for each thread => to be used to elect a leader.
+    * => also allow a `Runnable` *barrier action* before releasing blocked threads.
+  * `Exchanger` := a two-party barrier in which the parties exchange data at the barrier point.
+    * => useful when parties perform asymmetric activities.
+      * e.g., one thread fills a buffer with data and the other consumes the data from the buffer.
+
+![c0102-01](images/5 Building Blocks/c0102-01.jpg)
