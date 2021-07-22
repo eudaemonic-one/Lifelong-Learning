@@ -173,3 +173,35 @@
 ![c0163-01](images/7 Cancellation and Shutdown/c0163-01.jpg)
 
 ![c0163-02](images/7 Cancellation and Shutdown/c0163-02.jpg)
+
+## 7.4 JVM Shutdown
+
+* JVM can shut down in either an *orderly* or *abrupt* manner.
+  * => call `System.exit` or sending a `SIGINT` or hiting `Ctrl-C` => normal thread termination.
+  * => call `Runtime.halt` or kill the JVM process => abrupt termination.
+* **Shutdown Hooks**
+  * In an orderly shutdown, the JVM first starts all registered *shutdown hooks*.
+    * Shutdown hooks: unstarted threads that are registered with `Runtime.addShutdownHook`.
+    * They may run concurrently with running application threads during the shutdown process.
+    * The JVM may run finalizers after all shutdown hooks have completed.
+    * If the JVM eventually halts, shutdown hooks are abruptly terminated.
+  * Shutdown hooks
+    * should be thread-safe => synchronizing when accessing shared data and avoid deadlock.
+    * should not make assumptions about the application state => be coded defensively.
+    * should exit as quickly as possible => they may delay JVM termination.
+  * They can be used for service or application cleanup.
+    * e.g., deleting temporary files or cleaning up resources that are not automatically cleaned up by the OS.
+  * Shutdown hooks all run concurrently => should not rely on services that can be shut down by the application or other shutdown hooks => use a single shutdown hook eliminate many potential sources of failure.
+* **Daemon Threads**
+  * daemon threads: perform some helepr function but does not prevent the JVM from shutting down.
+  * When the JVM starts up, all the threads it creates are daemon threads, except the main thread.
+    * e.g., garbage collector, housekeeping threads.
+  * When the JVM halts, any remaining daemon threads are abandoned.
+    * => `finally` blocks are not executed, stacks are not unwound.
+  * Daemon threads should be used sparingly.
+    * It's dangerous to use them for I/O related tasks.
+    * They are best saved for housekeeping tasks.
+* **Finalizers**
+  * Some resources such as files or socket handles must be explicitly returend to the operating system when no longer needed => `finalize` method => after objects are relcaimed by the collector, `finalize` is called so that persistent resources can be released.
+  * In most cases, the combination of `finally` blcoks and explicit `close` methods > finalizers.
+    * the sole exception is when you need to manage objects that hold resources acquired by native methods.
