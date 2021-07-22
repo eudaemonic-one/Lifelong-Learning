@@ -150,3 +150,26 @@
 ![c0159-01](images/7 Cancellation and Shutdown/c0159-01.jpg)
 
 ![c0160-01](images/7 Cancellation and Shutdown/c0160-01.jpg)
+
+## 7.3 Handling Abnormal Thread Termination
+
+* The leading cause of premature thread death is `RuntimeException` => origramming error or other unrecoverable problem => not caught, and propagate all the way up the stack.
+* The consequences of abnormal thread death depedns on the thread's role in the application.
+* Untrusted code through an abstraction such as `Runnable` are skeptical => might want to catch `RuntimeException`.
+* Typical Thread-pool Worker Thread Structure
+  * If a task throws an unchecked exception => allow the thread to dead after notifying the framework.
+  * The framework may replace the worker thread with a new thread, or may do nothing.
+
+![c0162-01](images/7 Cancellation and Shutdown/c0162-01.jpg)
+
+* **Uncaught Exception Handlers**
+  * The Thread API provides the `UncaughtExceptionHandler` facility => let you detect when a thread dies due to an uncaught exception.
+  * In long-running applications, always use uncaught exception handlers for all threads that at least log the exception.
+  * To set an `UncaughtExceptionHandler` for pool threads, provide a `ThreadFactory` to the `ThreadPoolExecutor` constructor.
+    * => Use a `try-finally` block to be notified when this happens so the thread can be replaced.
+    * => Without an uncaught exception handler or failure notification, tasks can appear to fail silently.
+    * Wrap the task with a `Runnable` or `Callable` that catches the exception or override the `afterExecute` hook in `ThreadPoolExecutor` => take some task-specific recovery action.
+
+![c0163-01](images/7 Cancellation and Shutdown/c0163-01.jpg)
+
+![c0163-02](images/7 Cancellation and Shutdown/c0163-02.jpg)
