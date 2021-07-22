@@ -99,3 +99,54 @@
   * `SocketUsingTask` implements `CancellableTask` and defines `Future.cancel` to close the socket as well as call `super.cancel` => safely call interruptible blocking methods, while remain responsive to cancellation, also can call blocking socket I/O methods.
 
 ![c0151-01](images/7 Cancellation and Shutdown/c0151-01.jpg)
+
+## 7.2 Stopping a Thread-based Service
+
+* A thread pool => own worker threads, take care of them when those threads need to be interrupted.
+* The application owns service, the service owns worker threads.
+  * The service should provide *lifecycle methods* for shutting itself down, also shut down owned threads.
+  * Then the application can shut down the service, and the service can shut down the threads.
+* **Example: A Logging Service**
+  * We need a way to terminate the logger thread => it does not pervent the JVM from shutting down normally.
+  * Abrupt shutdown => discards log messages, threads blocked in `log` will never become unblocked if the queue if full.
+  * An alternative is to shutdown `LogWriter` is to set a "shutdown requested" flag to prevent further messages from being submitted => race conditions due to check-then-act sequences => producers might still get blocked before it can observe that service has been shut down.
+  * To provide reliable shutdown for `LogWriter` => fix the race condition => making the submission of a new log message atomic => atomically check for shutdown and conditionally increment a counter to reserve the right to submit a message.
+
+![c0152-01](images/7 Cancellation and Shutdown/c0152-01.jpg)
+
+![c0153-01](images/7 Cancellation and Shutdown/c0153-01.jpg)
+
+![c0154-01](images/7 Cancellation and Shutdown/c0154-01.jpg)
+
+* **`ExecutorService` Shutdown**
+  * `ExecutorService` provides the `shutdown` (normal shutdown) and `shutdownNow` (abrupt shutdown) methods.
+  * Encapsulate an `ExecutorService` behind a higher-level service that provides its own lifecycle methods => delegate thread management to `ExecutorService` => extend the ownership chain from application to service to thread.
+
+![c0155-01](images/7 Cancellation and Shutdown/c0155-01.jpg)
+
+* **Poison Pills**
+  * *poison pill*, a recognizable object placed on the queue, also the last work submitted to the FIFO work queue => convince consumers to stop.
+  * => Work only when the number of producers and consumers is known.
+    * Having each producer place $N_{consumer}$​ pills on the queue.
+  * => Work reliably only with unbounded queues.
+
+![c0156-01](images/7 Cancellation and Shutdown/c0156-01.jpg)
+
+![c0157-01](images/7 Cancellation and Shutdown/c0157-01.jpg)
+
+![c0157-02](images/7 Cancellation and Shutdown/c0157-02.jpg)
+
+* **Example: A One-shot Execution Service**
+  * Using a private `Executor` whose lifetime is bounded by a method call.
+
+![c0158-01](images/7 Cancellation and Shutdown/c0158-01.jpg)
+
+* **Limitation of `shutdownNow`**
+  * There is no way of knowing the state of the tasks in progress at shutdown time.
+  * In order to identify which tasks started but did not complete normally, the tasks must preserve the thread's interrupted status when they return.
+  * `TrackingExecutor` has an unavoidable race condition: tasks are identified as cancelled but actually completed => false positives.
+    * Not a problem if tasks are *idempotent*.
+
+![c0159-01](images/7 Cancellation and Shutdown/c0159-01.jpg)
+
+![c0160-01](images/7 Cancellation and Shutdown/c0160-01.jpg)
