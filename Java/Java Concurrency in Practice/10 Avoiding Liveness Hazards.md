@@ -83,3 +83,29 @@
 * Intrinsic locks are associated with the stack frame in which they were acquired; explicit `Lock`s are associated only with the acquiring thread.
 
 ![c0217-01](images/10 Avoiding Liveness Hazards/c0217-01.jpg)
+
+## 10.3 Other Liveness Hazards
+
+### 10.3.1 Starvation
+
+* *Starvation* occurs when a thread is perpetually denied access to resources it need in order to make progress; the ost commonly starved resource is CPU cycles.
+  * => can be caused by inappropriate use of thread priorities.
+    * The thread priorities defined in the Thread API are merely scheduling hints.
+    * In most Java applications, all application threads have the same priority, `Thread.NORM_PRIORITY`.
+    * => avoid to use thread priorities, which would increase platform dependence.
+  * => can be caused by executing nonterminating constructs with a lock held.
+    * e.g., infinite loop, resource waits that do not terminate.
+
+### 10.3.2 Poor Responsiveness
+
+* CPU-intensive background tasks => compete for CPU cycles => affect responsiveness.
+* Poor lock management => some threads holding locks for a long time => poor responsiveness.
+
+### 10.3.3 Livelock
+
+* *Livelock*: a thread, while not blocked, cannot make progress because it keeps retrying on an operation that will always fail.
+  * often comes from overeager error-recovery code that mistakenly treats an unrecoverable error as a recoverable one.
+  * also occur when multiple cooperating threads change their state in response to the others.
+* *poison message problem*: often occurs in transactional messaging application, where messaging infrastructure rolls back a transaction if a message cannot be processed successfully, and puts it back at the head of the queue.
+* The solution => introduce some randomness into the retry mechanism.
+  * e.g., random waits, exponential backoff after repeated collisions.
