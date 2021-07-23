@@ -45,3 +45,70 @@
 * Thread pool size and resource pool size affect each other.
   * Resource := CPU cycles, memory, file handles, socket handles, database connections.
 
+## 8.3 Configuring `ThreadPoolExecutor`
+
+* `ThreadPoolExecutor` provides the base implementation of executors and allows a variety of customizations.
+
+![c0172-01](images/8 Applying Thread Pools/c0172-01.jpg)
+
+### 8.3.1 Thread Creation and Teardown
+
+* The core size: target size => maintain the pool at this size, will not create more threads than this unless the work queue is full.
+* The maximum pool size: the upper bound on how many pool threads can be active at once.
+* A thread that has been idle for longer than the keep-alive time becomes a candidate for reaping and can be terminated if the current pool size exceeds the core size.
+
+### 8.3.2 Managing Queued Tasks
+
+* Requests wait in a queue of `Runnable`s managed by the `Executor` instead of queueing up as threads contending for the CPU.
+* `ThreadPoolExecutor` allows you to supply a `BlockingQueue` (unbounded, bouned, or synchronous handoff) to hold tasks awaiting execution.
+  * The default is an unbounded `LinkedBlockingQueue`.
+  * Bounded queue => prevent resource exhaustion, must have saturation policies to decide what to do when the queue is full => stable resource management strategy.
+  * For very large or unbounded pools => use a `SynchronousQueue` to hand off tasks from producers to worker threads => a practical choice if the pool is unbounded or if rejecting excess tasks is acceptable.
+  * For more control over task execution order, use a `PriorityBlockingQueue`.
+
+### 8.3.3 Saturation Policies
+
+* Specify the *saturation policy* by calling `setRejectedExecutionHandler`.
+  * also applied when the executor has been shut donw.
+  * e.g., `AbortPolicy`, `CallerRunsPolicy`, `DiscardPolicy`, `DiscardOldestPolicy`.
+* *abort* => causes `execute` to throw the unchecked `RejectedExecutionException`; the caller can catch this exception and implement its own overflow handling as it sees fit.
+* *discard* => silently discards the newly submitted task if it cannot be queued for execution.
+* *discard-oldest* => discards the task that would otherwise be executed next and tries to resubmit the new task.
+* *caller-runs* => implements a form of throttling that neither discards tasks nor throws an exception, but instead tries to slow down the flow of new tasks by pushing some of the work back to the caller.
+  * It executes the newly submitted task not in a pool thread, but in the thread that calls `execute`.
+* Creating a fixed-sized thread pool with a bounded queue and the caller-runs saturation policy.
+
+![c0175-01](images/8 Applying Thread Pools/c0175-01.jpg)
+
+* There is no predefined saturation policy to make `execute` block when the work queue is full => but can be accomplished by using a `Semaphore` to bound the injection rate.
+
+![c0176-01](images/8 Applying Thread Pools/c0176-01.jpg)
+
+### 8.3.4 Thread factories
+
+* The default thread factory creates a new, nondaemon thread.
+* `ThreadFactory` has a single method, `newThread`, that is called whenever a thread pool needs to create a new thread.
+
+![c0176-02](images/8 Applying Thread Pools/c0176-02.jpg)
+
+* Reasons to use a custom thread factory:
+  * => Specify an `UncaughtExceptionHandler` for pool threads.
+  * => Instantiate an instance of a custom `Thread` class.
+  * => Modify the priority (not a good idea).
+  * => Set the daemon status (not a good idea).
+  * => Give pool threads more meaningful names.
+
+![c0177-01](images/8 Applying Thread Pools/c0177-01.jpg)
+
+![c0178-01](images/8 Applying Thread Pools/c0178-01.jpg)
+
+* Use `privilegedThreadFactory` factory method in `Executors` => to take advantages of specific permissions to particular codebase.
+  * It creates pool threads that have the same permissions, `AccessControlContext`, and `contextClassLoader` as the thread creating the `privilegedThreadFactory`.
+
+### 8.3.5 Customizing `ThreadPoolExecutor` After Construction
+
+* Most of the options of `ThreadPoolExecutor` can be modified after construction via setters.
+  * You can cast the instance to `ThreadPoolExecutor` to access the setters.
+  * `Executors.unconfigurableExecutorService` takes an existing `ExecutorService` and wraps it with one exposing only the methods of `ExecutorService` so it cannot be further configured => prevent the execution policy from being modified.
+
+![c0179-01](images/8 Applying Thread Pools/c0179-01.jpg)
