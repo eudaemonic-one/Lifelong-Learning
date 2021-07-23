@@ -25,3 +25,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 7. Cancellation and Shutdown](./Java%20Concurrency%20in%20Practice/7%20Cancellation%20and%20Shutdown.md)
   * [Chapter 8. Applying Thread Pools](./Java%20Concurrency%20in%20Practice/8%20Applying%20Thread%20Pools.md)
   * [Chapter 9. GUI Applications](./Java%20Concurrency%20in%20Practice/9%20GUI%20Applications.md)
+  * [Chapter 10. Avoiding Liveness Hazards](./Java%20Concurrency%20in%20Practice/10%20Avoiding%20Liveness%20Hazards.md)
