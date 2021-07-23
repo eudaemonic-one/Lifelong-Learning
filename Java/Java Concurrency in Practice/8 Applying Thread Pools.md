@@ -125,3 +125,56 @@
 ### 8.4.1 Example: Adding Statistics to a Thread Pool
 
 ![c0180-01](images/8 Applying Thread Pools/c0180-01.jpg)
+
+## 8.5 Parallelizing Recursive Algorithms
+
+* Loops whose bodies contain nontrivial computation or perform potentially blocking I/O => good candidates for parallelization.
+  * If iterations are independent and we don't need to wait for all of them to complete before proceeding => we can use an `Executor` to transform a sequential loop into a parallel one.
+  * If you want to submit a set of tasks and wait for them all to complete => use `ExecutorService.invokeAll`.
+  * If you want to retrieve the results as they become available => use a `CompletionService`.
+
+![c0181-01](images/8 Applying Thread Pools/c0181-01.jpg)
+
+* Some recursive designs can be parallelized => each iteration does not require the results of the recursive iterations it invokes.
+
+![c0182-01](images/8 Applying Thread Pools/c0182-01.jpg)
+
+* Waiting for results to be calculated in parallel => using `shutdown` and `awaitTermination`.
+
+![c0182-02](images/8 Applying Thread Pools/c0182-02.jpg)
+
+### 8.5.1 Example: A Puzzle Framework
+
+* An appealing application of this technique is solving puzzles that involves finding a sequence of transformations from some initial state to reach a goal state.
+* puzzle := an initial position, a goal position, a set of rules that determine valid moves.
+  * rule := computing the list of legal moves from a given position + computing the result of applying a move to a position.
+
+![c0183-01](images/8 Applying Thread Pools/c0183-01.jpg)
+
+![c0184-01](images/8 Applying Thread Pools/c0184-01.jpg)
+
+* `SequentialPuzzleSolver`: depth-first search of the puzzle space => can exploit concurrency and compute next moves and evaluate the goal condition in parallel.
+
+![c0185-01](images/8 Applying Thread Pools/c0185-01.jpg)
+
+* `ConcurrentPuzzleSolver`: uses an inner `SolverTask` class that extends `Node` and implements `Runnable`.
+  * To avoid infinite loop, the sequential version maintains a `Set` of previously searched positions; the concurrent one uses a `ConcurrentHashMap` for this purpose.
+  * `ConcurrentPuzzleSolver` uses the internal work queue of the thread pool instead of the call stack to hold the state of the search.
+
+![c0186-01](images/8 Applying Thread Pools/c0186-01.jpg)
+
+* We need a way to determine whether any thread has found a solution yet => to stop searching when found a solution => a *result-bearing latch*.
+  * `ValueLatch` uses a `CountDownLatch` to provide the needed latching behavior, and uses locking to ensure that the solution is set only once.
+  * `getValue` in `ValueLatch` blocks until some thread has set the solution.
+  * To avoid having to deal with `RejectedExecutionException`, the rejected execution handler should be set to discard submitted tasks.
+
+![c0187-01](images/8 Applying Thread Pools/c0187-01.jpg)
+
+* `ConcurrentPuzzleSolver` does not deal well with the case where there is no solution => need to keep a count of active solver tasks and set the solution to null when the count drops to zero.
+
+![c0188-01](images/8 Applying Thread Pools/c0188-01.jpg)
+
+* We can also impose several termination conditions.
+  * => Time limit like using a timed `await`.
+  * => Puzzle-specific metric such as searching only up to a certain number of positions.
+  * => Provide a cancellation mechanism and let the client make its own decisions about when to stop searching.
