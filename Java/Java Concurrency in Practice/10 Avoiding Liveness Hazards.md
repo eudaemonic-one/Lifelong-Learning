@@ -53,3 +53,33 @@
 * Resource pools are usually implemented with semaphores.
 * Tasks that wait for the results of other tasks => thread-starvation deadlock.
 * Bounded pools and interdependent tasks do not mix well.
+
+## 10.2 Avoiding and Diagnosing Deadlocks
+
+* If you must acquire multiple locks, lock ordering must be a part of your design.
+  * => try to minimize the number of potential locking interactions.
+  * => follow and document a lock-ordering protocol for locks that may be acquired together.
+* Audit your code for deadlock freedom
+  * => firstly, identify where multiple locks could be acquired,
+  * => then perform a global analysis of all such instances to ensure that lock ordering is consistent across your entire program.
+* Using open calls wherever possible simplifies the analysis.
+
+### 10.2.1 Timed Lock Attempts
+
+* Use the timed `tryLock` of the explicit `Lock` classes => detecting and recovering from deadlocks.
+  * => let you specify a timeout after which `tryLock` returns failure.
+  * => you can regain control when something unexpected happens.
+* When a timed lock attempt fails, you do not necessarily know *why*.
+  * If a lock times out => you can release the lock, back off and wait for a while => try again, possibly clearing the deadlock condition and allowing the program to recover.
+    * This doesn't work if multiple locks are acquired in the nesting of method calls.
+
+### 10.2.2 Deadlock Anaysis with Thread Dumps
+
+* thread dump := a stack trace for each running thread + locking information.
+* Before geenerating a thread dump, the JVM searches the is-waiting-for graph for cycles to find deadlocks => will include deadlock information identifying which locks and threads are involved, and where in the program the offending lock acquisitions are.
+* To trigger a thread dump
+  * => send the JVM process a `SIGQUIT` signal (`kill -3`) on Unix platforms
+  * => press the `Ctrl-\` key on Unix or `Ctrl-Break` on Windows platforms.
+* Intrinsic locks are associated with the stack frame in which they were acquired; explicit `Lock`s are associated only with the acquiring thread.
+
+![c0217-01](images/10 Avoiding Liveness Hazards/c0217-01.jpg)
