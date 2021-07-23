@@ -112,3 +112,16 @@
   * `Executors.unconfigurableExecutorService` takes an existing `ExecutorService` and wraps it with one exposing only the methods of `ExecutorService` so it cannot be further configured => prevent the execution policy from being modified.
 
 ![c0179-01](images/8 Applying Thread Pools/c0179-01.jpg)
+
+## 8.4 Extending `ThreadPoolExecutor`
+
+* `ThreadPoolExecutor` provides hooks for subclasses to override.
+  * e.g., `beforeExecute`, `afterExecute`, `terminate`.
+  * `beforeExecute` and `afterExecute` are called in the thread that executes the task.
+  * The task completes by returning normally or by throwing an `Exception` (not an `Error`) => calling `afterExecute`.
+  * If `beforeExecute` throws a `RuntimeException`, the task if not executed and `afterExecute` is not called.
+  * `terminated` is called when the thread pool completes the shutdown process => can be used to release resources allocated by the `Executor`, perform notification or logging, or finalize statistics gathering.
+
+### 8.4.1 Example: Adding Statistics to a Thread Pool
+
+![c0180-01](images/8 Applying Thread Pools/c0180-01.jpg)
