@@ -29,3 +29,19 @@
       * e.g., `Thread.join`, `BlockingQueue.put`, `CountDownLatch.await`, `Selector.select`.
     * If the wait times out => mark the task as failed and abort or requeue it for execution later => guarantees that each task eventually makes progress.
   * If a thread pool is frequently full of blocked tasks => a sign that the pool is too small.
+
+## 8.2 Sizing Thread Pools
+
+* Thread pool sizes should be provided by a configuration mechanism or computed dynamically by consulting `Runtime.availableProcessors`.
+* Size a thread pool properly => understand your computing environment, resource budget, the nature of tasks.
+  * Determine the number of CPUs using `Runtime`:
+    * `int N_CPUS = Runtime.getRuntime().availableProcessors();`
+* Estimate the ratio of waiting time to compute time for your tasks through pro-filing or instrumentation.
+  * $$N_{cpu} = number\ of \ CPUs$$​
+  * $$U_{cpu} = target\ CPU\ utilization, 0 \le U_{cpu} \le 1$$​
+  * $$\frac{W}{C} = ratio\ of\ wait\ time\ to\ compute\ time$$​
+  * $$N_{threads} = N_{cpu} * U{cpu} * (1 + \frac{W}{C})$$​
+* Alternatively, tune by running the application using several different pool sizes under a benchmark load and observing the level of CPU utilization.
+* Thread pool size and resource pool size affect each other.
+  * Resource := CPU cycles, memory, file handles, socket handles, database connections.
+
