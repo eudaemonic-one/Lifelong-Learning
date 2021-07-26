@@ -62,3 +62,29 @@
 * Amdahl's law => quantifies the possible speedup when more computing resources are available.
 * Reducing lock granularity: lock splitting (splitting one lock into two) and lock striping (splitting one lock into many).
   * lock striping seems much more promising.
+
+## 11.3 Costs Introduced by Threads
+
+### 11.3.1 Context Switching
+
+* *context switch*: requires saving the execution context of the currently running thread and restoring the execution context of the newly scheduled thread.
+  * => not free; thread scheduling requires manipulating shared data structures in the OS and JVM.
+  * => a flurry of cache misses.
+* Schedulers => give each runnable thread a certain minimum time quantum => it amortizes the cost of the context switch => improving oeverall throughput.
+* more blocking (blocking I/O, waiting for contended locks, or waiting on condition variables) => more context switches than one that is CPU-bound => increasing scheduling overhead and reducing throughput.
+* A good rule of thumb := a context switch costs equivalent of 5,000 to 10,000 clock cycles, or several microseconds.
+
+### 11.3.2 Memory Synchronization
+
+* The visibility guarantees provided by `synchronized` and `volatile` may entail using special instructions called *memory barriers* that can flush or invalidate caches, flush hardware write buffers, and stall execution pipelines.
+  * The `synchronized` mechanism is optimized for the uncontended case (`volatile` is always uncontended).
+* JVMs => optimize away locking that can be proven never to contend.
+* JVMs => *escape analysis* => identify when a local object reference is never published to the heap and is therefore thread-local.
+* Compilers => *lock coarsening* => the merging of adajacent `synchronized` blocks using the same lock.
+
+### 11.3.3 Blocking
+
+* When locking is contended => the losing thread(s) much block.
+* Spin-waiting is preferable for short waits and suspension is preferable for long waits.
+  * Most just suspend threads waiting for a lock.
+  * Suspending a thread => two additional context switches and all the attendant OS and cache activity.
