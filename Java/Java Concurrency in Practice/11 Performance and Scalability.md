@@ -144,3 +144,9 @@
 
 * Allocating objects is usually cheaper than synchronizing.
   * Request an object from a pool => some synchronization is necessary to coordinate access to the pool data structure => potential to block.
+
+## 11.5 Example: Comparing Map Performance
+
+* Once contention becomes significant, time per operation is dominated by context switch and scheduling delays, and adding more threads has little effect on throughput.
+
+![ch11fig03](images/11 Performance and Scalability/ch11fig03.gif)
