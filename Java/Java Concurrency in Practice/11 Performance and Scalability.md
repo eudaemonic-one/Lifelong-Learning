@@ -150,3 +150,11 @@
 * Once contention becomes significant, time per operation is dominated by context switch and scheduling delays, and adding more threads has little effect on throughput.
 
 ![ch11fig03](images/11 Performance and Scalability/ch11fig03.gif)
+
+## 11.6 Reducing Context Switch Overhead
+
+* Logging blocks server application.
+  * logging service time := I/O streaming time + blocking time.
+  * multiple threads logging simultaneously => contention for the output stream lock => threads blocked and switched out.
+  * longer request service time => more lock contention => undesirable.
+  * Moving the I/O out of the request-processing thread => shorten the mean service time for request processing, although introduced the possibility of contention for the messaging queue.
