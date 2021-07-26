@@ -88,3 +88,59 @@
 * Spin-waiting is preferable for short waits and suspension is preferable for long waits.
   * Most just suspend threads waiting for a lock.
   * Suspending a thread => two additional context switches and all the attendant OS and cache activity.
+
+## 11.4 Reducing Lock Contention
+
+* Reducing lock contention => improve both performance and scalability.
+* Exclusive resource lock => serialized, preventing data corruption, safety => limits scalability.
+* To reduce lock contention:
+  * => Reduce the duration for which locks are held;
+  * => Reduce the frequency with which locks are requested; or
+  * => Replace exclusive locks with coordination mechanisms that permit greater concurrency.
+
+### 11.4.1 Narrowing Lock Scope ("Get in, Get out")
+
+* Hold lock as briefly as possible.
+  * Moving code that doesn't require the lock out of `synchronized` blocks => less serialized code.
+  * Delegating all its thread safety obligation to the underlying thread-safe component.
+
+### 11.4.2 Reducing Lock Granularity
+
+* *lock splitting* and *lock striping*: using separate locks to guard multiple independent state variables previously guarded by a single lock.
+
+### 11.4.3 Lock Striping
+
+* *lock striping*: partition locking on a variablesized set of independent objects.
+  * => locking the collection for exclusive access is more difficult and costly than witha single lock.
+
+### 11.4.4 Avoiding Hot Fields
+
+* *hot field*: every mutative operation needs to access it.
+* For implementing `HashMap`, keeping a separate count to speed up operations like `size` and `isEmpty` works fine for a single-threaded implementation => every operation that modifies the map must now update the shared counter => much harder to improve scalability.
+* `ConcurrentHashMap` has `size` enumerate the stripes and add up the number of elements in each stripe, instead of maintaining a global count.
+
+### 11.4.5 Alternatives to Exclusive Locks
+
+* Concurrency-friendly means of managing shared state:
+  * using the concurrent collections, read-write locks, immutable objects and atomic variables.
+* `ReadWriteLock` enforces a multiple-reader, single-writer locking discipling.
+* Atomic variables reduces the cost of updating "hot fields".
+  * such as statistics counters, sequence generators, or the reference to the first node in a linked data structure.
+
+### 11.4.6 Monitoring CPU Utilization
+
+* Goal => keep the processors fully utilized.
+* **Insufficient load.**
+  * You can test by increasing the load and measuring changes in utilization, response time, or service time.
+* **I/O-bound.**
+  * You can determine whether an application is disk-bound using `iostat` or `perfmon`, and whether is bandwidth-limited by monitoring traffic levels on your network.
+* **Externally bound.**
+  * You can test by using a profiler or database administration tools to determine how much time is being spent waiting for answers from the external service.
+* **Lock contention.**
+  * Profiling tools can tell you how much lock contention your application is experiencing and which locks are "hot".
+* If CPU sufficiently hot, you can use monitoring tools to infer whether it would benefit from additional CPUs.
+
+### 11.4.7 Just Say No to Object Pooling
+
+* Allocating objects is usually cheaper than synchronizing.
+  * Request an object from a pool => some synchronization is necessary to coordinate access to the pool data structure => potential to block.
