@@ -38,3 +38,27 @@
 * Avoid premature optimization => most optimizations are often undertaken before a clear set of requirements is available.
 * The quest for performance is probably the single greatest source of concurrency bugs.
 * Measure, don't guess.
+
+## 11.2 Amdahl's Law
+
+* *Amdahl's law*: how much a program can theoretically be sped up by additional computing resources, based on the proportion of parallelizable and serial components.
+* We can achieve a speedup of at most:
+  * $$Speedup \le \frac{1}{F+\frac{(1-F)}{N}}$$
+  * F := the fraction of the calculation that must be executed serially
+  * N := processor number
+* Identify the sources of serialization:
+  * synchronization to maintain the work queue's integrity in the face of concurrency access
+  * accessing any shared data structure => serialization
+  * result handling => final merge is a source of serialization
+
+### 11.2.1 Example: Serialization Hidden in Framework
+
+* The synchronized `LinkedList` guards the entire queue state with a single lock that is held for the duration of the `offer` or `remove` call; `ConcurrentLinkedQueue` uses a sophisticated nonblocking queue algorithm that uses atomic references to update individual link pointers.
+
+![ch11fig02](images/11 Performance and Scalability/ch11fig02.gif)
+
+### 11.2.2 Applying Amdahl's Law Qualitatively
+
+* Amdahl's law => quantifies the possible speedup when more computing resources are available.
+* Reducing lock granularity: lock splitting (splitting one lock into two) and lock striping (splitting one lock into many).
+  * lock striping seems much more promising.
