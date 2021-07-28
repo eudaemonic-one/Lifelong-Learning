@@ -67,3 +67,11 @@
 * In most cases, the performance benefits of nonfair locks outweigh the benefits of fair queueing.
   * => Don't pay for fairness if you don't need it.
 * Fair locks tend to work best when they are held for a relatively long time or when the mean time between lock requests is relatively long.
+
+## 13.4 Choosing Between Synchronized and ReentrantLock
+
+* Intrinsic locks still have significant advantages over explicit locks.
+  * The notation is familiar and compact, and many existing programs using intrinsic locking.
+  * `ReentrantLock` is more dangerous if you forget to wrap the `unlock` call in a `finally` block.
+* Prefer `synchronized` unless you need advanced features: timed, polled, or interruptible lock acquisition, fair queueing, or non-block-structured locking.
+* Future performance improvements are likely to favor `synchronized` over `ReentrantLock`.
