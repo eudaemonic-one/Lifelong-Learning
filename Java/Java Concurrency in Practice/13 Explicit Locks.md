@@ -75,3 +75,28 @@
   * `ReentrantLock` is more dangerous if you forget to wrap the `unlock` call in a `finally` block.
 * Prefer `synchronized` unless you need advanced features: timed, polled, or interruptible lock acquisition, fair queueing, or non-block-structured locking.
 * Future performance improvements are likely to favor `synchronized` over `ReentrantLock`.
+
+## 13.5 Read-write Locks
+
+* `ReadWriteLock`: exposes two `Lock` objects, one for reading and one for writing.
+  * => improve performance for frequently accessed read-mostly data structures on multiprocessor systems.
+
+![c0286-01](images/13 Explicit Locks/c0286-01.jpg)
+
+* Implementation options for a `ReadWriteLock`:
+  * Release preference.
+    * Who should be given preference: readers, writers, or whoever asked first?
+  * Reader barging.
+    * Allowing readers to barge ahead => enhances concurrency, runs the risk of starving writers.
+  * Reentrancy.
+    * Are the read and write locks reentrant?
+  * Downgrading.
+    * If a thread holds the write lock, can it acquire the read lock without releasing the write lock?
+  * Upgrading.
+    * Can a read lock be upgraded to a write lock in preference to other waiting readers or writers?
+    * Most implementations do not support upgrading.
+* `ReentrantReadWriteLock` provides reentrant locking semantics for both locks.
+* Wrapping a `Map` with a Read-write Lock.
+  * `ConcurrentHashMap` provides much better performance.
+
+![c0288-01](images/13 Explicit Locks/c0288-01.jpg)
