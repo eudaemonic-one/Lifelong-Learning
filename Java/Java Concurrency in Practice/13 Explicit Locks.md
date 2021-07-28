@@ -58,3 +58,12 @@
   * => forces fewer context switches
   * => initiates less memory-synchronization traffic
 * Performance is a moving target; yesterday's benchmark showing that X is faster than Y may already be out of date today.
+
+## 13.3 Fairness
+
+* The `ReentrantLock` constructor
+  * => create a *nonfair* lock (the default) => *barging* => threads requesting a lock can jump ahead of the queue of waiting threads if the lock happens to be available when it is requested.
+  * => create a *fair* lock
+* In most cases, the performance benefits of nonfair locks outweigh the benefits of fair queueing.
+  * => Don't pay for fairness if you don't need it.
+* Fair locks tend to work best when they are held for a relatively long time or when the mean time between lock requests is relatively long.
