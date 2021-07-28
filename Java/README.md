@@ -28,3 +28,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 10. Avoiding Liveness Hazards](./Java%20Concurrency%20in%20Practice/10%20Avoiding%20Liveness%20Hazards.md)
   * [Chapter 11. Performance and Scalability](./Java%20Concurrency%20in%20Practice/11%20Performance%20and%20Scalability.md)
   * [Chapter 12. Testing Concurrent Programs](./Java%20Concurrency%20in%20Practice/12%20Testing%20Concurrent%20Programs.md)
+  * [Chapter 13. Explicit Locks](./Java%20Concurrency%20in%20Practice/13%20Explicit%20Locks.md)
