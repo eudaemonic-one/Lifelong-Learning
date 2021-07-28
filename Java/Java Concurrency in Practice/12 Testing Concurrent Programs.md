@@ -73,3 +73,45 @@
 * Increase the number of interleavings => use `Thread.yield` to encourage more switches during operations that access shared state.
   * => platform-specific because JVM is free to treat `Thread.yield` as no-op.
   * => may activate timing-sensitive bugs in code.
+
+## 12.2 Testing for Performance
+
+* It is always worthwhile to include some basic functionality testing within performance tests to ensure that you are not testing the performance of broken code.
+* Performance test
+  * => seek to measure end-to-end performance metrics for representative use cases.
+  * => help select sizings empirically for various bounds.
+
+### 12.2.1 Extending `PutTakeTest` to Add Timing
+
+* Timing the entire run and dividing by the number of operations to get a per-operation time.
+  * Use `CyclicBarrier` to start and stop the worker thread => use a barrier action measuring the start and end time.
+
+![c0261-01](images/12 Testing Concurrent Programs/c0261-01.jpg)
+
+![c0262-01](images/12 Testing Concurrent Programs/c0262-01.jpg)
+
+* Test driver => running test for various combinations of parameters => throughput, how it scales with different numbers of threads, how we select the bound size.
+
+![c0262-02](images/12 Testing Concurrent Programs/c0262-02.jpg)
+
+* Be careful about concluding from testing data.
+  * The test is fairly artificial in how it simulates the application.
+
+### 12.2.2 Comparing Multiple Algorithms
+
+* `java.util.concurrent` => selected and tuned => more efficient than other implementations.
+
+![ch12fig02](images/12 Testing Concurrent Programs/ch12fig02.gif)
+
+* The test suggests that `LinkedBlockingQueue` scales better than `ArrayBlockingQueue`.
+  * Because it allows more concurrent access by `put`s and`take`s than an array-based queue because the best linked queue algorithms allow the head and tail to be updated independently.
+  * Because allocation is usually thread-local, algorithms that can reduce contention by doing more allocation usually scale better.
+
+### 12.2.3 Measuring Responsiveness
+
+* We want to measure the *variance* of service time.
+  * => allow us to estimate the answers to quality-of-service questions.
+* Histograms of task completion times are normally the best way to visualize variance in service time.
+  * => to keep track of per-task completion times in addition to aggregate completion time.
+  * => measure the run time of small batches of operations => avoid error caused by timer granularity.
+* Nonfair provides better throughput and fair provides lower variance.
