@@ -160,3 +160,47 @@
 * A trick if to compute the `hashCode` and compare it to an arbitrary value such as the current value of `System.nanoTime`.
 
 ![c0270-01](images/12 Testing Concurrent Programs/c0270-01.jpg)
+
+## 12.4 Complementary Testing Approaches
+
+* The goal of testing is not so much to *find errors* as it is to *increase confidence* that the code works as expected.
+
+### 12.4.1 Code Review
+
+* Have concurrent code reviewed carefully by someone besides its author.
+  * => finding subtle races.
+  * => improving the quality of comments.
+
+### 12.4.2 Static Analysis Tools
+
+* *static analysis tools* => look for common *bug patterns*.
+* FindBugs => detectors including concurrency-related bug patterns such as inconsistent synchronization.
+* Invoking `Thread.run`.
+  * It is always a mistake to call `Thread.run` directly; usually the programmer meant to call `Thread.start`.
+* Unreleased lock.
+  * The standard idiom is to release the lock from a `finally` block; otherwise the lock can remain unreleased in the event of an `Exception`.
+* Empty `synchronized` block.
+* Double-checked locking.
+  * A broken idiom for reuding synchronization overhead in lazy initialization.
+* Starting a thread from a constructor.
+  * => introduce the risk of subclassing problems, and can allow the `this` reference to escape the constructor.
+* Notification errors.
+  * A `synchronized` block that calls `notify` or `notifyAll` but does not modify any state is likely to be an error.
+* Condition wait errors.
+  * When waiting on a condition queue, `Object.wait` or `Condition.await` should be called in a loop, with the appropriate lock held, after testing some state predicate.
+* Misuse of `Lock` and `Condition`.
+  * Using a `Lock` as the lock argument for a `synchronized` block is likely to be a typo, as is calling `Condition.wait` instead of `await`.
+* Sleeping or waiting while holding a lock.
+* Spin loops.
+  * Code that does nothing but spin checking a field for an expected value can waste CPU time and, if the field is not volatile, is not guaranteed to terminate.
+  * Latches or condition waits are often a better technique when waiting for a state transition to occur.
+
+### 12.4.3 Aspect-oriented Testing Techniques
+
+* Aspect-oriented programming (AOP) => assert invariants or some aspects of compliance with synchronization policies.
+
+### 12.4.4 Profilers and Monitoring Tools
+
+* Profiling tools support for threads.
+  * => offer a display showing a timeline for each thread with different colors for the various thread states.
+  * => show how effectively your program is utilizing the available CPU resources and where to look for the cause of doing badly.
