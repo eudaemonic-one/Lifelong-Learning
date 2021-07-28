@@ -50,3 +50,11 @@
 * Reducing lock granularity => enhance scalability.
   * Lock striping => allowing different hash chains in a hash-based collection to use different locks.
   * Use a separate lock for each link node, allowing different threads to operate independently on different portions of the list.
+
+## 13.2 Performance Considerations
+
+* A better lock implementation
+  * => fewer system calls
+  * => forces fewer context switches
+  * => initiates less memory-synchronization traffic
+* Performance is a moving target; yesterday's benchmark showing that X is faster than Y may already be out of date today.
