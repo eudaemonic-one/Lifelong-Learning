@@ -115,3 +115,48 @@
   * => to keep track of per-task completion times in addition to aggregate completion time.
   * => measure the run time of small batches of operations => avoid error caused by timer granularity.
 * Nonfair provides better throughput and fair provides lower variance.
+
+## 12.3 Avoiding Performance Testing Pitfalls
+
+### 12.3.1 Garbage Collection
+
+* The timing of garbage collection is unpredictable.
+  * a small variation in the size of the run could have a spurious effect on the measured time per iteration.
+* Two strategies for preventing garbage collection from biasing your results:
+  * => Ensure that garbage collection does not run at all during your test.
+  * => Make sure that the garbage collector runs a number of times during your run so that the test program adequately reflects the cost of ongoing allocation and garbage collection.
+  * The latter is better => it requires a longer test and is more likely to reflect real-world performance.
+
+### 12.3.2 Dynamic Compilation
+
+* Writing and interpreting performance benchmarks for dynamically compiled languages like Java is difficult.
+* The timing of compilation is unpredictable.
+  * Code may be decompiled and recompiled for various reasons.
+* Allowing teh compiler to run during a measured test run can bias test results:
+  * compilation comsumes CPU resources.
+  * measuring the run time of a combination of interpreted and compiled code is not a meaningful performance metric.
+
+![ch12fig05](images/12 Testing Concurrent Programs/ch12fig05.gif)
+
+* Prevent compilation from biasing your results
+  * => run your program for a long time so that compilation and interpreted execution represent a small fraction of the total run time.
+  * => use an unmeasured "warm-up" run.
+    * The first group of results should be discarded as warm-up.
+* When measuring multiple *unrelated* computationally intensive activities in a single run, it is a good idea to place explicit pauses between the measured trials to give the JVM a chance to catch up with background tasks with minimal interference from measured tasks.
+
+### 12.3.3 Unrealistic Sampling of Code Paths
+
+* Runtime compilers use profiling information to help optimize the code being compiled => different code paths.
+* Run a mix of single-threaded and multi-threaded test => simulate realistic code paths.
+
+### 12.3.4 Unrealistic Degrees of Contention
+
+* Concurrent performance tests should try to approximate the thread-local computation done by a typical application in addition to the concurrent coordination under study.
+
+### 12.3.5 Dead Code Elimination
+
+* The optimizer prunes dead code from a program => you are measuring less execution than you think for a benchmark.
+* Every computed result should be used somehow by your program => in a way that does not require synchronization or substantial computation.
+* A trick if to compute the `hashCode` and compare it to an arbitrary value such as the current value of `System.nanoTime`.
+
+![c0270-01](images/12 Testing Concurrent Programs/c0270-01.jpg)
