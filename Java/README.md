@@ -30,3 +30,4 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 12. Testing Concurrent Programs](./Java%20Concurrency%20in%20Practice/12%20Testing%20Concurrent%20Programs.md)
   * [Chapter 13. Explicit Locks](./Java%20Concurrency%20in%20Practice/13%20Explicit%20Locks.md)
   * [Chapter 14. Building Custom Synchronizers](./Java%20Concurrency%20in%20Practice/14%20Building%20Custom%20Synchronizers.md)
+  * [Chapter 15. Atomic Variables and Nonblocking Synchronization](./Java%20Concurrency%20in%20Practice/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization.md)
