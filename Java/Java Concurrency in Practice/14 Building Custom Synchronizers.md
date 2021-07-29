@@ -113,3 +113,10 @@
 ![c0309-01](images/14 Building Custom Synchronizers/c0309-01.jpg)
 
 * Use `Condition` if you need its advanced features such as fair queueing or multiple wait sets per lock, and otherwise prefer intrinsic condition queues.
+
+## 14.4 Anatomy of a Synchronizer
+
+* `AbstractQueuedSynchronizer` (AQS) => `Semaphore`, `ReentrantLock`.
+  * => act as a gate, allowing a limited number of threads to pass at a time.
+  * => allow interruptible, uninterruptible, and timed acquisition attempts, fair and nonfair queueing of waiting threads.
+  * => less implementation effort, more scalability.
