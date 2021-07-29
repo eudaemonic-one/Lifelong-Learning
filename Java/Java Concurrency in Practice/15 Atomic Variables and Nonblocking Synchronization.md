@@ -49,3 +49,42 @@
 
 * On platforms supporting CAS, the runtime inlines them into the appropriate machine instruction(s); in the worst case, if a CAS-like instruction is not available the JVM uses a spin lock.
 * The low-level JVM support is used by the atomic variable classes.
+
+## 15.3 Atomic Variable Classes
+
+* Atomic variables
+  * => limit the scope of contention to a single variable.
+  * => the slow path is even faster than the slow path for locks because it does not involve suspending and rescheduling threads.
+  * => support atomic conditional read-modify-write oprations.
+  * e.g., `AtomicInteger`, `AtomicLong`, `AtomicBoolean`, `AtomicReference`.
+* Atomic array classes
+  * => element can be updated atomically.
+* Atomic variable classes are mutable, whereas the primitive wrapper classes are immutable.
+
+### 15.3.1 Atomics as "Better Volatiles"
+
+* Preserving multi-variable invariants using CAS.
+
+![c0326-01](images/15 Atomic Variables and Nonblocking Synchronization/c0326-01.jpg)
+
+### 15.3.2 Performance Comparison: Locks Versus Atomic Variables
+
+* The performance reversal between locks and atomics at differing levels of contention illustrates the strengths and weaknesses of each.
+  * With low to moderate contention, atomics offer better scalability.
+  * With high contention, locks offer better contention avoidance.
+  * CAS-based algorithms outperform lock-based ones on single-CPU systems.
+* `Lock` and `AtomicInteger` Performance Under High Contention.
+
+![ch15fig01](images/15 Atomic Variables and Nonblocking Synchronization/ch15fig01.gif)
+
+* `Lock` and `AtomicInteger` Performance Under Moderate Contention.
+
+![ch15fig02](images/15 Atomic Variables and Nonblocking Synchronization/ch15fig02.gif)
+
+* Random Number Generator Using `ReentrantLock`.
+
+![c0327-01](images/15 Atomic Variables and Nonblocking Synchronization/c0327-01.jpg)
+
+* Random Number Generator Using `AtomicInteger`.
+
+![c0327-02](images/15 Atomic Variables and Nonblocking Synchronization/c0327-02.jpg)
