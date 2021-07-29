@@ -46,3 +46,51 @@
 * `BoundedBuffer`: Bounded buffer using condition queues.
 
 ![c0298-01](images/14 Building Custom Synchronizers/c0298-01.jpg)
+
+## 14.2 Using Condition Queues
+
+### 14.2.1 The Condition Predicates
+
+* To use condition queues =>identifying predicates that the object may wait for.
+* Document the condition predicate(s) associated with a condition queue and the operations that wait on them.
+* The `wait` method releases the lock, blocks the current thread, and waits until the specified timeout expires, the thread is interrupted, or the thread is awakened by a notification.
+* Every call to `wait` is implicitly associated with a specific *condition predicate*.
+
+### 14.2.2 Waking Up Too Soon
+
+* A single intrinsic condition queue may be used with more than one condition predicate => returned not true, or returned spuriously.
+* Canonical form for state-dependent methods.
+
+![c0301-01](images/14 Building Custom Synchronizers/c0301-01.jpg)
+
+### 14.2.3 Missed Signals
+
+* missed signals => occurs when a thread must wait for a specific condition that is already true => result of coding errors.
+
+### 14.2.4 Notification
+
+* When wait on a condition => make sure someone will perform a notification whenever the condition predicate becomes true.
+* Calling `notify` causes the JVM to select one thread waiting on that condition queue to wake up; calling `notifyAll` wakes up *all* the threads waiting on that condition queue.
+* Use `notifyAll` in preference to single `notify`.
+  * => more context switches and contended lock acquisitions for each event => performance concerns.
+  * => optimize with *conditional notification*.
+
+### 14.2.5 Example: A Gate Class
+
+* Recloseable gate using `wait` and `notifyAll`.
+
+![c0305-01](images/14 Building Custom Synchronizers/c0305-01.jpg)
+
+### 14.2.6 Subclass Safety Issues
+
+* A state-dependent class should either fully expose (and document) its waiting and notification protocols to subclasses, or prevent subclasses from participating in them at all.
+* Prohibit subclassing => making the class `final` or hiding the condition queues, locks, and state variables from subclasses.
+
+### 14.2.7 Encapsulating Condition Queues
+
+* Encapsulate the condition queue so that it is not accessible outside the class hierarchy in which it is used.
+
+### 14.2.8 Entry and Exit Protocols
+
+* entry protocol => the operation's condition predicate.
+* exit protocol => examining any state variables that have been changed by the operation to see if they might have caused some other condition predicate to become true, and if so, notifying on the associated condition queue.
