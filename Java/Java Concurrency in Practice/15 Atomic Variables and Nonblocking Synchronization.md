@@ -88,3 +88,35 @@
 * Random Number Generator Using `AtomicInteger`.
 
 ![c0327-02](images/15 Atomic Variables and Nonblocking Synchronization/c0327-02.jpg)
+
+## 15.4 Nonblocking Algorithms
+
+* *nonblocking*: failure or suspension of any thread cannot cause failure or suspension of another thread.
+* *lock-free*: at each step, some thread can make progress.
+* CAS-based algorithms can be both nonblocking and lock-free.
+* The key is to figuring out how to limit the scope of atomic changes to a single variable while maintaining data consistency.
+
+### 15.4.1 A Nonblocking Stack
+
+* Nonblocking Stack Using Treiber's Algorithm
+
+![c0331-01](images/15 Atomic Variables and Nonblocking Synchronization/c0331-01.jpg)
+
+### 15.4.2 A Nonblocking Linked List
+
+* Insertion in the Michael-Scott Nonblocking Queue Algorithm
+
+![c0334-01](images/15 Atomic Variables and Nonblocking Synchronization/c0334-01.jpg)
+
+### 15.4.3 Atomic Field Updaters
+
+* The atomic field updater classes (available in `Integer`, `Long`, `Reference` versions) represent a reflection-based "view" of an existing volatile field so that CAS can be used on existing volatile fields.
+  * To create one, call the `newUpdater` factory method, specifying the class and field name.
+* Using Atomic Field Updaters in `ConcurrentLinkedQueue`.
+
+![c0335-01](images/15 Atomic Variables and Nonblocking Synchronization/c0335-01.jpg)
+
+### 15.4.4 The ABA Problem
+
+* The *ABA problem* can arise from using compare-and-swap where nodes can be recycled.
+  * like if you do your own memory management.
