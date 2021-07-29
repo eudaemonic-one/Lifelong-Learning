@@ -94,3 +94,22 @@
 
 * entry protocol => the operation's condition predicate.
 * exit protocol => examining any state variables that have been changed by the operation to see if they might have caused some other condition predicate to become true, and if so, notifying on the associated condition queue.
+
+## 14.3 Explicit Condition Objects
+
+* `Condition` is a generalization of intrinsic condition queues.
+  * mutiple threads might wait on the same condition queue for different condition predicates.
+  * locking involves exposing the condition queue object.
+* A `Condition` is associated with a single `Lock`; to create a `Condition`, call `Lock.newCondition` on the associated lock.
+  * => multiple wait sets per lock, interruptible and uninterruptible condition waits, deadline-based waiting, and a choice of fair or nonfair queueing.
+* `Condition` Interface.
+  * The equivalent of `wait`, `notify`, and `notifyAll` for `Condition` objects are `await`, `signal`, and `signalAll`. However, `Condition` extends `Object`, which means that it also has `wait` and `notify` methods. Be sure to use the proper versions `await` and `signal` instead.
+
+![c0307-01](images/14 Building Custom Synchronizers/c0307-01.jpg)
+
+* Bounded buffer using explicit condition variables.
+  * Using the more efficient `signal` instead of `signalAll`.
+
+![c0309-01](images/14 Building Custom Synchronizers/c0309-01.jpg)
+
+* Use `Condition` if you need its advanced features such as fair queueing or multiple wait sets per lock, and otherwise prefer intrinsic condition queues.
