@@ -136,3 +136,29 @@
 * `OneShotLatch`: Binary latch using `AbstractQueuedSynchronizer`.
 
 ![c0313-01](images/14 Building Custom Synchronizers/c0313-01.jpg)
+
+## 14.6 AQS in `java.util.concurrent` Synchronizer Classes
+
+### 14.6.1 ReentrantLock
+
+* `ReentrantLock` supports only exclusive acquisition, so it implements `tryAcquire` (nonfair version), `tryRelease`, and `isHeldExclusively`.
+
+![c0315-01](images/14 Building Custom Synchronizers/c0315-01.jpg)
+
+### 14.6.2 Semaphore and CountDownLatch
+
+* `Semaphore` uses the AQS synchronization state to hold the count of permits currently available.
+
+![c0316-01](images/14 Building Custom Synchronizers/c0316-01.jpg)
+
+* `CountDownLatch` uses the AQS synchronization state the current count.
+
+### 14.6.3 FutureTask
+
+* `FutureTask` uses the AQS synchronization state to hold the task status: running, completed, or cancelled.
+  * maintains additional state variables for results of computation of exceptions it threw.
+  * holds running thread => can be interrupted, cancelled.
+
+### 14.6.4 ReentrantReadWriteLock
+
+* `ReentrantReadWriteLock`: a single AQS subclass manages both read and write locking.
