@@ -120,3 +120,19 @@
   * => act as a gate, allowing a limited number of threads to pass at a time.
   * => allow interruptible, uninterruptible, and timed acquisition attempts, fair and nonfair queueing of waiting threads.
   * => less implementation effort, more scalability.
+
+### 14.5 `AbstractQueuedSynchronizer`
+
+* AQS-based synchronizer
+  * basic operations: variants of *acquire* and *release*
+  * manages state => managing a single integer of state information => through protected `getState`, `setState`, and `compareAndSetState` methods.
+  * exclusive acquisition should implement the protected methods `tryAcquire`, `tryRelease`, and `isHeldExclusively`.
+  * shared acquisition should implement `tryAcquireShared` and `tryReleaseShared`.
+
+![c0312-01](images/14 Building Custom Synchronizers/c0312-01.jpg)
+
+### 14.5.1 A Simple Latch
+
+* `OneShotLatch`: Binary latch using `AbstractQueuedSynchronizer`.
+
+![c0313-01](images/14 Building Custom Synchronizers/c0313-01.jpg)
