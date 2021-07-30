@@ -197,3 +197,209 @@
       * Use of the relational operators `<` and `>` in `compareTo` method is verbose and error-prone and no longer recommended.
     * *comparator construction methods* => using static imported comparator construction methods => simple names for clarity and brevity.
       * e.g., `comparingInt`, `thenComparingInt`, `Integer.compare`.
+
+## Classes and Interfaces
+
+* Minimize the **accessibility of classes and members**
+
+  * Motivation
+    * *information hiding* or *encapsulation* => decoupling API from implementation => allow components to be developed, tested, optimized, used, understood, and modified in isolation.
+    * make each class or member as inaccessible as possible.
+  * Consequences
+    * *accessibility* (*access control* in Java)
+      * e.g., `private`, `protected`, `public`, and package-private.
+      * make it package-private => implementation.
+      * make it public => must maintain compatibility forever.
+    * => overridden methods cannot have a more restrictive access level in the subclass.
+    * => should not raise the accessibility any higher than package-private to facilitate testing your code.
+    * *module system* => *module declaration*
+  * Implementation
+    * Instance fields of public classes should rarely be public.
+      * public mutable fields => not thread-safe.
+      * expose public static final fields is an exception.
+    * It is wrong to have a public static final array field, or an accessor that returns such a field.
+      * => make the array private, and
+        * => add a public immutable list through `Collections.unmodifiableList`.
+        * => or, add a public method tha returns a copy of private array.
+
+* In public classes, **use accessor methods**, not public fields
+
+  * Consequences
+    * => *accessor methods* for private fields and *mutators* for mutable classes.
+    * If a class is package-private or private nested class, there is nothing inherently wrong with exposing its data field.
+    * It is questionable for public classes to expose immutable fields.
+      * => it precludes changing the internal representation in a later release.
+
+* Minimize **mutability**
+
+  * Applicability
+    * Classes should be immutable *unless* there's a very good reason to make them mutable.
+    * If a class cannot be made immutable, limit its mutability *as much as possible*.
+    * Constructors should create fully initialized objects with all of their invariants established.
+  * Consequences
+    * => information contained in each instance is fixed for its lifetime.
+    * => simple => clear state space, precise state transitions.
+    * => inherently thread-safe; require no synchronization.
+    * => can be shared freely => never have to make *defensive copies* => need not provide a `clone` method or *copy constructor*.
+    * => they can share their internals.
+    * => make greater building blocks for other objects.
+    * => provide failure atomicity for free.
+    * => they require a separate object for each distinct value => extra cost.
+  * Implementation
+    * To make a class immutable
+      * => Don't provide methods that modify the object's state (*mutators*).
+      * => Ensure that the class can't be extended.
+      * => Make all fields final.
+      * => Make all fields private.
+      * => Ensure exclusive access to any mutable components.
+        * Make *defensive copies* in constructors, accessors, and `readObject` methods.
+    * To fix performance problem
+      * => guess multi-step operations will be commonly required and to provide them as primitives.
+      * => provide a *public* mutable companion class.
+    * To make immutability flexible
+      * => make all of its constructors private or package-private and add public static factories in place of the public constructors.
+        * => effectively final outside its package.
+        * => allow to tune the performance through object-caching.
+      * => only guarantee that no method may produce an *externally visible* change in the object's state.
+        * e.g., have nonfinal fields caching the result of expensive computations the first time they are needed.
+
+* **Favor composition over inheritance**
+
+  * Motivation
+
+    * inheritance
+      * => achieve code reuse, also override methods.
+      *  => a subclass depends on the implementation details of its superclass for its proper function => violates encapsulation
+        * superclass can acquire new methods in subsequent releases.
+      * => dangerous to inherit across package boundaries.
+      * => propagate any flaws in the superclass's API.
+    * *composition*: declare a private field that references an instance of the existing class.
+
+  * Consequences
+
+    * => *forwarding* => no dependencies on the implementation of the existing class.
+      * => write forwarding methods only once.
+
+    * the combination of composition and forwarding => *delegation*.
+    * => not suited for use in *callback frameworks*.
+      * wrapper class objects pass self-references (`this`) to other objects for subsequent callback invocations and it doesn't know of its wrapper => *SELF problem*.
+
+  * Implementation
+
+    * Reusable forwarding class + Wrapper class extends forwarding class.
+
+* **Design and document for inheritance or else prohibit it**
+
+  * Implementation
+    * First, the class must document precisely the effects of overriding any method.
+      * The class must document its *self-use* of overridable methods.
+      * For each public or protected method, the documentation must indicate which overridable methods the method invokes, in what sequences, and how the results of each invocation affect subsequent processing.
+      * `@implSpec`: inner working of the method.
+    * To allow efficient subclasses, a class may have to provide hooks into its internal workings in the form of judiciously chosen protected methods.
+      * e.g., `removeRange` method from `java.util.AbstractList` => provided solely to make it easy for subclasses to provide a fast helper.
+    * Constructors must not invoke overridable methods, directly or indirectly.
+      * The superclass constructor runs before the subclass constructor => the overriding method in the subclass will get invoked before the subclass constructor has run.
+      * Neither `clone` nor `readObject` may invoke an overridable method, directly or indirectly.
+      * When implementing `Serializable` => make `readResolve` or `writeReplace` method protected => avoid them to be ignored by subclasses.
+    * Eliminate a class's self-use of overridable methods mechanically.
+      * => move the body to a private helper method.
+  * Consequences
+    * => The *only* way to test a class designed for inheritance is to write subclasses.
+    * => You must test your class by writing subclasses *before* you release it.
+    * => The best solution is to prohibit subclassing in classes that are not designed and documented to be safely subclassed.
+      * => declare the class final.
+      * => make all the constructors private or package-private and to add public static factories in place of the constructors.
+
+* **Prefer interfaces to abstract classes**
+
+  * Motivation
+    * interfaces *versus* abstract classes.
+      * both can provide implementations for instance methods.
+      * abstract class => single inheritance => must place common abstract class high up => damage to the type hierarchy.
+      * Existing classes can easily be retrofitted to implement a new interface.
+      * Interfaces are ideal for defining mixins.
+        * => provide optional behavior.
+      * Interfaces allow for the construction of nonhierarchical type frameworks.
+      * Interfaces enable safe, powerful functionality enhancements via the *wrapper class* idiom.
+  * Consequences
+    * abstract *skeletal implementation* class
+      * => combine the advantages of interfaces and abstract classes .
+      * => the interface defines the type, providing default methods.
+      * => the skeletal implementation class implements the remaining non-primitive interface mthods atop the primitive interface methods.
+      * => extending a skeletal implementation.
+      * skeletal implementation classes are called `AbstractInterface`.
+    * *simple implementation*
+      * it isn't abstract; it is the simplest possible working implementation.
+      * e.g., `AbstractMap.SimpleEntry`.
+
+* **Design interfaces for posterity**
+
+  * Consequences
+    * default method => a *default implementation* can be used by all classes that implement the interface.
+    * => not always possible to write a default method that maintains all invariants of every conceivable implementation.
+    * => existing implementations of an interface may compile without error or warning but fail at runtime.
+  * Applicability
+    * It is of the utmost importance to design interfaces with great care.
+    * You cannot count on correcting interface flaws after an interface is released.
+
+* **Use interfaces only to define types**
+
+  * Applicability
+    * the interface serves as a *type* that can be used to refer to instances of the class.
+  * Consequences
+    * *constant interface* antipattern
+      * => consists solely of static final fields, each exporting a constant.
+      * => leak implementation detail into the class's exported API.
+      * => if the constants are strongly tied to an existing class or interface, you should add them to the class or interface.
+        * => export them with an *enum type*.
+        * => export the constants with a noninstantiable *utility class*,
+          * => use *static import* facility.
+
+* **Prefer class hierarchies to tagged classes**
+
+  * Motivation
+    * tagged classes: contain a *tag* field indicating the flavor of the instance.
+      * => verbose, error-prone, and inefficient.
+  * Implementation
+    * First, define an abstract class containing an abstract method for each method in the tagged class whose behavior depends on the tag vlaue.
+    * Next, define a concrete subclass of the root class for each flavof of the original tagged class.
+    * Also include in each subclass the appropriate implementation of each abstract method in the root class.
+
+* **Favor static member classes over nonstatic**
+
+  * Applicability
+    * A nested class should exist only to serve its enclosing class.
+    * If you declare a member class that does not require access to an enclosing instance, *always* put the `static` modifier in its declaration.
+  * Consequences
+    * *static member classes*
+      * => can function as public helper class, useful only in conjunction with its outer class.
+        * e.g., Clients of `Calculator` could refer to operations using public static member enum class `Calculator.Operation`.
+    * *private static member classes*
+      * => can represent components of the object represented by their enclosing classes.
+        * e.g., `Map`'s internal `Entry` object.
+          * => while each entry is associated with a map, the methods on the entry do not need to access to the map.
+    * *nonstatic member class*
+      * => implicitly associated with an *enclosing instance* of its containing class => takes up space in the nonstatic member class instance and adds time to its construction.
+      * => you can invoke methods on the enclosing instance or obtain a reference to the enclosing instance using the *qualified* `this` construct.
+      * => can be used to define an *Adapter*.
+        * e.g., `Map`'s *collection views* methods `keySet`, `entrySet`, and `values`.
+        * e.g., `Set` and `List` typically use nonstatic classes to implement their iterators.
+    * *anonymous class*
+      * => has no name.
+      * => not a member of its enclosing class.
+      * => cannot have any static members other than *constant variables*, which are final primitive or string fields.
+      * => can create small *function objects* and *process objects* on the fly.
+        * => but lambdas are now preferred.
+      * => can use in the implementation of static factory methods.
+    * *local class*
+      * => declared anywhere a local variable can be declared.
+      * => should be kept short so as not to harm readability.
+
+* **Limit source files to a single top-level class**
+
+  * Motivation
+    * Defining multiple top-level classes in a source file => possible to provide multiple definitions for a class => affected by the order in which the source files are passed to the compiler.
+  * Implementation
+    * Use static member classes instead of multiple top-level classes.
+  * Applicability
+    * Never put multiple top-level classes or interfaces in a single source file.
