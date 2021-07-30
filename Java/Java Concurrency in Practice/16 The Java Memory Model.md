@@ -45,3 +45,31 @@
   * Actions taken by the task represented by a `Future` *happens-before* another thread successfully returns from `Future.get`.
   * Submitting a `Runnable` or `Callable` to an `Executor` *happens-before* the task begins execution.
   * A thread arriving at a `CyclicBarrier` or `Exchanger` *happens-before* the other threads are released from the same barrier or exchange point.
+
+## 16.2 Publication
+
+### 16.2.1 Unsafe Publication
+
+* absence of *happens-before* => reordering => allow another thread to see a *partially constructed object*.
+* If you do not ensure that publishing the shared reference *happens-before* another thread loads that shared reference, then the write of the reference to the new object can be reordered with the. writes to its fields.
+* Unsafe publication can happen as a result of an incorrect lazy initialization.
+* With the exception of immutable objects, it is not safe to use an object that has been initialized by another thread unless the publication *happens-before* the consuming thread uses it.
+
+
+### 16.2.2 Safe Publication
+
+* The safe-publication idioms ensure that the published object is visible to other threads because they ensure the publication *happens-before* the consuming thread loads a reference to the published object.
+
+
+### 16.2.3 Safe Initialization Idioms
+
+* misuse of lazy initialization can lead to trouble.
+* *eager initialization*
+  * static initializers are run by the JVM at class initialization time, after class loading but before the class is used by any thread.
+  * JVM acquires a lock during initialization and this lock is acquired by each thread at least once to ensure that the class has been loaded => memory writes made during static initialization are automatically visible to all threads.
+  * Initialized objects require no explicit synchronization either during construction or when being referenced.
+
+### 16.2.4 Double-checked Locking
+
+* Double-checked locking (DCL) antipattern => ugly.
+  * => the worst case is actually that it is possible to see a current value of the reference but stale values for the object's state, meaning that the object could be seen to be in an invalid or incorrect state.
