@@ -27,6 +27,7 @@ My personal notes on everything, from coding to philosophy.
   * [Gin](./Golang/Gin): Note of web framework Go-Gin.
 * [Java](./Java/): Note of Java's language idioms and programming best practices (design patterns also included).
   * [Effective Java](./Java/Effective%20Java/)
+  * [Java Concurrency in Practice](./Java/Java%20Concurrency%20in%20Practice/)
 * [LeetCode](./LeetCode/): Solution set of LeetCode algorithms problems and Note of useful tricks and expressions, and also self-defined solution models.
 * [Machine Learning](./Machine-Learning/): Note of machine learning theory and implementations of ML algorithms.
   * [CMU Course 10301/601 Introduction to Machine Learning (Master's)](./Machine-Learning/cmu-10601/)
