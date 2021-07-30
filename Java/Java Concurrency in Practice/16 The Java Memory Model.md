@@ -73,3 +73,9 @@
 
 * Double-checked locking (DCL) antipattern => ugly.
   * => the worst case is actually that it is possible to see a current value of the reference but stale values for the object's state, meaning that the object could be seen to be in an invalid or incorrect state.
+
+## 16.3 Initialization Safety
+
+* Initialization safety => allow properly constructed *immutable* objects to be safely shared across threads without synchronization => regardless of how they are published, even if published using a data race.
+* Initialization safety makes visibility guarantees only for the values that are reachable through final fields as of the time the constructor finishes.
+* For values reachable through nonfinal fields, or values that may change after construction, you must use synchronization to ensure visibility.
