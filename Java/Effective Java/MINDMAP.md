@@ -505,3 +505,94 @@
   * Implementation
     * typesafe heterogeneous container => e.g., `public <T> void putFavorite(Class<T> type, T instance);`
     * dynamic cast => e.g., `favorites.put(Objects.requireNonNull(type), type.cast(instance));`
+
+## Enums and Annotations
+
+* Use **enums** instead of `int` constants
+  * Motivation
+    * `int` enum pattern => severaly deficient.
+      * => no type safety, little expressive power.
+      * => clients must recompile if the value associated with an `int` enum is changed.
+      * => no way to translate `int` enum constants into printable strings.
+  * Consequences
+    * *enum type*
+      * => instance-controlled => export one instance for each enumeration constant via a public static final field => a generalization of singletons.
+      * => flexible to add arbitrary methods and fields and implement arbitrary interfaces.
+      * => be their nature immutable.
+    * Use enums any time you need a set of constants whose memebers are known at compile time.
+  * Implementation
+    * To associate data with enum constants, declare instance fields and write a constructor that takes the data and stores it in the fields.
+    * Declare an abstract `apply` method in the enum type, and override it with a concrete method for each constant in a *constant-specific class body*.
+      * => consider the strategy enum pattern if some, but not all, enum constants share common behaviors.
+    * Consider writing a `fromString` method to translate the string representation back to the corresponding enum.
+* Use instance fields instead of **ordinals**
+  * Motivation
+    * `ordinal` method => returns the numerical position of each enum constant in its type.
+    * Abuse of ordinal to derive an associated value.
+  * Consequences
+    * Never derive a value associated with an enum from its ordinal; store it in an instance field instead.
+    * Most programmers will have no use for the `ordinal` method.
+* Use **`EnumSet`** instead of bit fields
+  * Motivation
+    * *bit field enumeration constants* - OBSOLETE!
+      * => allow bitwise `OR` operation to combine constants into a set.
+      * => hard to interpret a bit field and iterate over all of the elements.
+      * => you have to predict the maximum number of bits and choose a proper type for the bit field.
+  * Consequences
+    * `EnumSet`
+      * => conciseness, performance.
+      * => a rich set of static factories for easy set creation => e.g., `EnumSet.of`.
+  * Implementation
+    * Take a `Set` rather than an `EnumSet` => accept the interface type rather than the implementation type.
+* Use **`EnumMap`** instead of ordinal indexing
+  * Consequences
+    * Use `EnumMap` to associate data with an enum.
+      * => very fast `Map` implementation designed for use with enum keys.
+    * Do not use the `ordinal` method to index array of arrays.
+  * Implementation
+    * e.g., `Map<Plant.LifeCycle, Set<Plant>> plantsByLifeCycle = new EnumMap<>(Plant.LifeCycle.class);`.
+    * the `EnumMap` constructor takes the `Class` object of the key type: a *bounded type token*, which provides runtime generic type information.
+    * Use a stream and an `EnumMap` to associate data with an enum.
+      * e.g., `Arrays.stream(garden).collect(groupingBy(p -> p.lifeCycle, () -> new EnumMap<>(LifeCycle.class), toSet()))`.
+    * Use a nested `EnumMap` to associate data with enum pairs.
+* **Emulate extensible enums with interfaces**
+  * Motivation
+    * It is confusing that elements of an extension type are instances of the base type and not vice versa => no good way to enumerate over all of a base type and its extensions.
+    * *operation codes* (*opcodes*) => extensible enumerated types.
+  * Consequences
+    * Emulate extensible enum type by writing an interface.
+      * => clients implement the interface to extend their own enums.
+      * => implementations cannot be inherited from one enum type to another.
+      * => encapsulate shared functionality in a helper class or a static helper method.
+    * Implementations
+      * `<T extends Enum<T> & Operation>` ensures that the `Class` object (`Class<T>`) represents both an enum and a subtype of `Operation`.
+* Prefer **annotations** to naming patterns
+  * Motivation
+    * *naming patterns* => indicate some program elements demanded special treatment.
+      * e.g., JUnit testing framework requires test methods by begining their names with characters `test`.
+      * => typographical errors result in silent failures.
+      * => no way to ensure that they are used only on appropriate program elements.
+      * => provide no good way to associate parameter values with program elements.
+  * Consequences
+    * Annotations
+      * *marker annotation*: has no parameters but simply marks the annotated element.
+      * class literals can be used as the values for annotation parameter.
+      * *repeatable annotation type*
+    * There is simply no reason to use naming patterns when you can use annotations instead.
+    * All programmers should use the predefined annotation types that Java provides.
+* Consistently use the **`Override`** annotation
+  * Consequences
+    * Use the `Override` annotation on every method declaration that you believe to override a superclass declaration.
+    * It is good practice to use `Override` on concrete implementations of interface methods to ensure that the signature is correct.
+    * In concrete classes, you need not annotate methods that you believe to override abstract method declarations.
+* Use **marker interfaces** to define types
+  * Motivation
+    * *marker interface*: contains no method declarations but merely designates a class that implements the interface as having some property.
+  * Consequences
+    * marker interfaces
+      * => define a type that is implemented by instance of the marked class
+        * => catch errors at compile time although some APIs do not take advantage of the interface => e.g., `ObjectOutputStream.write` takes type `Object` instead of `Serializable`.
+      * => they can be targeted more precisely.
+    * marker annotations
+      * => they are part of the larger annotation facility => consistency in annotation-based frameworks.
+      * => can be applied to any program element.
