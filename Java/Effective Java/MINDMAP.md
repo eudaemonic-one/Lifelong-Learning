@@ -596,3 +596,108 @@
     * marker annotations
       * => they are part of the larger annotation facility => consistency in annotation-based frameworks.
       * => can be applied to any program element.
+
+## Lambdas and Streams
+
+* Prefer **lambdas** to anonymous classes
+  * Motivation
+    * *function objects*: represent functions or actions.
+    * *anonymous class*: creates a function object.
+      * => adequate for *Strategy* pattern.
+    * *functional interfaces*: with a single abstract method, deserve special treatment.
+      * => allows to create instances of these interfaces using *lambda expression*.
+  * Consequences
+    * Omit the types of all lambda parameters unless their presence makes your program clearer.
+    * Lambdas lack names and documentation; if a computation isn't self-explanatory, or exceeds a few lines, don't put it in a lambda.
+    * You should rarely, if ever, serialize a lambda.
+      * => instead, using an instance of a private static nested class.
+    * Don't use anonymous classes for function objects unless you have to create instances of types that aren't functional interfaces.
+* Prefer **method references** to lambdas
+  * Consequences
+    * *method references* => more succinct than lambdas.
+    * Where method references are shorter and clearer, use them; where they aren't, stick with lambdas equivalent.
+  * Implementation
+    * e.g., `map.merge(key, 1, Integer::sum);` rather than `map.merge(key, 1, (count, incr) -> count + incr);`
+    * Method Reference Type: Static, Bound, Unbound, Class Constructor, Array Constructor.
+* Favor the use of **standard functional interfaces**
+  * Consequences
+    * `java.util.function` package provides a large collection of standard functional interfaces for your use.
+    * If one of the standard functional interfaces does the job, you should generally use it in preference to a purpose-built functional interface.
+    * Don't be tempted to use basic functional interfaces with boxed primitives instead of primitive functional interfaces.
+    * You should seriously consider writing a purpose-built functional interface if
+      * It will be commonly used and could benefit from a descriptive name.
+      * It has a strong contract associated with it.
+      * It would benefit from custom default methods.
+    * Always annotate your functional interfaces with the `@FunctionalInterface` annotation.
+  * Implementations
+    * The six basic functional interfaces:
+      * `UnaryOperator<T>` => `T apply(T t)`
+      * `BinaryOperator<T>` => `T apply(T t1, T t2)`
+      * `Predicate<T>` => `boolean test(T t)`
+      * `Function<T,R>` => `R apply(T t)`
+      * `Supplier<T>` => `T get()`
+      * `Consumer<T>` => `void accept(T t)`
+    * Three variants of each  of the six basic interfaces to operate on the primitive types `int`, `long`, `double`.
+    * Nine variants of the `Function` for use when the result type is primitive or `Object` (Obj) => prefix `Function` with `SrcToResult`.
+    * Two-argument versions: `BiPredicate<T,U>`, `BiFunction<T,U,R>`, `BiConsumer<T,U>`.
+    * `BiFunction` variants returning the three primitive types: `ToIntBiFunction<T,U>`, `ToLongBiFunction<T,U>`, `ToDoubleBiFunction<T,U>`
+    * `BooleanSupplier`
+* Use **streams** judiciously
+  * Motivation
+    * iterative code using code blocks, stream pipelines using function objects.
+    * streams API => east the task of performing bulk operations, sequentially or in parallel.
+  * Consequences
+    * stream pipelines are evaluated *lazily*.
+      * => evaluation doesn't start until the terminal operation is invoked.
+      * => data elements that aren't required in order to complete the terminal operation are never computed.
+    * streams API is *fluent* => allow calls to be chained into a single expression.
+    * Overusing streams makes programs hard to read and maintain.
+    * In the absence of explicit types, careful naming of lambda parameters is essential to the readability of stream pipelines.
+    * Using helper methods is even more important for readability in stream pipelines than in iterative code.
+    * Refactor existing code to use streams and use them in new code only where it makes sense to do so.
+    * Good matches for using stream technique:
+      * Uniformly transform sequences of elements
+      * Filter sequences of elements
+      * Combine sequences of elements using a single operation
+      * Accumulate sequences of elements into a collection, perhaps grouping them by some common attribute
+      * Search a sequence of elements for an element satisfying some criterion
+  * Implementation
+    * common stream source: collections, arrays, files, regular expression pattern matchers, pseudorandom number generators, and other streams.
+    * you should refrain from using streams to process `char` values.
+* **Prefer side-effect-free functions in streams**
+  * Motivation
+    * *pure function*: one whose result depends only on its input => streams paradigm.
+  * Implementation
+    * The `forEach` operation should be used only to report the result of a stream computation, not to perform the computation.
+    * Use *collectors* to gather the elements of a stream into a true `Collection`.
+      * e.g., `comparing` method takes key extraction function.
+      * e.g., `toList()`, `toSet()`, `toCollection(collectionFactory)`.
+      * e.g., `toMap(keyMapper, valueMapper)` and three-argument form supports dealing with key collisions.
+      * e.g., `groupingBy` returns collectors to produce maps that group elements into categories based on a *classifier function*.
+      * *downstream collector*: produces a value from a stream containing all the elements in a category => e.g., `toSet()` results in sets rather than lists as the values in a map.
+      * e.g., `joining` returns a collector that simply concatenates the elements.
+* **Prefer Collection to Stream as a return type**
+  * Motivation
+    * `Stream` fails to extend` Iterable` => workaround to iterate over a stream is to adapt from `Stream<E>` to `Iterable<E>`.
+  * Consequences
+    * `Collection` interface is a subtype of `Iterable` and has a `stream` method => provides both iteration abd stream access.
+    * `Collection` or an appropriate subtype is generally the best return type fore a public, sequence-returning method.
+      * Arrays also provide `Array.asList` and `Stream.of` methods.
+    * Do not store a large sequence in memory just to return it as a collection.
+      * `Collection` has an `int`-returning `size` method, which limits the length of the returned sequence to `Integer.MAX_VALUE`.
+      * => consider implementing a custom collection.
+* Use caution when **making streams parallel**
+  * Consequences
+    * Do not parallel stream pipelines indiscriminately.
+      * Parallelizing a pipeline is unlikely to increase its performance if the source is from `Stream.iterate`, or the intermediate operation `limit` is used.
+    * Performance gains from parallelism are best on streams over `ArrayList`, `HashMap`, `HashSet`, and `ConcurrentHashMap` instances; arrays; `int` ranges; and `long` ranges.
+      * they can be accurately and cheaply split into subranges of any desired sizes => *spliterator* => `Stream.spliterator` or `Iterable.spliterator`.
+      * they provide good-to-excellent *locality of reference* when processed sequentially => sequential element references are stored together in memory.
+    * The stream pipeline's terminal operation affects the effectiveness of parallel execution.
+    * Not only can parallelizing a stream lead to poor performance, including liveness failures; it can lead to incorrect results and unpredictable behavior (*safety failures*).
+      * Override the `spliterator` method and test the performance extensively.
+    * Parallelzing a stream => strictly a performance optimization.
+      * It is possible to achieve near-linear speedup in the number of processor cores.
+  * Implementation
+    * The best terminal operations for parralelism are *reductions*: `Stream`'s `reduce`, or prepackaged `min`, `max`, `count`, and `sum`, or *short-circuiting* operations `anyMatch`, `allMatch`, and `noneMatch`.
+    * If you are going to parallelize a stream of random numbers, start with a `SplittableRandom` instance.
