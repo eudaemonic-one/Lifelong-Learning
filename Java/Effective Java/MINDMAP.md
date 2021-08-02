@@ -403,3 +403,105 @@
     * Use static member classes instead of multiple top-level classes.
   * Applicability
     * Never put multiple top-level classes or interfaces in a single source file.
+
+## Generics
+
+* **Don't use raw types**
+  * Applicability
+    * *generic*: a class or interface whose declaration has one or more *type parameters*.
+    * *parameterized types*: e.g., `List<String>`: a list of parameterized type `String`.
+    * *ray type*: the name of the generic type used without accompanying type parameters.
+  * Consequences
+    * Each generic type defines a *raw type*.
+      * => behave as if all of the generic type information were erased from the type declaration.
+      * => exist primarily for compatibility with pre-generics code.
+    * If you use raw types, you lose all the safety and expressiveness benefits of generics.
+      * Using raw types can lead to exceptions at runtime; parameterized collection type ensures compile-time check.
+  * Implementation
+    * To allow insertion of arbitrary objects, use *unbounded wildcard types*.
+      * If you want to use a generic type but you don't know or care what the actual type parameter is, use a question mark instead.
+      * You can't put any element (other than `null`) into a `Collection<?>`.
+      * e.g., `Set<E>` => `Set<?>` containing only objects of some unknown type.
+      * use *generic methods* or *bounded wildcard types* if you can assume about the type of the objects.
+    * Exceptions to the rule that you should not use raw types.
+      * You must use raw types in class literals.
+        * e.g., `List.class` instead of `List<String>.class`.
+      * It is legal to use the `instanceof` operator on parameterized types.
+* **Eliminate unchecked warnings**
+  * Applicability
+    * Eliminate every unchecked warning that you can.
+  * Consequences
+    * => ensure that your code is type safe => you won't get a `ClassCastException` at runtime.
+  * Implementation
+    * If you can prove that the code that provoked the warning is type safe, then (and only then) suppress the warning with an `@SuppressWarnings("unchecked")` annotation.
+      * Always use the `SuppressWarnings` annotation on the smallest scope possible.
+      * Every time you use a `@SuppressWarnings("unchecked")` annotation, add a comment saying why it is safe to do so.
+* **Prefer lists to arrays**
+  * Motivation
+    * Arrays are *covariant* => `Sub[]` is a subtype of the array `Super[]`.
+    * Generics are *invariant* => `List<Type1> is neither a subtype nor a supertype of `List<Type2`.
+    * Arrays are *reified*. => arrays know and enforce their element type at runtime.
+      * e.g., get an `ArrayStoreException` if putting a `String` into an array of `Long`.
+    * Generics are implemented by *erasure* => they enforce their type constraints only at compile time and discard their element type at runtime.
+    * => arrays and generics do not mix well.
+      * It is illegal to create an array of a generic type, a parameterized type, or a type parameter.
+      * e.g., illegal creation expressions: `new List<E>[]`, `new List<String>[]`, `new E[]`.
+  * Consequences
+    * use the collection type `List<E>` in preference to the array type `E[]`.
+      * => might sacrifice some conciseness or performance, in exchange for better type safety and interoperability.
+* **Favor generic types**
+  * Motivation
+    * We can often *generify* programs without harming clients of the original non-parameterized version.
+    * Generic types are safer and easier to use than types that require casts in client code.
+  * Implementation
+    * some technique for eliminating the generic array creation may cause *heap pollution* => the rumtime type of the array does not match its compile-time type.
+    * some generic types that restrict the permissible values of their type parameters => *bounded type parameter*.
+      * e.g., `class DelayQueue<E extends Delayed> implements BlockingQueue<E>`
+* **Favor generic methods**
+  * Consequences
+    * declare a *type parameter* => make the method typesafe.
+  * Implementation
+    * the type parameter list goes between a method's modifiers and its return type.
+      * e.g., `public static <E> Set<E> union(Set<E> s1,  Set<E> s2);`.
+    * *generic singleton factory*: a static factory method to repeatedly dole out the object for each requested type parameterization.
+      * e.g., `Collections.reverseOrder`, `Collections.emptySet`.
+    * *recursive type bound* => wildcard variant, the *simulated self-type* idiom.
+      * e.g., `public static <E extends Comparable<E>> E max(Collection<E> c);`.
+* Use **bounded wildcards** to increase API flexibility
+  * Consequences
+    * PECS stands for producer-`extends`, consumer-`super`.
+    * Do not use bounded wildcard types as return types.
+  * Implementation
+    * *bounded wildcard type*
+      * `<? extends E>`: wildcard type for a parameter that serves as an `E` producer.
+      * `<? super E>`: wildcard type for a parameter that serves as an `E` consumer.
+    * Comparables are always consumers.
+      * generally use `Comparable<? super T>` and `Comparator<? super T>`.
+      * e.g., `public static <T extends Comparable<? super T>> T max(List<? extends T> list);`.
+    * If a type parameter appears only once in a method declaration, replace it with a wildcard.
+    * Write a private helper method to *capture* the wildcard type.
+* **Combine generics and varargs judiciously**
+  * Motivation
+    * varargs => *leasy abstraction* => an array is created to hold the varargs parameters and it is visible.
+    * If a method declares its varargs parameter a generic or parameterized types => warning on the declaration => possible *heap pollution*.
+  * Consequences
+    * It is unsafe to store a value in a generic varargs array parameter.
+    * It is unsafe to give another method access to a generic varargs parameter array.
+    * Use `@SafeVarargs` on every method with a varargs parameters of a generic or parameterized type => *never* write unsafe varargs methods.
+    * An alternative is to replace the varargs parameter with a `List` parameter.
+      * => the compiler can *prove* that the method is typesafe.
+      * => the author does not have to vouch for its safety with a `SafeVarargs` annotation.
+      * => the client code is a bit verbose and may be a bit slower.
+  * Implementation
+    * `@SafeVarargs` annotation => the author promise it is typesafe => allow the author of a method with a generic varargs parameter to suppress client warnings automatically.
+      * If the method doesn't store anything into the array and doesn't allow a reference to the array to escape, then it's safe.
+* **Consider typesafe heterogeneous containers**
+  * Motivation
+    * Limitations to fixed numbers of type parameters per container.
+  * Consequences
+    * *type token*: a class literal passed among methods to communicate both compile-time and runtime type information.
+    * *bounded type token*: a type token that places a bound on type.
+    * placing the type parameter on the key rather than the container => customer key type => unfixed number of type parameters per contains.
+  * Implementation
+    * typesafe heterogeneous container => e.g., `public <T> void putFavorite(Class<T> type, T instance);`
+    * dynamic cast => e.g., `favorites.put(Objects.requireNonNull(type), type.cast(instance));`
