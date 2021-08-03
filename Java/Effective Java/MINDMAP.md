@@ -701,3 +701,111 @@
   * Implementation
     * The best terminal operations for parralelism are *reductions*: `Stream`'s `reduce`, or prepackaged `min`, `max`, `count`, and `sum`, or *short-circuiting* operations `anyMatch`, `allMatch`, and `noneMatch`.
     * If you are going to parallelize a stream of random numbers, start with a `SplittableRandom` instance.
+
+## Methods
+
+* **Check parameters for validity**
+  * Consequences
+    * check invalid parameter values => fail quickly and cleanly with an appropriate exception.
+  * Implementation
+    * For public and protected methods, use the Javadoc `@throws` tag to document the exception that will be thrown if a restriction on parameter values is violated.
+      * e.g., `IllegalArgumentException`, `IndexOutOfBoundsException`, `NullPointerException`.
+    * The class-level comment applies to all parameters in all of the class's public method.
+    * The `Objects.requireNonNull` method is flexible and convenient.
+    * Non public methods can check their parameters using *assertion* => throw `AssertionError` if they fail.
+* Make **defensive copies** when needed
+  * Consequences
+    * => make a *defensive copy* of each mutable parameter to the method or constructor => use the copy in place.
+    * => prevent from violating the invariants.
+    * => performance penalty.
+  * Implementation
+    * Defensive copies are made *before* checking the validity of the parameters, and the validity check is performed on the copies rather than on the originals => prevent from *time-of-check*/*time-of-use* attack.
+    * Return defensive copies of mutable internal fields.
+    * Do not use the `clone` method to make a defensive copy of a parameter whose type is subclassable by untrusted parties.
+* Design **method signatures** carefully
+  * Consequences
+    * Choose method names carefully.
+      * => obey naming conventions.
+      * => be consistent with the broader consensus.
+      * => avoid long method names.
+    * Don't go overboard in providing convenience methods.
+      * => make a class difficult to learn, use, document, test, and maintain.
+      * When in doubt, leave it out.
+    * Avoid long parameter lists.
+      * Aim for four parameters or fewer.
+      * Long sequences of identically typed parameters are especially harmful.
+      * => break the method up into multiple methods.
+      * => create *helper classes* to hold groups of parameters.
+      * => adapt the Builder pattern from object construction to method invocation.
+    * For parameter types, favor interfaces over classes.
+    * Prefer two-element enum types to `boolean` parameters.
+      * => make code easier to read and write, also easy to add more options.
+* Use **overloading** judiciously
+  * Motivation
+    * The choice of which overloading to invoke is made at compile time.
+    * Selection among overloaded methods is *static*, while selection among overridden methods is *dynamic*.
+  * Consequences
+    * Avoid confusing uses of overloading.
+    * A safe, conservation policy if never to export two overloadings with the same number of parameters.
+    * You can always give methods different names instead of overloading them.
+    * Do not overload methods to take different functional interfaces in the same argument position.
+    * If you are retrofitting an existing class to implement a new interface, you should ensure that all overloadings behave identically when passed the same parameters.
+* Use **varargs** judiciously
+  * Motivation
+    * *varargs* methods: *variable arity* methods.
+      * => firstly creating an array, then putting the argument values into the array, and finally passing the array to the method.
+  * Consequences
+    * => every invocation causes an array allocation and initialization => performance cost.
+  * Implementation
+    * To take one or more arguments, declare the method to take two parameters, one normal parameter of the specified type and one varargs parameter of this type.
+      * e.g., `static int min(int firstArg, int... remainingArgs);`
+* **Return empty collections or arrays, not nulls**
+  * Motivation
+    * returning `null` for special-case => requires extra code in the client to handle the possibly null return value.
+  * Consequences
+    * Never return `null` in place of an empty array or collection.
+      * => difficult to use and more prone to error, no performance advantages.
+  * Implementation
+    * Returning the same *immutable* empty collection repeatedly => avoids allocating empty collection that harms performance.
+    * Return a zero-length array instead of `null`.
+    * Do *not* preallocate the array passed to `toArray` in hopes of improving performance.
+* Return **optionals** judiciously
+  * Motivation
+    * When unable to return a value
+      * => throw an exception => exceptions should be reserved for exceptional conditions, and is expensive.
+      * => return `null` => clients must contain special-case code.
+      * => `Optional<T>` => an immutable container for object reference that is *empty* or *present*.
+  * Consequences
+    * => similar in spirit to check exceptions, they *force* the user to confront the fact there may be no value returned.
+    * => an `Optional` requires allocated and initialized => performance cost.
+  * Implementation
+    * Never return a `null` value from an `Optional`-returning method.
+    * To create optionals => `Optional.empty()`, `Optional.of(value)`, `Optional.ofNullable(value)`.
+    * Container types, including collections, maps, streams, arrays, and optionals should not be wrapped in optionals.
+    * To choose what action to take if the method can't return a value => `orElse`, `orElseThrow`, `get`.
+    * Never return an optional of a boxed primitive type.
+      * Instead, use `OptionalInt`, `OptionalLong`, `OptionalDouble`.
+    * Never appropriate to use an optional as a key, value, or element in a collection or array.
+* Write **doc comments** for all exposed API elements
+  * Motivation
+    * *Javadoc* generates API documentation automatically from source code => *doc comments* => the API to be usable.
+  * Consequences
+    * You must precede *every* exported class, interface, constructor, method, and field declaration with a doc comment.
+    * The doc comment for a method should describe succinctly the contract between the method and its client.
+      * with exception of methods designed for inheritance, the contract should say *what* the method does rather than *how* it does its job.
+      * preconditions => `@throws` tags for unchecked exceptions, `@param` for affected parameters.
+      * postconditions => after invocation has completed successfully.
+      * *side effect* => observable change in state.
+    * Doc comments should be readable both in the source code and in the generated documentation.
+    * No two members or constructors in a class or interface should have the same summary description.
+    * Remember to document thread-safety (level) and serialization (form).
+  * Implementation
+    * `@param` for every parameter, followed by a noun phrase.
+    * `@return` unless the method has a void return type, followed by a noun phrase.
+    * `@throws` for every exception thrown by the method, whether checked or unchecked, should consist of the work "if", followed by a clause describing the exception conditions.
+    * `{@code}` around the code fragment.
+    * `this` refers to the object on which a method is invoked when it is used in the doc comment for an instance method.
+    * `@implSpec`  for *self-use patterns* for inheritance.
+    * When documenting a generic type or method, be sure to document all type parameters.
+    * When documenting an enum type, be sure to document the contants.
+    * When documenting an annotation type, be sure to document any members.
