@@ -931,3 +931,90 @@
     * Constant Field => `MIN_VALUE`, `NEGATIVE_INFINITY`.
     * Local Variable => `i`, `denom`, `houseNum`.
     * Type Parameter => `T`, `E`, `K`, `V`, `X`, `R`, `U`, `V`, `T1`, `T2`.
+
+## Exceptions
+
+* Use exceptions only for **exceptional conditions**
+  * Consequences
+    * Exceptions should never be used for ordinary control flow.
+    * A well-designed API must not force its clients to use exceptions for ordinary control flow.
+  * Implementation
+    * If one method can be invoked only under certain unpredictable conditions
+      * => provide a separate state-testing method.
+      * => have the state-dependent method return an empty optional or a distinguished value.
+* Use **checked exceptions** for recoverable conditions and **runtime exceptions** for programming errors
+  * Consequences
+    * Use checked exceptions for conditions from which the caller can reasonably be expected to recover.
+      * => force the caller to handle the exception in a `catch` clause or to propagate it outward.
+    * Use runtime exceptions to indicate programming errors.
+      * => indicate *precondition violations* by the client.
+      * => cause the current thread to halt with an appropriate error message.
+    * Errors are reserved for use by the JVM to indicate resource deficiencies, invariant failures, or other conditions that make it impossible to continue execution.
+    * All of the unchecked throwables you implement should subclass `RuntimeException` (directly or indirectly).
+      * => you shouldn't define `Error` subclasses except for `AssertionError` and you shouldn't throw them either.
+    * When in doubt, throw unchecked exceptions.
+  * Implementation
+    * Provide methods for additional information concerning the condition that caused the exception to be thrown => aid in recovery.
+    * Parsing the string representation of an exception is an extremely bad practice.
+* **Avoid unnecessary use of checked exceptions**
+  * Consequences
+    * A single checked exception
+      * => force programmers to deal with problems, enhance reliability.
+      * => must appear in a `try` block and can't be used directly in streams.
+  * Implementation
+    * Return an *optional* to eliminate a checked exception.
+      * => can't return any additional information detailing its inability to perform the desired computation.
+    * Break the method that throws the exception into two methods
+      * => newly declared state-testing method that returns a `boolean` indicating whether the exception would be thrown.
+* **Favor the use of standard exceptions**
+  * Consequences
+    * => matches the established conventions => easier to learn and use.
+    * => no unfamiliar exceptions => easier to read.
+    * => smaller memory footprint and less time spent loading classes.
+  * Implementation
+    * `IllegalArgumentException` => Non-null parameter value is inappropriate.
+      * `NullPointerException` => Parameter value is null where prohibited.
+      * `IndexOutOfBoundsException` => Index parameter value is out of range.
+    * `IllegalStateException` => Object state is inappropriate for method invocation.
+    * `ConcurrentModificationException` => Concurrent modification of an object has been detected where it is prohibited.
+    * `UnsupportedOperationException` => Object does not support method.
+    * Do *not* reuse `Exception`, `RuntimeException`, `Throwable`, or `Error` directly.
+    * Throw `IllegalStateException` if no argument value would have worked, otherwise throw `IllegalArgumentException`.
+* **Throw exceptions appropriate to the abstraction**
+  * Implementations
+    * High layers should catch lower-level exceptions and, in their place, throw exceptions that can be explained in terms of the higher-level abstraction.
+      * *exception chaining*: the *cause* is passed to the higher-level exception via a *chaining-aware* constructor.
+    * While exception translation is superior to mindless propagation of exceptions from lower layers, it should not be overused.
+* **Document all exceptions thrown by each method**
+  * Consequences
+    * => forms a part of general contract.
+  * Implementation
+    * Always declare checked exceptions individually and document precisely the conditions under which each one is thrown using the Javadoc `@throws` tag.
+    * It is wise to document unchecked exceptions as carefully as the checked exceptions => describes the *preconditions* effectively.
+    * Do *not* use the `throws` keyword on unchecked exceptions.
+* **Include failure-capture information in detail messages**
+  * Consequences
+    * Program failure due to an uncaught exception => print out the stack trace.
+      * the exception's *string representation*: the exception's class name followed by its *detail message*.
+      * => probably the only information to investigate the software failure.
+  * Implementation
+    * To capture a failure, the detail message of an exception should contain the values of all parameters and fields that contributed to the exception.
+      * e.g., `IndexOutOfBoundsException` => contain the lower bound, upper bound, index value.
+    * One cavaet concerns security-sensitive information.
+      * Do *not* include password, encryption keys, and the like in detail message
+    * User-level error messages must be intelligible to end users.
+* **Strive for failure atomicity**
+  * Consequences
+    * Generally speaking, a failed method invocation should leave the object in the state that it was in prior to the invocation => *failure-atomicity*.
+  * Implementation
+    * immutable objects => free failure atomicity.
+    * mutable objects
+      * => check parameters for validity before performing the operation.
+      * => order the computation so that any part that may fail takes place before any part that modifies the object.
+      * => perform the operation on a temporary copy of the object.
+      * => write *recovery code* and roll back its state to the point before the operation begin.
+* **Don't ignore exceptions**
+  * Consequences
+    * ignore exceptions => an empty `catch` block => defeat the purpose of exceptions that forces you to handle exceptional conditions.
+  * Implementation
+    * If you choose to ignore an exception, the `catch` block should contain a comment explaining why it is appropriate to do so, and the variable should be named `ignored`.
