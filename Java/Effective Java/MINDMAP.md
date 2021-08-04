@@ -809,3 +809,125 @@
     * When documenting a generic type or method, be sure to document all type parameters.
     * When documenting an enum type, be sure to document the contants.
     * When documenting an annotation type, be sure to document any members.
+
+## General Programming
+
+* **Minimize the scope of local variables**
+  * Consequences
+    * => increase the readability and maintainability.
+    * => reduce the likelihood of error.
+  * Implementation
+    * Declare it where it is first used.
+    * Nearly every local variable declaration should contain an initializer.
+      * One exception concerns `try-catch` statements.
+    * Prefer `for` loops to `while` loops.
+      * Also works for iterating when you need the iterator.
+    * Keep methods small and focused.
+* Prefer **for-each** loops to traditional `for` loops
+  * Consequences
+    * => eliminates chances to use the wrong variable.
+    * => no performance penalty.
+  * Implementation
+    * where you can't use for-each:
+      * Destructive filtering => an explicit iterator and call `remove` method, or `Collections.removeIf`.
+      * Tranforming => the list iterator or array index to replace the value of an element.
+      * Parallel iteration => all iterators or index variables advanced in lockstep.
+    * you can iterate every object that implements `Iterable`.
+* **Know and use the libraries**
+  * Consequences
+    * => you take the advantage of the knowledge of the experts who wrote it and the experience of those who used it before you.
+    * => you don't have to waste your time writing ad hoc solutions, even if they are marginally related to your work.
+    * => their performance tends to improve over time, with no effort on your part.
+    * => they tend to gain functionality over time.
+    * => you place your code in the mainstream.
+  * Implementation
+    * It pays to keep abreast of additions in every major release.
+    * Every programmar should be familiar with the basics of `java.lang`, `java.util`, and `java.io`, and their subpackages.
+* **Avoid `float` and `double` if exact answers are required**
+  * Consequences
+    * `float` and `double` types are particularly ill-suited for monetary calculations.
+    * Use `BigDecimal`, `int`, `long` for monetary calculations.
+      * => less convenient than primitive arithmetic type.
+      * => slower.
+* Prefer primitive types to **boxed primitives**
+  * Consequences
+    * primitives have only their values, whereas boxed primitives have identities distinct from their values.
+    * primitives have only fully functional values, whereas each boxed primitive type has one nonfunctional value, which is `null`.
+    * primitives are more time- and space-efficient than boxed primitives.
+  * Implementation
+    * Applying the `==` operator to boxed primitives is almost always wrong.
+      * => use comparator or static compare methods.
+    * When you mix primitives and boxed primitives in an operation, the boxed primitive is auto-unboxed.
+      * => reduces the verbosity, but not the danger.
+      * => unboxing can throw a `NullPointerException`.
+* **Avoid strings where other types are more appropriate**
+  * Consequences
+    * Strings are poor substitutes for
+      * other value types.
+      * enum types.
+      * aggregate types.
+      * capabilities.
+    * Used inappropriately
+      * => more cumbersome, less flexible, slower, more error-prone.
+* Beware the performance of **string concatenation**
+  * Consequences
+    * `+`
+      * => convenient for generating a single line of output, or for a small, fixed-size object.
+      * strings are immutable => the contents of both are copied => time quadratic => this technique does not scale.
+    * `StringBuilder`
+      * => store the statement under construction using `append`.
+      * => much faster.
+* **Refer to objects by their interfaces**
+  * Consequences
+    * You should favor the use of interfaces over classes to refer to objects.
+      * e.g., parameters, return values, fields.
+      * => flexible to switch implementations.
+    * Refer to an object by a class if no appropriate interface exists.
+      * *value classes* such as `String` and `BigInteger`.
+      * fundamental types in *class-based framework*.
+      * classes that provide extra methods not found in the interface.
+* Prefer interfaces to **reflection**
+  * Motivation
+    * `java.lang.reflect`
+      * Given a `Class` object, you can obtain `Constructor`, `Method`, and `Field` instances => let you manipulate their undering counterparts *reflectively*,
+      * => You lose all the benefits of compile-time type checking, including exception checking.
+      * => The code required to perform reflective access is clumsy and verbose.
+      * => Performance suffers.
+  * Consequences
+    * There are a few sophisticated applications that require reflection.
+      * e.g., code analysis tools, dependency injection frameworks.
+    * If you have any doubts as to whether your application requires reflection, it probably doesn't.
+    * If you must use a class that is unavailable at compile time, you can create instances reflectively and access them normally via their interface or superclass.
+* Use **native methods** judiciously
+  * Motivation
+    * Java Native Interface (JNI) => call *native methods* written in *native programming languages*.
+      * => access platform-specific facilities.
+      * => seldom necessary.
+  * Consequences
+    * It is rarely advisable to use native methods for improved performance.
+    * A single bug in the native code can corrupt your entire application.
+* **Optimize** judiciously
+  * Motivation
+    * Strive to write good programs rather than fast ones.
+      * information hiding => localize design decisions => can be changed in the future.
+    * Strive to avoid design decisions that limit performance.
+      * e.g., APIs, wire-level protocols, and persistent data formats.
+    * Consider the performance consequences of your API design decisions.
+      * e.g., making a public type mutable => defensive copying.
+      * e.g., using inheritance rather than composition => artificial limits on the performance of the subclass.
+      * e.g., using an implementation type rather than interface => ties to a specific implementation.
+  * Implementation
+    * It is a very bad idea to wrap an API to achieve good performance.
+      * good API => good performance.
+    * Measure performance before and after each attempted optimization.
+      * profiling tools, microbenchmarking framework, performance model.
+* Adhere to generally accepted **naming conventions**
+  * Motivation
+    * *naming conventions*: typographical and grammatical.
+  * Implementation
+    * Package or Module => `org.junit.jupiter.api`, `com.google.common.collect`.
+    * Class or Interface => `Stream`, `FutureTask`, `LinkedHashMap`, `HttpClient`.
+    * Method or Field => `remove`, `groupingBy`, `getCrc`.
+    * Constant Field => `MIN_VALUE`, `NEGATIVE_INFINITY`.
+    * Local Variable => `i`, `denom`, `houseNum`.
+    * Type Parameter => `T`, `E`, `K`, `V`, `X`, `R`, `U`, `V`, `T1`, `T2`.
