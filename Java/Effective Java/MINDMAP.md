@@ -1018,3 +1018,104 @@
     * ignore exceptions => an empty `catch` block => defeat the purpose of exceptions that forces you to handle exceptional conditions.
   * Implementation
     * If you choose to ignore an exception, the `catch` block should contain a comment explaining why it is appropriate to do so, and the variable should be named `ignored`.
+
+## Concurrency
+
+* **Synchronize** access to shared mutable data
+  * Consequences
+    * Without synchronization, one thread's changes might not be visible to other threads.
+    * Synchronization is required for reliable communication between threads as well as for mutual exclusion.
+    * Synchronization is not guaranteed to work unless both read and write operations are synchronized.
+    * *safe publication*: transferring *effectively immutable* objects from one thread to another.
+      * store it in a static field as part of class initialization.
+      * store it in a volatile field, a final field, a field that is accessed with normal locking.
+      * put it into a concurrent collection.
+    * The best way is not to share mutable data.
+  * Implementation
+    * `synchronized` => only a single thread can execute a method or block at one time => *mutual exclusion*.
+      * => multiple invocations won't be interleaved.
+      * => each invocation will see the effects of all previous invocations.
+    * Reading or writing a variable is *atomic* unless the variable is of type `long` or `double`.
+    * Stopping one thread from another.
+      * Do not use `Thread.stop`.
+      * Have the first thread poll a `boolean` field initially as `false` but set to `true` by the second thread to indicate that the first thread is to stop itself.
+        * => potential *liveness failure* => synchronize access to the `boolean` field.
+    * `volatile` modifier => guarantees that any thread that reads the field will see the most recently written value.
+    * `++` is not atomic => read-modify-write safety problem.
+      * => use atomic variables or references from `java.util.concurrent.atomic` => lock-free synchronization.
+* **Avoid excessive synchronization**
+  * Consequences
+    * To avoid liveness and safety failures, never cede control to the client within a synchronized method or block.
+      * => do not invoke a method that is designed to be overridden, or one provided by a client in the form of a function object.
+    * Reentrant lock
+      * => simplify the construction of multi-threaded programs.
+      * => may turn liveness failures into safety failures.
+    * Move the alien method invocations out of the synchronized block => open calls.
+      * => prevent failures, increase concurrency.
+      * e.g., `CopyOnWriteArrayList`: *concurrent collection*, iteration requires no locking, fast.
+    * As a rule, you should do as little work as possible inside synchronized regions.
+    * Excessive synchronization
+      * => *contention* => lost parallelism and delays to ensure that every core has a consistent view of memory.
+      * => limit the VM's ability to optimize code execution.
+    * When in doubt, do *not* synchronize your class, but document that it is not thread-safe.
+* **Prefer executors, tasks, and streams to threads**
+  * Consequences
+    * *Executor Framework* => flexible interface-based task execution facility.
+      * *task*: unit of work => `Runnable` and `Callable`.
+      * execution mechanism => executing tasks with *executor service*.
+      * `java.util.concurrent.Executors` contains static factories, or use the `ThreadPoolExecutor` directly => to create *thread pools*.
+      * *fork-join pool* => split task into smaller subtasks, steal jobs from one another => higher CPU utilization, higher throughput, lower latency.
+      * parallel streams are written atop fork-join pools.
+    * Choosing the executor service for a particular application can be tricky.
+      * small program, lightly loaded server => `Executors.newCachedThreadPool`
+      * heavily loaded production server => `Executors.newFixedThreadPool`
+* **Prefer concurrency utilities to `wait` and `notify`**
+  * Consequences
+    * Given the difficulty of using `wait` and `notify` correctly you should use the higher-level concurrency utilities instead.
+      * e.g., the Executor Framework, concurrent collections, synchronizers.
+    * Concurrent collections manage their own synchronization
+      * => It is impossible to exclude concurrent activity from them.
+      * => Locking them will only slow the program.
+  * Implementation
+    * Use `ConcurrentHashMap` in preference to `Collections.synchronizedMap`.
+    * `BlockingQueue` => extends `Queue`, extended with *blocking operations*, used for *work queues* => *producer-consumer pattern*.
+    * Synchronizers => enable threads to wait for one another and coordinate.
+      * e.g., `CountDownLatch`, `Semaphore`, `CyclicBarrier`, `Exchanger`, `Phaser`.
+    * For interval timing, always use `System.nanoTime` rather than `System.currentTimeMillis`.
+    * Always use the wait loop idiom to invoke the `wait` method; never invoke it outside of a loop.
+    * Always use `notifyAll`.
+* **Document thread safety**
+  * Concequences
+    * The presence of the `synchronized` modifier in a method declaration is an implementation detail.
+    * To enable safe concurrent use, a class must document what level of thread safety it supports.
+      * Immutable => no extra synchronization is necessary.
+      * Unconditionally thread-safe => sufficient internal synchronization, can be used concurrently without the need for extra synchronization.
+      * Conditionally thread-safe => some methods require external synchronization for safe concurrent use.
+        * => indicate which invocation sequences require external synchronization, and which lock must be acquired to execute these sequences.
+        * => use a private lock object in place of synchronized methods.
+      * Not thread-safe => must surround each method invocation with external synchronization.
+      * Thread-hostile => unsafe for any concurrent usage => usually fixed or deprecated.
+        * usually results from modifying static data without synchronization.
+    * *thread safety annotations*: `Immutable`, `ThreadSafe`, `NotThreadSafe`.
+* Use **lazy initialization** judiciously
+  * Motivation
+    * if it is costly to initialize a field *and* the field is accessed only on a fraction of the insatnces of a class => lazy initialization.
+    * *lazy initialization*: delaying the initialization of a field until its value is needed.
+  * Consequences
+    * The only way to know for sure whether lazy initialization is worthwhile is to measure the performance of the class with and without lazy initialization.
+    * Under most circumstances, normal initialization is preferable to lazy initialization.
+  * Implementation
+    * If you use lazy initialization to break an initialization circularity, use a synchronized accessor.
+    * If you use lazy initialization for performance on a static field, use the *lazy initialization holder class idiom*.
+      * => guarantees that a class will not be initialized until it is used.
+    * If you use lazy initialization for performance on an instance field, use the *double-check idiom*.
+      * => avoids the cost of locking when accessing the field after initialization.
+    * If you can tolerate repeated initialization, you can use *single-check idiom*.
+* **Don't depend on the thread scheduler**
+  * Consequences
+    * Any program that relies on the thread scheduler for correctness or performance is likely to be nonportable.
+    * Threads should not run if they aren't doing useful work.
+      * => should not *busy-wait*, repeatedly checking a shared object waiting for its state to change.
+    * Thread priorities are among the least portable features of Java.
+  * Implementation
+    * Do not use `Thread.yield` to fix starved threads problem and it has no testable semantics.
