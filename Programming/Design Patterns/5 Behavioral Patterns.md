@@ -21,9 +21,9 @@
     * the set of objects that can handle a request should be specified dynamically.
 * **Structure**
 
-![pg225fig01](images/5 Behavioral Patterns/pg225fig01.jpg)
+![pg225fig01](images/5%20Behavioral%20Patterns/pg225fig01.jpg)
 
-![pg225fig02](images/5 Behavioral Patterns/pg225fig02.jpg)
+![pg225fig02](images/5%20Behavioral%20Patterns/pg225fig02.jpg)
 
 * **Participants**
   * **Handler**
@@ -84,7 +84,7 @@
       * **transaction**: encapsulate a set of operations + common interface + easy to extend.
 * **Structure**
 
-![pg236fig01](images/5 Behavioral Patterns/pg236fig01.jpg)
+![pg236fig01](images/5%20Behavioral%20Patterns/pg236fig01.jpg)
 
 * **Participants**
   * **Command**
@@ -104,7 +104,7 @@
   * The invoker issues a request by calling Execute on the command.
   * The ConcreteCommand object invokes operations on its receiver to carry out the request.
 
-![pg237fig01](images/5 Behavioral Patterns/pg237fig01.jpg)
+![pg237fig01](images/5%20Behavioral%20Patterns/pg237fig01.jpg)
 
 * **Consequences**
   * Command decouples the object that invokes the operation from the one that knows how to perform it.
@@ -135,7 +135,7 @@
   * Express problems as sentences in a simple language -> interpret these sentences with an interpreter.
   * The pattern describes how to define a grammar, represent a particular expression, and how to interpret the expression.
 
-![248prog01](images/5 Behavioral Patterns/248prog01.jpg)
+![248prog01](images/5%20Behavioral%20Patterns/248prog01.jpg)
 
 * **Applicability**
   * Use when there is a language to interpret, and you can represent statements in the language as abstract syntax trees. It works best when
@@ -145,7 +145,7 @@
       * translating languages > interpreting parse trees.
 * **Structure**
 
-![pg245fig01](images/5 Behavioral Patterns/pg245fig01.jpg)
+![pg245fig01](images/5%20Behavioral%20Patterns/pg245fig01.jpg)
 
 * **Participants**
   * **AbstractExpression**
@@ -205,7 +205,7 @@
     * to provide a uniform interface for traversing different aggregate structures (polymorphic iteration).
 * **Structure**
 
-![pg259fig01](images/5 Behavioral Patterns/pg259fig01.jpg)
+![pg259fig01](images/5%20Behavioral%20Patterns/pg259fig01.jpg)
 
 * **Participants**
   * **Iterator**
@@ -272,9 +272,9 @@
     * a behavior that's distributed between several classes should be customizable without a lot of subclassing.
 * **Structure**
 
-![pg276fig01](images/5 Behavioral Patterns/pg276fig01.jpg)
+![pg276fig01](images/5%20Behavioral%20Patterns/pg276fig01.jpg)
 
-![pg276fig02](images/5 Behavioral Patterns/pg276fig02.jpg)
+![pg276fig02](images/5%20Behavioral%20Patterns/pg276fig02.jpg)
 
 * **Participants**
   * **Mediator**
@@ -320,7 +320,7 @@
     * a direct interface to obtaining the state would expose implementation details and break the object's encapsulation.
 * **Structure**
 
-![pg285fig01](images/5 Behavioral Patterns/pg285fig01.jpg)
+![pg285fig01](images/5%20Behavioral%20Patterns/pg285fig01.jpg)
 
 * **Participants**
   * **Memento**
@@ -339,7 +339,7 @@
   * A caretaker requests a memento from an originator, holds it for a time, and passes it back to the originator.
   * Mementos are passive. Only the originator that created a memento will assign or retrieve its state.
 
-![pg286fig01](images/5 Behavioral Patterns/pg286fig01.jpg)
+![pg286fig01](images/5%20Behavioral%20Patterns/pg286fig01.jpg)
 
 * **Consequences**
   * Preserving encapsulation boundaries.
@@ -381,7 +381,7 @@
     * When an object should be able to notify other objects without making assumptions about who these objects are.
 * **Structure**
 
-![pg294fig01](images/5 Behavioral Patterns/pg294fig01.jpg)
+![pg294fig01](images/5%20Behavioral%20Patterns/pg294fig01.jpg)
 
 * **Participants**
   * **Subject**
@@ -400,7 +400,7 @@
   * ConcreteSubject notifies its observers whenever a change occurs that could make its observers' state inconsistent with its own.
   * After being informed of a change in the concrete subject, a ConcreteObserver object may query the subject for information. ConcreteObserver uses this information to reconcile its state with that of the subject.
 
-![pg295fig01](images/5 Behavioral Patterns/pg295fig01.jpg)
+![pg295fig01](images/5%20Behavioral%20Patterns/pg295fig01.jpg)
 
 * **Consequences**
   * Abstract coupling between Subject and Observer.
@@ -451,7 +451,7 @@
       * Multiple operations contain the same conditional structure -> conditional into a separate class.
 * **Structure**
 
-![pg306fig01](images/5 Behavioral Patterns/pg306fig01.jpg)
+![pg306fig01](images/5%20Behavioral%20Patterns/pg306fig01.jpg)
 
 * **Participants**
   * **Context**
@@ -503,7 +503,7 @@
     * a class defines many behaviors, and these appear as multiple conditional statements in its operation.
 * **Structure**
 
-![pg316fig01](images/5 Behavioral Patterns/pg316fig01.jpg)
+![pg316fig01](images/5%20Behavioral%20Patterns/pg316fig01.jpg)
 
 * **Participants**
   * **Strategy**
@@ -553,7 +553,7 @@
       * hook operation: permitting extension only at specific points.
 * **Structure**
 
-![pg327fig01](images/5 Behavioral Patterns/pg327fig01.jpg)
+![pg327fig01](images/5%20Behavioral%20Patterns/pg327fig01.jpg)
 
 * **Participants**
   * **AbstractClass**
@@ -594,7 +594,7 @@
     * the classes defining the object structure rarely change, but you often want to defien new operations over the structure.
 * **Structure**
 
-![pg334fig01](images/5 Behavioral Patterns/pg334fig01.jpg)
+![pg334fig01](images/5%20Behavioral%20Patterns/pg334fig01.jpg)
 
 * **Participants**
   * **Visitor**
@@ -616,7 +616,7 @@
   * A client that uses the Visitor pattern must create a ConcreteVisitor object and then traverse the object structure, visiting each element with the visitor.
   * When an element is visited, it calls the Visitor operation that corresponds to its class. The element supplies itself as an argument to this operation to let the visitor access its state, if necessary.
 
-![pg335fig01](images/5 Behavioral Patterns/pg335fig01.jpg)
+![pg335fig01](images/5%20Behavioral%20Patterns/pg335fig01.jpg)
 
 * **Consequences**
   * Visitor makes adding new operations easy.

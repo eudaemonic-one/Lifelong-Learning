@@ -22,9 +22,9 @@
     * (object adpater only) you need to use several existing subclasses, but it's impractical to adapt their interface by subclassing every one. An object adapter can adapt the interface of its parent class.
 * **Structure**
 
-![pg141fig01](images/4 Structural Patterns/pg141fig01.jpg)
+![pg141fig01](images/4%20Structural%20Patterns/pg141fig01.jpg)
 
-![pg141fig02](images/4 Structural Patterns/pg141fig02.jpg)
+![pg141fig02](images/4%20Structural%20Patterns/pg141fig02.jpg)
 
 * **Participants**
   * **Target**
@@ -87,7 +87,7 @@
     * you want to share an implementation among multiple objects, and this fact should be hidden from the client.
 * **Structure**
 
-![pg153fig01](images/4 Structural Patterns/pg153fig01.jpg)
+![pg153fig01](images/4%20Structural%20Patterns/pg153fig01.jpg)
 
 * **Participants**
   * **Abstraction**
@@ -134,9 +134,9 @@
     * you want clients to be able to ignore the difference between compositions of objects and individual objects.
 * **Structure**
 
-![pg164fig02](images/4 Structural Patterns/pg164fig02.jpg)
+![pg164fig02](images/4%20Structural%20Patterns/pg164fig02.jpg)
 
-![pg165fig01](images/4 Structural Patterns/pg165fig01.jpg)
+![pg165fig01](images/4%20Structural%20Patterns/pg165fig01.jpg)
 
 * **Participants**
   * **Component**
@@ -209,7 +209,7 @@
     * when extension by subclassing is impractical.
 * **Structure**
 
-![pg177fig01](images/4 Structural Patterns/pg177fig01.jpg)
+![pg177fig01](images/4%20Structural%20Patterns/pg177fig01.jpg)
 
 * **Participants**
   * **Component**
@@ -259,7 +259,7 @@
   * Design goal: minimize the communication and dependencies between subsystems.
   * Introduce a **facade** object -> single, simplified interface -> more general facilities of a subsystem.
 
-![pg185fig01](images/4 Structural Patterns/pg185fig01.jpg)
+![pg185fig01](images/4%20Structural%20Patterns/pg185fig01.jpg)
 
 * **Applicability**
   * Use when
@@ -271,7 +271,7 @@
       * Facade: entry point to each subsystem level.
 * **Structure**
 
-![pg187fig01](images/4 Structural Patterns/pg187fig01.jpg)
+![pg187fig01](images/4%20Structural%20Patterns/pg187fig01.jpg)
 
 * **Participants**
   * **Facade**
@@ -316,9 +316,9 @@
     * The application doesn't depend on object identity.
 * **Structure**
 
-![pg198fig01](images/4 Structural Patterns/pg198fig01.jpg)
+![pg198fig01](images/4%20Structural%20Patterns/pg198fig01.jpg)
 
-![pg198fig02](images/4 Structural Patterns/pg198fig02.jpg)
+![pg198fig02](images/4%20Structural%20Patterns/pg198fig02.jpg)
 
 * **Participants**
   * **Flyweight**
@@ -377,9 +377,9 @@
       * checking the lock status of the real object.
 * **Structure**
 
-![pg209fig01](images/4 Structural Patterns/pg209fig01.jpg)
+![pg209fig01](images/4%20Structural%20Patterns/pg209fig01.jpg)
 
-![pg209fig02](images/4 Structural Patterns/pg209fig02.jpg)
+![pg209fig02](images/4%20Structural%20Patterns/pg209fig02.jpg)
 
 * **Participants**
   * **Proxy**
