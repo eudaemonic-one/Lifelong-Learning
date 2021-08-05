@@ -6,13 +6,12 @@ My personal notes on everything, from coding to philosophy.
 
 * [Algorithms](./Algorithms/): Note of Algorithms.
   * [Introduction to Algorithms (aka CLRS)](./CLRS/Algorithms/)
-* [Cloud Computing](./Cloud-Computing/): Note of Cloud Computing, including modern data center computing, scalable distributed systems, and programming frameworks enabling the widespread adoption of cloud computing.
-  * [CMU Course 15719/18709 Advanced Cloud Computing](./Cloud-Computing/cmu-18709/)
 * [Computer-Network](./Computer-Networks/): Note of Computer Networks, including physical layer, link layer, ip layer, transport layer, and network applications.
   * [CMU Course 18441/741 Computer Networks](./Computer-Networks/cmu-18741/)
 * [Computer Systems](./Computer-Systems/): Note of Computer Systems, including machine basics, storage hierarchy, compilation system, memory management, exceptional control flow, I/O, networking programming, and synchronization.
   * [CMU Course 15-213/513/18-213/613 Introduction to Computer Systems (ICS)](./Computer-Systems/cmu-18613/)
   * [CMU Course 15440/640 Distributed Systems](./Computer-Systems/cmu-15640/)
+  * [CMU Course 15-719/18-709 Advanced Cloud Computing](./Computer-Systems/cmu-18709/)
   * [CMU Course 18-746 Storage Systems](./Computer-Systems/cmu-18746/)
   * [Computer Systems: A Programmer's Perspective (aka CS:APP)](./Computer-Systems/CSAPP/)
 * [Cookbook](./Cookbook/): Note of how to cook delicious food and cookbooks.
