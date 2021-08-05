@@ -6,8 +6,6 @@ My personal notes on everything, from coding to philosophy.
 
 * [Algorithms](./Algorithms/): Note of Algorithms.
   * [Introduction to Algorithms (aka CLRS)](./CLRS/Algorithms/)
-* [API Design](./API-Design/): Note of API design and implementation, including the Power of APIs, design processes and principles of APIs, and how to document and name APIs.
-  * [CMU Course 17480/780 API Design And Implementation](./API-Design/cmu-17780/) (Lectured by [Josh Bloch](https://www.isri.cmu.edu/people/affiliated-fac/bloch-josh.html))
 * [Cloud Computing](./Cloud-Computing/): Note of Cloud Computing, including modern data center computing, scalable distributed systems, and programming frameworks enabling the widespread adoption of cloud computing.
   * [CMU Course 15719/18709 Advanced Cloud Computing](./Cloud-Computing/cmu-18709/)
 * [Computer-Network](./Computer-Networks/): Note of Computer Networks, including physical layer, link layer, ip layer, transport layer, and network applications.
@@ -34,6 +32,7 @@ My personal notes on everything, from coding to philosophy.
 * [Programming](./Programming/): Note of good programming practices and software engineering process, requirements, measurement, quality, management, ethics, etc.
   * [CMU Course 17214/514 Principles of Software Construction](./Programming/cmu-17514/)
   * [CMU Course 17313 Foundations of Software Engineering](./Programming/cmu-17313/)
+  * [CMU Course 17480/780 API Design And Implementation](./Programming/cmu-17780/) (Lectured by [Josh Bloch](https://www.isri.cmu.edu/people/affiliated-fac/bloch-josh.html))
   * [Design Patterns: Elements of Reusable Object-Oriented Software](./Programming/Design%20Patterns/)
 * [Storage Systems](./Storage-Systems): Note of storage systems, from physical media to I/O controller, and also file systems and user programs.
   * [CMU Course 15746/18746 Storage Systems](./Storage-Systems/cmu-18746/)
@@ -51,4 +50,3 @@ My personal notes on everything, from coding to philosophy.
 * 700 commits: Mar 28, 2021
 * 800 commits: Jul 13, 2021
 * 900 commits: Jul 23, 2021
-
