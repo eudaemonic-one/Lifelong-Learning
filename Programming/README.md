@@ -2,6 +2,7 @@
 
 Note of good programming practices and software engineering process, requirements, measurement, quality, management, ethics, etc.
 
+* [CMU Course 17214/514 Principles of Software Construction](./cmu-17514/)
 * [CMU Course 17313 Foundations of Software Engineering](./cmu-17313/)
 * [Design Patterns: Elements of Reusable Object-Oriented Software](./Design%20Patterns/)
   * [Chapter 1. Introduction](./Design%20Patterns/1%20Introduction.md)

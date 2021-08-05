@@ -31,9 +31,8 @@ My personal notes on everything, from coding to philosophy.
 * [LeetCode](./LeetCode/): Solution set of LeetCode algorithms problems and Note of useful tricks and expressions, and also self-defined solution models.
 * [Machine Learning](./Machine-Learning/): Note of machine learning theory and implementations of ML algorithms.
   * [CMU Course 10301/601 Introduction to Machine Learning (Master's)](./Machine-Learning/cmu-10601/)
-* [Object-Oriented Programming](./Object-Oriented-Programming/): Note of principles of object-oriented programming and Java programming language (Java Concurrency involved).
-  * [CMU Course 17214/514 Principles of Software Construction](./Object-Oriented-Programming/cmu-17514/)
 * [Programming](./Programming/): Note of good programming practices and software engineering process, requirements, measurement, quality, management, ethics, etc.
+  * [CMU Course 17214/514 Principles of Software Construction](./Programming/cmu-17514/)
   * [CMU Course 17313 Foundations of Software Engineering](./Programming/cmu-17313/)
   * [Design Patterns: Elements of Reusable Object-Oriented Software](./Programming/Design%20Patterns/)
 * [Storage Systems](./Storage-Systems): Note of storage systems, from physical media to I/O controller, and also file systems and user programs.
