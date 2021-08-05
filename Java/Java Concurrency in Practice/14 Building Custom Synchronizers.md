@@ -9,11 +9,11 @@
   * The built-in condition queue mechanism enables threads to block until an object has entered a state that allows progress and to wake blocked threads when they may be able to make further progress.
 * Structure of blocking state-dependent actions.
 
-![c0292-01](images/14 Building Custom Synchronizers/c0292-01.jpg)
+![c0292-01](images/14%20Building%20Custom%20Synchronizers/c0292-01.jpg)
 
 * A bounded buffer provides `put` and `take` operations, each of which has preconditions.
 
-![c0293-01](images/14 Building Custom Synchronizers/c0293-01.jpg)
+![c0293-01](images/14%20Building%20Custom%20Synchronizers/c0293-01.jpg)
 
 ### 14.1.1 Example: Propagating Precondition Failure to Callers
 
@@ -21,12 +21,12 @@
   * Exceptions are supposed to be for exceptional conditions => the caller must be prepared to catch exceptions and possibly retry for every buffer operation.
   * However, "Buffer is full" is not an exceptional condition for a bounded buffer.
 
-![c0294-01](images/14 Building Custom Synchronizers/c0294-01.jpg)
+![c0294-01](images/14%20Building%20Custom%20Synchronizers/c0294-01.jpg)
 
 * Client logic for calling `GrumpyBoundedBuffer`.
   * spin waiting versus oversleep.
 
-![c0294-02](images/14 Building Custom Synchronizers/c0294-02.jpg)
+![c0294-02](images/14%20Building%20Custom%20Synchronizers/c0294-02.jpg)
 
 ### 14.1.2 Example: Crude Blocking by Polling and Sleeping
 
@@ -36,7 +36,7 @@
   * => the caller should deal with `InterruptedException` => to support cancellation mechanism.
 * It would be nice to have a way of suspending a thread but ensuring that is awakened promptly when a certain condition becomes true =>  *condition queues*.
 
-![c0296-01](images/14 Building Custom Synchronizers/c0296-01.jpg)
+![c0296-01](images/14%20Building%20Custom%20Synchronizers/c0296-01.jpg)
 
 ### 14.1.3 Condition Queues to the Rescue
 
@@ -45,7 +45,7 @@
   * `Object.wait` atomically releases the lock and asks the OS to suspend the current thread, allowing other threads to acquire the lock and therefore modify the object state. Upon waking, it reacquires the lock before returning.
 * `BoundedBuffer`: Bounded buffer using condition queues.
 
-![c0298-01](images/14 Building Custom Synchronizers/c0298-01.jpg)
+![c0298-01](images/14%20Building%20Custom%20Synchronizers/c0298-01.jpg)
 
 ## 14.2 Using Condition Queues
 
@@ -61,7 +61,7 @@
 * A single intrinsic condition queue may be used with more than one condition predicate => returned not true, or returned spuriously.
 * Canonical form for state-dependent methods.
 
-![c0301-01](images/14 Building Custom Synchronizers/c0301-01.jpg)
+![c0301-01](images/14%20Building%20Custom%20Synchronizers/c0301-01.jpg)
 
 ### 14.2.3 Missed Signals
 
@@ -79,7 +79,7 @@
 
 * Recloseable gate using `wait` and `notifyAll`.
 
-![c0305-01](images/14 Building Custom Synchronizers/c0305-01.jpg)
+![c0305-01](images/14%20Building%20Custom%20Synchronizers/c0305-01.jpg)
 
 ### 14.2.6 Subclass Safety Issues
 
@@ -105,12 +105,12 @@
 * `Condition` Interface.
   * The equivalent of `wait`, `notify`, and `notifyAll` for `Condition` objects are `await`, `signal`, and `signalAll`. However, `Condition` extends `Object`, which means that it also has `wait` and `notify` methods. Be sure to use the proper versions `await` and `signal` instead.
 
-![c0307-01](images/14 Building Custom Synchronizers/c0307-01.jpg)
+![c0307-01](images/14%20Building%20Custom%20Synchronizers/c0307-01.jpg)
 
 * Bounded buffer using explicit condition variables.
   * Using the more efficient `signal` instead of `signalAll`.
 
-![c0309-01](images/14 Building Custom Synchronizers/c0309-01.jpg)
+![c0309-01](images/14%20Building%20Custom%20Synchronizers/c0309-01.jpg)
 
 * Use `Condition` if you need its advanced features such as fair queueing or multiple wait sets per lock, and otherwise prefer intrinsic condition queues.
 
@@ -129,13 +129,13 @@
   * exclusive acquisition should implement the protected methods `tryAcquire`, `tryRelease`, and `isHeldExclusively`.
   * shared acquisition should implement `tryAcquireShared` and `tryReleaseShared`.
 
-![c0312-01](images/14 Building Custom Synchronizers/c0312-01.jpg)
+![c0312-01](images/14%20Building%20Custom%20Synchronizers/c0312-01.jpg)
 
 ### 14.5.1 A Simple Latch
 
 * `OneShotLatch`: Binary latch using `AbstractQueuedSynchronizer`.
 
-![c0313-01](images/14 Building Custom Synchronizers/c0313-01.jpg)
+![c0313-01](images/14%20Building%20Custom%20Synchronizers/c0313-01.jpg)
 
 ## 14.6 AQS in `java.util.concurrent` Synchronizer Classes
 
@@ -143,13 +143,13 @@
 
 * `ReentrantLock` supports only exclusive acquisition, so it implements `tryAcquire` (nonfair version), `tryRelease`, and `isHeldExclusively`.
 
-![c0315-01](images/14 Building Custom Synchronizers/c0315-01.jpg)
+![c0315-01](images/14%20Building%20Custom%20Synchronizers/c0315-01.jpg)
 
 ### 14.6.2 Semaphore and CountDownLatch
 
 * `Semaphore` uses the AQS synchronization state to hold the count of permits currently available.
 
-![c0316-01](images/14 Building Custom Synchronizers/c0316-01.jpg)
+![c0316-01](images/14%20Building%20Custom%20Synchronizers/c0316-01.jpg)
 
 * `CountDownLatch` uses the AQS synchronization state the current count.
 

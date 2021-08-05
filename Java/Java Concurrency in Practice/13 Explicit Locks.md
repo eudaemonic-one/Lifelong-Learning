@@ -8,7 +8,7 @@
 * `Lock` offers a choice of unconditional, polled, timed, and interruptible lock acquisition, and all lock and unlock operations are explicit.
   * => provide the same memory-visibility semantics as intrinsic locks.
 
-![c0277-01](images/13 Explicit Locks/c0277-01.jpg)
+![c0277-01](images/13%20Explicit%20Locks/c0277-01.jpg)
 
 * `ReentrantLock` implements `Lock`, providing the same mutual exclusion and memory-visibility guarantees as `synchronized`.
   * => the same memory semantics as `synchronized` block, and offers reentrant locking semantics like `synchronized`.
@@ -20,7 +20,7 @@
   * => the lock *must* be released in a `finally` block.
   * => additional `try-catch` or `try-finally` blocks for inconsistent object states.
 
-![c0278-01](images/13 Explicit Locks/c0278-01.jpg)
+![c0278-01](images/13%20Explicit%20Locks/c0278-01.jpg)
 
 ### 13.1.1 Polled and Timed Lock Acquisition
 
@@ -29,12 +29,12 @@
 * Avoiding lock-ordering deadlock using `tryLock`.
   * Use `tryLock` to attempt to acquire locks, but back off and retry if they cannot be acquired at the same time.
 
-![c0280-01](images/13 Explicit Locks/c0280-01.jpg)
+![c0280-01](images/13%20Explicit%20Locks/c0280-01.jpg)
 
 * Locking with a time budget.
   * Supply a timeout corresponding to the remaining time in the budget when calling a blocking method => incorporate exclusive locking to a time-limited activity.
 
-![c0281-01](images/13 Explicit Locks/c0281-01.jpg)
+![c0281-01](images/13%20Explicit%20Locks/c0281-01.jpg)
 
 ### 13.1.2 Interruptible Lock Acquisition
 
@@ -42,7 +42,7 @@
   * => allow locking to be used within cancellable activities.
   * The timed `tryLock` is also responsive to interruption and so can be used when you need both timed and interruptible lock acquisition.
 
-![c0281-02](images/13 Explicit Locks/c0281-02.jpg)
+![c0281-02](images/13%20Explicit%20Locks/c0281-02.jpg)
 
 ### 13.1.3 Non-block-structured Locking
 
@@ -81,7 +81,7 @@
 * `ReadWriteLock`: exposes two `Lock` objects, one for reading and one for writing.
   * => improve performance for frequently accessed read-mostly data structures on multiprocessor systems.
 
-![c0286-01](images/13 Explicit Locks/c0286-01.jpg)
+![c0286-01](images/13%20Explicit%20Locks/c0286-01.jpg)
 
 * Implementation options for a `ReadWriteLock`:
   * Release preference.
@@ -99,4 +99,4 @@
 * Wrapping a `Map` with a Read-write Lock.
   * `ConcurrentHashMap` provides much better performance.
 
-![c0288-01](images/13 Explicit Locks/c0288-01.jpg)
+![c0288-01](images/13%20Explicit%20Locks/c0288-01.jpg)

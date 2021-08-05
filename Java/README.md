@@ -15,6 +15,7 @@ Note on Java programming paradigms. Mostly from Effective Java by Josh Bloch.
   * [Chapter 10. Exceptions](./Effective%20Java/10%20Exceptions.md)
   * [Chapter 11. Concurrency](./Effective%20Java/11%20Concurrency.md)
   * [Chapter 12. Serialization](./Effective%20Java/12%20Serialization.md)
+  * [The Mind Map of Effective Java](./Effective%20Java/MINDMAP.md)
 * [Java Concurrency in Practice](./Java%20Concurrency%20in%20Practice/)
   * [Chapter 1. Introduction](./Java%20Concurrency%20in%20Practice/1%20Introduction.md)
   * [Chapter 2. Thread Safety](./Java%20Concurrency%20in%20Practice/2%20Thread%20Safety.md)

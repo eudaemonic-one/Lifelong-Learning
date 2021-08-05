@@ -21,7 +21,7 @@
   * whenever a pool task initiates an unbounded blocking wait for some resource or condition that can succeed only through the action of another pool task => *thread starvation deadlock*.
   * Task that deadlocks in a single-threaded `Executor` => Don't do this.
 
-![c0169-01](images/8 Applying Thread Pools/c0169-01.jpg)
+![c0169-01](images/8%20Applying%20Thread%20Pools/c0169-01.jpg)
 
 * **Long-running Tasks**
   * To mitigate the ill effects of long-running tasks => use timed resource waits instead of unbounded waits.
@@ -49,7 +49,7 @@
 
 * `ThreadPoolExecutor` provides the base implementation of executors and allows a variety of customizations.
 
-![c0172-01](images/8 Applying Thread Pools/c0172-01.jpg)
+![c0172-01](images/8%20Applying%20Thread%20Pools/c0172-01.jpg)
 
 ### 8.3.1 Thread Creation and Teardown
 
@@ -78,18 +78,18 @@
   * It executes the newly submitted task not in a pool thread, but in the thread that calls `execute`.
 * Creating a fixed-sized thread pool with a bounded queue and the caller-runs saturation policy.
 
-![c0175-01](images/8 Applying Thread Pools/c0175-01.jpg)
+![c0175-01](images/8%20Applying%20Thread%20Pools/c0175-01.jpg)
 
 * There is no predefined saturation policy to make `execute` block when the work queue is full => but can be accomplished by using a `Semaphore` to bound the injection rate.
 
-![c0176-01](images/8 Applying Thread Pools/c0176-01.jpg)
+![c0176-01](images/8%20Applying%20Thread%20Pools/c0176-01.jpg)
 
 ### 8.3.4 Thread factories
 
 * The default thread factory creates a new, nondaemon thread.
 * `ThreadFactory` has a single method, `newThread`, that is called whenever a thread pool needs to create a new thread.
 
-![c0176-02](images/8 Applying Thread Pools/c0176-02.jpg)
+![c0176-02](images/8%20Applying%20Thread%20Pools/c0176-02.jpg)
 
 * Reasons to use a custom thread factory:
   * => Specify an `UncaughtExceptionHandler` for pool threads.
@@ -98,9 +98,9 @@
   * => Set the daemon status (not a good idea).
   * => Give pool threads more meaningful names.
 
-![c0177-01](images/8 Applying Thread Pools/c0177-01.jpg)
+![c0177-01](images/8%20Applying%20Thread%20Pools/c0177-01.jpg)
 
-![c0178-01](images/8 Applying Thread Pools/c0178-01.jpg)
+![c0178-01](images/8%20Applying%20Thread%20Pools/c0178-01.jpg)
 
 * Use `privilegedThreadFactory` factory method in `Executors` => to take advantages of specific permissions to particular codebase.
   * It creates pool threads that have the same permissions, `AccessControlContext`, and `contextClassLoader` as the thread creating the `privilegedThreadFactory`.
@@ -111,7 +111,7 @@
   * You can cast the instance to `ThreadPoolExecutor` to access the setters.
   * `Executors.unconfigurableExecutorService` takes an existing `ExecutorService` and wraps it with one exposing only the methods of `ExecutorService` so it cannot be further configured => prevent the execution policy from being modified.
 
-![c0179-01](images/8 Applying Thread Pools/c0179-01.jpg)
+![c0179-01](images/8%20Applying%20Thread%20Pools/c0179-01.jpg)
 
 ## 8.4 Extending `ThreadPoolExecutor`
 
@@ -124,7 +124,7 @@
 
 ### 8.4.1 Example: Adding Statistics to a Thread Pool
 
-![c0180-01](images/8 Applying Thread Pools/c0180-01.jpg)
+![c0180-01](images/8%20Applying%20Thread%20Pools/c0180-01.jpg)
 
 ## 8.5 Parallelizing Recursive Algorithms
 
@@ -133,15 +133,15 @@
   * If you want to submit a set of tasks and wait for them all to complete => use `ExecutorService.invokeAll`.
   * If you want to retrieve the results as they become available => use a `CompletionService`.
 
-![c0181-01](images/8 Applying Thread Pools/c0181-01.jpg)
+![c0181-01](images/8%20Applying%20Thread%20Pools/c0181-01.jpg)
 
 * Some recursive designs can be parallelized => each iteration does not require the results of the recursive iterations it invokes.
 
-![c0182-01](images/8 Applying Thread Pools/c0182-01.jpg)
+![c0182-01](images/8%20Applying%20Thread%20Pools/c0182-01.jpg)
 
 * Waiting for results to be calculated in parallel => using `shutdown` and `awaitTermination`.
 
-![c0182-02](images/8 Applying Thread Pools/c0182-02.jpg)
+![c0182-02](images/8%20Applying%20Thread%20Pools/c0182-02.jpg)
 
 ### 8.5.1 Example: A Puzzle Framework
 
@@ -149,30 +149,30 @@
 * puzzle := an initial position, a goal position, a set of rules that determine valid moves.
   * rule := computing the list of legal moves from a given position + computing the result of applying a move to a position.
 
-![c0183-01](images/8 Applying Thread Pools/c0183-01.jpg)
+![c0183-01](images/8%20Applying%20Thread%20Pools/c0183-01.jpg)
 
-![c0184-01](images/8 Applying Thread Pools/c0184-01.jpg)
+![c0184-01](images/8%20Applying%20Thread%20Pools/c0184-01.jpg)
 
 * `SequentialPuzzleSolver`: depth-first search of the puzzle space => can exploit concurrency and compute next moves and evaluate the goal condition in parallel.
 
-![c0185-01](images/8 Applying Thread Pools/c0185-01.jpg)
+![c0185-01](images/8%20Applying%20Thread%20Pools/c0185-01.jpg)
 
 * `ConcurrentPuzzleSolver`: uses an inner `SolverTask` class that extends `Node` and implements `Runnable`.
   * To avoid infinite loop, the sequential version maintains a `Set` of previously searched positions; the concurrent one uses a `ConcurrentHashMap` for this purpose.
   * `ConcurrentPuzzleSolver` uses the internal work queue of the thread pool instead of the call stack to hold the state of the search.
 
-![c0186-01](images/8 Applying Thread Pools/c0186-01.jpg)
+![c0186-01](images/8%20Applying%20Thread%20Pools/c0186-01.jpg)
 
 * We need a way to determine whether any thread has found a solution yet => to stop searching when found a solution => a *result-bearing latch*.
   * `ValueLatch` uses a `CountDownLatch` to provide the needed latching behavior, and uses locking to ensure that the solution is set only once.
   * `getValue` in `ValueLatch` blocks until some thread has set the solution.
   * To avoid having to deal with `RejectedExecutionException`, the rejected execution handler should be set to discard submitted tasks.
 
-![c0187-01](images/8 Applying Thread Pools/c0187-01.jpg)
+![c0187-01](images/8%20Applying%20Thread%20Pools/c0187-01.jpg)
 
 * `ConcurrentPuzzleSolver` does not deal well with the case where there is no solution => need to keep a count of active solver tasks and set the solution to null when the count drops to zero.
 
-![c0188-01](images/8 Applying Thread Pools/c0188-01.jpg)
+![c0188-01](images/8%20Applying%20Thread%20Pools/c0188-01.jpg)
 
 * We can also impose several termination conditions.
   * => Time limit like using a timed `await`.

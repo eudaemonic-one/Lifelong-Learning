@@ -32,7 +32,7 @@
   * => atomically updates V to the new value B only if the value in V matches the expected old value A.
   * => when multiple threads attempt, one wins and updates the variable's value, and the rest lose.
 
-![c0322-01](images/15 Atomic Variables and Nonblocking Synchronization/c0322-01.jpg)
+![c0322-01](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/c0322-01.jpg)
 
 ### 15.2.2 A Nonblocking Counter
 
@@ -41,7 +41,7 @@
   * => if the CAS fails, the operation is immediately retried.
   * => the counter does not block, though it may have to retry several times.
 
-![c0323-01](images/15 Atomic Variables and Nonblocking Synchronization/c0323-01.jpg)
+![c0323-01](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/c0323-01.jpg)
 
 * Executing a CAS from within the program involves no JVM code, system calls, or scheduling activity.
 
@@ -65,7 +65,7 @@
 
 * Preserving multi-variable invariants using CAS.
 
-![c0326-01](images/15 Atomic Variables and Nonblocking Synchronization/c0326-01.jpg)
+![c0326-01](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/c0326-01.jpg)
 
 ### 15.3.2 Performance Comparison: Locks Versus Atomic Variables
 
@@ -75,19 +75,19 @@
   * CAS-based algorithms outperform lock-based ones on single-CPU systems.
 * `Lock` and `AtomicInteger` Performance Under High Contention.
 
-![ch15fig01](images/15 Atomic Variables and Nonblocking Synchronization/ch15fig01.gif)
+![ch15fig01](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/ch15fig01.gif)
 
 * `Lock` and `AtomicInteger` Performance Under Moderate Contention.
 
-![ch15fig02](images/15 Atomic Variables and Nonblocking Synchronization/ch15fig02.gif)
+![ch15fig02](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/ch15fig02.gif)
 
 * Random Number Generator Using `ReentrantLock`.
 
-![c0327-01](images/15 Atomic Variables and Nonblocking Synchronization/c0327-01.jpg)
+![c0327-01](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/c0327-01.jpg)
 
 * Random Number Generator Using `AtomicInteger`.
 
-![c0327-02](images/15 Atomic Variables and Nonblocking Synchronization/c0327-02.jpg)
+![c0327-02](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/c0327-02.jpg)
 
 ## 15.4 Nonblocking Algorithms
 
@@ -100,13 +100,13 @@
 
 * Nonblocking Stack Using Treiber's Algorithm
 
-![c0331-01](images/15 Atomic Variables and Nonblocking Synchronization/c0331-01.jpg)
+![c0331-01](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/c0331-01.jpg)
 
 ### 15.4.2 A Nonblocking Linked List
 
 * Insertion in the Michael-Scott Nonblocking Queue Algorithm
 
-![c0334-01](images/15 Atomic Variables and Nonblocking Synchronization/c0334-01.jpg)
+![c0334-01](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/c0334-01.jpg)
 
 ### 15.4.3 Atomic Field Updaters
 
@@ -114,7 +114,7 @@
   * To create one, call the `newUpdater` factory method, specifying the class and field name.
 * Using Atomic Field Updaters in `ConcurrentLinkedQueue`.
 
-![c0335-01](images/15 Atomic Variables and Nonblocking Synchronization/c0335-01.jpg)
+![c0335-01](images/15%20Atomic%20Variables%20and%20Nonblocking%20Synchronization/c0335-01.jpg)
 
 ### 15.4.4 The ABA Problem
 

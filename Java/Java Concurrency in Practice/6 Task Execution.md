@@ -36,13 +36,13 @@
   * => let its implementations provide lifecycle support and hooks for statistics gathering, application management, and monitoring.
   * `Executor` is based on the producer-consumer pattern.
 
-![c0117-01](images/6 Task Execution/c0117-01.jpg)
+![c0117-01](images/6%20Task%20Execution/c0117-01.jpg)
 
 * **Example: Web Server Using Executor**
 
-![c0118-01](images/6 Task Execution/c0118-01.jpg)
+![c0118-01](images/6%20Task%20Execution/c0118-01.jpg)
 
-![c0118-02](images/6 Task Execution/c0118-02.jpg)
+![c0118-02](images/6%20Task%20Execution/c0118-02.jpg)
 
 * **Execution Policies**
   * an execution policy := what, where, when, how of a task execution.
@@ -64,9 +64,9 @@
     * Tasks submitted to an `ExecutorService` after it has been shut down are handled by the *rejected execution handler* => might silently discard the task, or might cause `execute` to throw the unchecked `RejectedExecutionException`.
     * It is common to follow `shutdown` immediately by `awaitTermination`.
 
-![c0121-01](images/6 Task Execution/c0121-01.jpg)
+![c0121-01](images/6%20Task%20Execution/c0121-01.jpg)
 
-![c0122-01](images/6 Task Execution/c0122-01.jpg)
+![c0122-01](images/6%20Task%20Execution/c0122-01.jpg)
 
 * **Delayed and Periodic Tasks**
   * `ScheduledThreadPoolExecutor` should be thought of as replacement for `Timer`.
@@ -78,7 +78,7 @@
     * => let you `take` an element only if its delay has expired.
     * => objects are returned by the time associated with their delay.
 
-![c0124-01](images/6 Task Execution/c0124-01.jpg)
+![c0124-01](images/6%20Task%20Execution/c0124-01.jpg)
 
 ## 6.3 Finding Exploitable Parallelism
 
@@ -86,7 +86,7 @@
   * As text markup is encountered, render it into the image buffer; as image references are encountered, fetch the image over the network and draw it into the image buffer as well.
   * The simplest approach is to process sequentially, but firstly leaving placeholders and going back to replace associated placeholders with appropriate content.
 
-![c0125-01](images/6 Task Execution/c0125-01.jpg)
+![c0125-01](images/6%20Task%20Execution/c0125-01.jpg)
 
 * **Result-bearing Tasks: `Callable` and `Future`**
   * `Runnable` can not return a value or throw checked exceptions.
@@ -100,12 +100,12 @@
     * You can explicitly instantiate a `FutureTask` for a given `Runnable` or `Callable`.
     * `ExecutorService` implementations can override `newTaskFor` in `AbstractExecutorService` to control instantiation of the `Future`.
 
-![c0126-01](images/6 Task Execution/c0126-01.jpg)
+![c0126-01](images/6%20Task%20Execution/c0126-01.jpg)
 
 * **Example: Page Renderer with Future**
   * divide the work into two tasks, one that renders the text (CPU-bounded) and one that downloads all the images (I/O-bounded).
 
-![c0128-01](images/6 Task Execution/c0128-01.jpg)
+![c0128-01](images/6%20Task%20Execution/c0128-01.jpg)
 
 * **Limitations of Parallelizing Heterogeneous Tasks**
   * Heterogeneous tasks might have disparate sizes.
@@ -120,21 +120,21 @@
     * The `take` and `poll` methods delegate to the `BlockingQueue`, blocking if results are not yet available.
   *  Multiple `ExecutorCompletionService` can share a single `Executor` => it is sensible to create an `ExecutorCompletionService` that is private to a particular computation while sharing a common `Executor`.
 
-![c0129-01](images/6 Task Execution/c0129-01.jpg)
+![c0129-01](images/6%20Task%20Execution/c0129-01.jpg)
 
 * **Example: Page Renderer with CompletionService**
   * create a separate task for downloading *each* image and execute them in a thread pool => turning the sequential download into a parallel one => reduces total runtime.
   * fetch results from the `CompletionService` and rendering each image as soon as it is available => a dynamic and responsive user interface.
 
-![c0130-01](images/6 Task Execution/c0130-01.jpg)
+![c0130-01](images/6%20Task%20Execution/c0130-01.jpg)
 
 * **Placing Time Limits on Tasks**
   * The timed version of `Future.get` returns as soon as the result is ready, but throws `TimeoutException` if the result is not ready within the timeout period.
   * `Future` can help; if a timed `get` completes with a `TimeoutException`, you can cancel the task through the `Future`.
 
-![c0132-01](images/6 Task Execution/c0132-01.jpg)
+![c0132-01](images/6%20Task%20Execution/c0132-01.jpg)
 
 * **Example: A Travel Reservations Portal**
   * `invokeAll`: submit multiple tasks to an `ExecutorService` and returns a collection of `Future`s.
 
-![c0134-01](images/6 Task Execution/c0134-01.jpg)
+![c0134-01](images/6%20Task%20Execution/c0134-01.jpg)

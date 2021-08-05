@@ -55,7 +55,7 @@
 
 * The synchronized `LinkedList` guards the entire queue state with a single lock that is held for the duration of the `offer` or `remove` call; `ConcurrentLinkedQueue` uses a sophisticated nonblocking queue algorithm that uses atomic references to update individual link pointers.
 
-![ch11fig02](images/11 Performance and Scalability/ch11fig02.gif)
+![ch11fig02](images/11%20Performance%20and%20Scalability/ch11fig02.gif)
 
 ### 11.2.2 Applying Amdahl's Law Qualitatively
 
@@ -149,7 +149,7 @@
 
 * Once contention becomes significant, time per operation is dominated by context switch and scheduling delays, and adding more threads has little effect on throughput.
 
-![ch11fig03](images/11 Performance and Scalability/ch11fig03.gif)
+![ch11fig03](images/11%20Performance%20and%20Scalability/ch11fig03.gif)
 
 ## 11.6 Reducing Context Switch Overhead
 

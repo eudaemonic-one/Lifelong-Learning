@@ -13,7 +13,7 @@
     * => defines how an object coordinates access to its state without violating its invariants or postconditions.
     * remember to document the synchronize policy.
 
-![c0056-01](images/4 Composing Objects/c0056-01.jpg)
+![c0056-01](images/4%20Composing%20Objects/c0056-01.jpg)
 
 * **Gathering Synchronization Requirements**
   * state space := the range of possible states.
@@ -35,26 +35,26 @@
 * Confined objects must not escape their intended scope.
   * e.g., `Collections.synchronizedList` wraps `ArrayList` => Decorator pattern => the wrapper object holds the only reachable reference to the underlying collection => thread-safe collection.
 
-![c0059-01](images/4 Composing Objects/c0059-01.jpg)
+![c0059-01](images/4%20Composing%20Objects/c0059-01.jpg)
 
 * **The Java Monitor Pattern**
   * An object encapsulates all its mutable state and guards it with the object's own intrinsic lock.
   * Using a private lock => client code cannot acquire it.
 
-![c0061-01](images/4 Composing Objects/c0061-01.jpg)
+![c0061-01](images/4%20Composing%20Objects/c0061-01.jpg)
 
 * **Example: Tracking Fleet Variables**
   * Even though `MutablePoint` is not thread-safe, the tracker class is.
     * Neigher the map nor any of the mutable points it contains is ever published.
     * This copies mutable data before returning it to the client.
 
-![c0061-02](images/4 Composing Objects/c0061-02.jpg)
+![c0061-02](images/4%20Composing%20Objects/c0061-02.jpg)
 
-![c0062-01](images/4 Composing Objects/c0062-01.jpg)
+![c0062-01](images/4%20Composing%20Objects/c0062-01.jpg)
 
-![c0063-01](images/4 Composing Objects/c0063-01.jpg)
+![c0063-01](images/4%20Composing%20Objects/c0063-01.jpg)
 
-![c0064-01](images/4 Composing Objects/c0064-01.jpg)
+![c0064-01](images/4%20Composing%20Objects/c0064-01.jpg)
 
 ## 4.3 Delegating Thread Safety
 
@@ -67,24 +67,24 @@
   * this version returns an unmodifiable but live view of the vehicle locatiosn instead of snapshot of the locations.
   * if an unchanging view of the fleet is required, `getLoctaions` could instead return a shallow copy of the `locations` map.
 
-![c0064-02](images/4 Composing Objects/c0064-02.jpg)
+![c0064-02](images/4%20Composing%20Objects/c0064-02.jpg)
 
-![c0065-01](images/4 Composing Objects/c0065-01.jpg)
+![c0065-01](images/4%20Composing%20Objects/c0065-01.jpg)
 
-![c0066-01](images/4 Composing Objects/c0066-01.jpg)
+![c0066-01](images/4%20Composing%20Objects/c0066-01.jpg)
 
 * **Independent State Variables**
   * if underlying state variables are *independent* => we can delagate thread safety to them.
   * `CopyOnWriteArrayList`: a thread-safe `List` implementation suited for managing listener lists.
 
-![c0066-02](images/4 Composing Objects/c0066-02.jpg)
+![c0066-02](images/4%20Composing%20Objects/c0066-02.jpg)
 
 * **When Delegation Fails**
   * When additional constraints are imposed
     * e.g., that the first number be less than or equal to the second.
     * Both `setLower` and `setUpper` are check-then-act sequences => insufficient locking to make them atomic.
 
-![c0067-01](images/4 Composing Objects/c0067-01.jpg)
+![c0067-01](images/4%20Composing%20Objects/c0067-01.jpg)
 
 * **Publishing Underlying State Variables**
   * If a state variable is thread-safe, does not participate in any invariants that constrain its value, and has no prohibited state transitions for any of its operations, then it can safely be published.
@@ -93,32 +93,32 @@
   * The `getLocation` method returns an unmodifiable copy of the underlying `Map` => callers can change the location of one of the vehicles by mutating the `SafePoint` values in the returned `Map`.
   * Live nature may be a benefit or a drawback, depending on the requirements.
 
-![c0069-01](images/4 Composing Objects/c0069-01.jpg)
+![c0069-01](images/4%20Composing%20Objects/c0069-01.jpg)
 
-![c0070-01](images/4 Composing Objects/c0070-01.jpg)
+![c0070-01](images/4%20Composing%20Objects/c0070-01.jpg)
 
 ## 4.4 Adding Functionality to Existing Thread-safe Classes
 
 * The Java class library provides useful "building block" classes that can be extended to add some operations.
 * Use a different lock to guard its satte variables => change the synchronization policy => the subclass would silently break.
 
-![c0072-01](images/4 Composing Objects/c0072-01.jpg)
+![c0072-01](images/4%20Composing%20Objects/c0072-01.jpg)
 
 * **Client-side Locking**
   * Extend the functionality of the class by placing extension code in a helper class.
   * The problem with `ListHelper` is that it synchronizes on the *wrong* lock => whatever lock the `List` uses to guard its state, it sure isn't the lock on the `ListHelper`.
   * *client-side locking* => put locking code for class C into classes that are totally unrelated to C => fragile though, couple the bahaviors of both the base class and the derived class.
 
-![c0072-02](images/4 Composing Objects/c0072-02.jpg)
+![c0072-02](images/4%20Composing%20Objects/c0072-02.jpg)
 
-![c0073-01](images/4 Composing Objects/c0073-01.jpg)
+![c0073-01](images/4%20Composing%20Objects/c0073-01.jpg)
 
 * **Composition**
   * => assume that once an object is passed to its constructor, the client will not use the underlying object directly again.
   * => delegate operations to the underlying instance and add an atomic operation.
   * => add an additional level of locking using its own intrinsic lock.
 
-![c0074-01](images/4 Composing Objects/c0074-01.jpg)
+![c0074-01](images/4%20Composing%20Objects/c0074-01.jpg)
 
 ## 4.5 Documenting Synchronization Policy
 
