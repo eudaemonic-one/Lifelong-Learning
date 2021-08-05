@@ -9,13 +9,13 @@
 
 * There is *no* guarantee that the reading thread will see a value written by another thread on a timely basis.
 
-![c0034-01](images/3 Sharing Objects/c0034-01.jpg)
+![c0034-01](images/3%20Sharing%20Objects/c0034-01.jpg)
 
 * **Stale Data**: may see a stale value; even worse, not all-or-nothing => unexpected exceptions, corrupted data structures, inaccurate computations, infinite loops.
 
-![c0036-01](images/3 Sharing Objects/c0036-01.jpg)
+![c0036-01](images/3%20Sharing%20Objects/c0036-01.jpg)
 
-![c0036-02](images/3 Sharing Objects/c0036-02.jpg)
+![c0036-02](images/3%20Sharing%20Objects/c0036-02.jpg)
 
 * **Nonatomic 64-bit Operations**
   * *out-of-thin-air safety*: a thread at least sees a value that was actually placed.
@@ -34,7 +34,7 @@
       * e.g., checking a status flag to determine when to exit a loop.
     * or => indicating the start of an important lifecycle event.
 
-![c0039-01](images/3 Sharing Objects/c0039-01.jpg)
+![c0039-01](images/3%20Sharing%20Objects/c0039-01.jpg)
 
 ## 3.2 Publication and Escape
 
@@ -48,9 +48,9 @@
     * e.g., create and *start* a thread from one object's constructor.
     * e.g., call an overrideable instance method from the constructor.
 
-![c0041-01](images/3 Sharing Objects/c0041-01.jpg)
+![c0041-01](images/3%20Sharing%20Objects/c0041-01.jpg)
 
-![c0042-01](images/3 Sharing Objects/c0042-01.jpg)
+![c0042-01](images/3%20Sharing%20Objects/c0042-01.jpg)
 
 ## 3.3 Thread Confinement
 
@@ -62,7 +62,7 @@
   * => an object can only be reached through local variables => *within-thread* or *thread-local* usage.
   * => must ensure the referent does not escape.
 
-![c0044-01](images/3 Sharing Objects/c0044-01.jpg)
+![c0044-01](images/3%20Sharing%20Objects/c0044-01.jpg)
 
 * **`ThreadLocal`**
   * => provide `get` and `set` accessor methods.
@@ -73,7 +73,7 @@
   * from a single-threaded application to a multi-threaded environment => convert shared global variables into `ThreadLocal`s => preserve thread safety.
   * `ThreadLocal` => like global variables => detract from reusability, hidden coupling among classes.
 
-![c0045-01](images/3 Sharing Objects/c0045-01-6735737.jpg)
+![c0045-01](images/3%20Sharing%20Objects/c0045-01-6735737.jpg)
 
 ## 3.4 Immutability
 
@@ -83,21 +83,21 @@
   * It is *properly constructed* (the `this` reference does not escape during construction).
   * => always thread-safe (invariants always hold), simple (controlled state space), safer (unmodifiable to untrusted code).
 
-![c0047-01](images/3 Sharing Objects/c0047-01.jpg)
+![c0047-01](images/3%20Sharing%20Objects/c0047-01.jpg)
 
 * **Final Fields**
   * final fields can't be modified (although objects they refer to can be modifed if they are mutable).
   * => *initialization safety* => immutable objects can be freely accessed and shared without synchronization
 
-![c0049-01](images/3 Sharing Objects/c0049-01.jpg)
+![c0049-01](images/3%20Sharing%20Objects/c0049-01.jpg)
 
-![c0050-01](images/3 Sharing Objects/c0050-01.jpg)
+![c0050-01](images/3%20Sharing%20Objects/c0050-01.jpg)
 
 ## 3.5 Safe Publication
 
 * This improper publication could allow another thread to observe a *partially constructed object*.
 
-![c0050-02](images/3 Sharing Objects/c0050-02.jpg)
+![c0050-02](images/3%20Sharing%20Objects/c0050-02.jpg)
 
 * **Improper Publication: When Good Objects Go Bad**
   * *not properly published*

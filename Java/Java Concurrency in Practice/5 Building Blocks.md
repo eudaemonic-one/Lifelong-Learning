@@ -9,13 +9,13 @@
   * sometimes need additional client-side locking to guard compound actions.
   * common compound actions like iteration, navigation, put-if-absent are technically thread-safe, but may not behave as expected.
 
-![c0080-01](images/5 Building Blocks/c0080-01.jpg)
+![c0080-01](images/5%20Building%20Blocks/c0080-01.jpg)
 
-![c0081-01](images/5 Building Blocks/c0081-01.jpg)
+![c0081-01](images/5%20Building%20Blocks/c0081-01.jpg)
 
-![c0081-02](images/5 Building Blocks/c0081-02.jpg)
+![c0081-02](images/5%20Building%20Blocks/c0081-02.jpg)
 
-![c0082-01](images/5 Building Blocks/c0082-01.jpg)
+![c0082-01](images/5%20Building%20Blocks/c0082-01.jpg)
 
 * **Iterators and ConcurrentModificationException**
   * Iterate a `Collection` with an `Iterator` => multiple threads can concurrently modify it.
@@ -30,7 +30,7 @@
     * `containsAll`, `removeAll`, `retainAll`.
     * constructors that take collections are arguments.
 
-![c0084-01](images/5 Building Blocks/c0084-01.jpg)
+![c0084-01](images/5%20Building%20Blocks/c0084-01.jpg)
 
 ## 5.2 Concurrent Collections
 
@@ -71,7 +71,7 @@
   * `SynchronousQueue` provides no storage space, but maintains a list of queued *threads* waiting to enqueue or dequeue an element => producers handoff task to consumers directly.
 * **Example: Desktop Search**
 
-![c0091-01](images/5 Building Blocks/c0091-01.jpg)
+![c0091-01](images/5%20Building%20Blocks/c0091-01.jpg)
 
 * **Serial Thread Confinement**
   * a thread-confined object is owned exclusively by a single thread, but that ownership can be transferred by publishing it safely.
@@ -97,7 +97,7 @@
   * Restore the interrupt.
     * e.g., restore the interrupted status by calling `interrupt` on the current thread.
 
-![c0094-01](images/5 Building Blocks/c0094-01.jpg)
+![c0094-01](images/5%20Building%20Blocks/c0094-01.jpg)
 
 ## 5.5 Synchronizers
 
@@ -114,7 +114,7 @@
     * `await` blocks and waits for the counter to reach zero, or the waiting thread is interrupted, or the wait times out.
     * => allow one or more threads to wait for a set of events to occur.
 
-![c0096-01](images/5 Building Blocks/c0096-01.jpg)
+![c0096-01](images/5%20Building%20Blocks/c0096-01.jpg)
 
 * **FutureTask**: acts like a latch, implements `Future`, which describes an abstract result-bearing computation.
   * implemented with a `Callable`, the result-breaing equivalent of `Runnable`.
@@ -122,7 +122,7 @@
   * => waits and conveys the result from the executing thread => guarantees the result to be safely published.
   * => can represent asynchronous tasks or any potentially lengthy computation that can be started before the results are needed.
 
-![c0097-01](images/5 Building Blocks/c0097-01.jpg)
+![c0097-01](images/5%20Building%20Blocks/c0097-01.jpg)
 
 * **Semaphores**
   * => control the number of activities that can access a certain resource or perform a given action *at the same time*.
@@ -132,7 +132,7 @@
     * binary semaphore == *mutex*
   * => can turn any collection into a blocking bounded collection.
 
-![c0100-01](images/5 Building Blocks/c0100-01.jpg)
+![c0100-01](images/5%20Building%20Blocks/c0100-01.jpg)
 
 * **Barriers**
   * wait for *other threads* come together at a barrier *at the same time*.
@@ -146,7 +146,7 @@
     * => useful when parties perform asymmetric activities.
       * e.g., one thread fills a buffer with data and the other consumes the data from the buffer.
 
-![c0102-01](images/5 Building Blocks/c0102-01.jpg)
+![c0102-01](images/5%20Building%20Blocks/c0102-01.jpg)
 
 ## 5.6 Building an Efficient, Scalable Result Cache
 
@@ -155,27 +155,27 @@
 * create a `Computable` wrapper that remembers the results of previous computation and encapsulates the caching process => `Memoizer1`
   * `HashMap` is not thread-safe => sychronize the entire `compute` method => only one thread at a time can execute `compute` at all => very poor concurrency.
 
-![c0103-01](images/5 Building Blocks/c0103-01.jpg)
+![c0103-01](images/5%20Building%20Blocks/c0103-01.jpg)
 
 * replace the `HashMap` with a `ConcurrentHashMap` => eliminating the serialization induced by synchronization => `Memoizer2`.
   * => if one thread starts an expensive computation, others are not aware.
   * => a window of vulnerability in which two threads calling `compute` at the same time might computing the same value.
 
-![c0105-01](images/5 Building Blocks/c0105-01.jpg)
+![c0105-01](images/5%20Building%20Blocks/c0105-01.jpg)
 
 * want to represent the notion that some thread is computing for specific value => represent with `FutureTask` => `Memoizer3`.
   * => if the appropriate calculation has not been started, it creates a `FutureTask`, registers it in the `Map`, and starts the computation;
   * => otherwise it waits for the result of the existing computation.
   * => still a small window of vulnerability => check-then-act sequence is nonatomic.
 
-![c0106-01](images/5 Building Blocks/c0106-01.jpg)
+![c0106-01](images/5%20Building%20Blocks/c0106-01.jpg)
 
 * use atomic `putIfAbsent` method => closing the window of vulnerability => `Memoizer`
   * caching a `Future` might pollute the cache => if a computation is cancelled or fails, future attempts will also indicate cancellation or failure => need to remove the `Future` from the cache at appropriate time.
   * `Memoizer` does not address cache expiration => can be accomplished by using a subclass of `FutureTask` that associates an expiration time with each result and periodically scanning the cache for expired entires.
 
-![c0108-01](images/5 Building Blocks/c0108-01.jpg)
+![c0108-01](images/5%20Building%20Blocks/c0108-01.jpg)
 
 * we can then add caching to the factorizing servlet `Factorizer`.
 
-![c0109-01](images/5 Building Blocks/c0109-01.jpg)
+![c0109-01](images/5%20Building%20Blocks/c0109-01.jpg)

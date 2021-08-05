@@ -17,33 +17,33 @@
 * If you can guarantee that every thread that needs locks L and M at the same time always acquires L and M in the same order, there will be no deadlock.
 * Verifying consistent lock ordering requires a global analysis of your program's locking behavior.
 
-![c0207-01](images/10 Avoiding Liveness Hazards/c0207-01.jpg)
+![c0207-01](images/10%20Avoiding%20Liveness%20Hazards/c0207-01.jpg)
 
 ### 10.1.2 Dynamic Lock Order Deadlocks
 
 * Deadlock can occur acquire nested in different order dynamically.
 
-![c0208-01](images/10 Avoiding Liveness Hazards/c0208-01.jpg)
+![c0208-01](images/10%20Avoiding%20Liveness%20Hazards/c0208-01.jpg)
 
 * To fix it, we must induce a *consistent* ordering on the locks.
   * `System.identifyHashCode` returns the value returned by `Object.hashCode` => in rare case two objects have the same hash code => still possibility of deadlock => "tie breaking" lock is used.
   * Or, if there is an unique, immutable, comparable key, just order objects by their key.
 
-![c0209-01](images/10 Avoiding Liveness Hazards/c0209-01.jpg)
+![c0209-01](images/10%20Avoiding%20Liveness%20Hazards/c0209-01.jpg)
 
 ### 10.1.3 Deadlocks Between Cooperating Objects
 
 * Invoking an *alien method* with a lock held is asking for liveness trouble.
   * The alien method might acquire other locks (risking deadlock) or block for an unexpectedly long time, stalling other threads that need the lock you hold.
 
-![c0212-01](images/10 Avoiding Liveness Hazards/c0212-01.jpg)
+![c0212-01](images/10%20Avoiding%20Liveness%20Hazards/c0212-01.jpg)
 
 ### 10.1.4 Open Calls
 
 * open call := calling a method with no locks held
 * Using open calls to avoid deadlock => easy to analyze for deadlock-freedom => similar to using encapsulation to provide thread safety.
 
-![c0214-01](images/10 Avoiding Liveness Hazards/c0214-01.jpg)
+![c0214-01](images/10%20Avoiding%20Liveness%20Hazards/c0214-01.jpg)
 
 * In many cases, the loss of atomicity is perfectly acceptable.
 * To achieve atomicity, structure a concurrent object so that only one thread can execute the code path following the open call => instead of relying on critical sections of code, it relies on constructing protocols so that other threads don't try to get in.
@@ -82,7 +82,7 @@
   * => press the `Ctrl-\` key on Unix or `Ctrl-Break` on Windows platforms.
 * Intrinsic locks are associated with the stack frame in which they were acquired; explicit `Lock`s are associated only with the acquiring thread.
 
-![c0217-01](images/10 Avoiding Liveness Hazards/c0217-01.jpg)
+![c0217-01](images/10%20Avoiding%20Liveness%20Hazards/c0217-01.jpg)
 
 ## 10.3 Other Liveness Hazards
 

@@ -21,11 +21,11 @@
   * Thread-safe classes encapsulate any needed synchronization so that clients need not provide their own.
 * Stateless objects are always thread-safe.
 
-![c0018-01](images/2 Thread Safety/c0018-01.jpg)
+![c0018-01](images/2%20Thread%20Safety/c0018-01.jpg)
 
 ## 2.2 Atomicity
 
-![c0019-01](images/2 Thread Safety/c0019-01.jpg)
+![c0019-01](images/2%20Thread%20Safety/c0019-01.jpg)
 
 * `UnsafeCountingFactorizer` =>susceptible to *lost updates* (*read-modify-write* operation) => *race condition* => not thread-safe.
 * **Race Conditions**
@@ -33,17 +33,17 @@
   * *check-then-act*: use a potentially stale observation to make a decision.
   * *lazy initialization*: defer initializing an object until it is actually needed + ensuring it is initialized only once => might use *check-then-act*.
 
-![c0021-01](images/2 Thread Safety/c0021-01.jpg)
+![c0021-01](images/2%20Thread%20Safety/c0021-01.jpg)
 
 * *compound actions* => if executed atomically => thread-safe.
 
-![c0023-01](images/2 Thread Safety/c0023-01.jpg)
+![c0023-01](images/2%20Thread%20Safety/c0023-01.jpg)
 
 * `java.util.concurrent.atomic` => *atomic variable* (e.g., `AtomicLong`, `AtomicReference`) => effecting atomic state transitions on numbers and object references.
 
 ## 2.3 Locking
 
-![c0024-01](images/2 Thread Safety/c0024-01.jpg)
+![c0024-01](images/2%20Thread%20Safety/c0024-01.jpg)
 
 * This approach is not thread-safe => two atomic references are individually thread-safe => race conditions.
 * preserve state consistency := update related state variables in a single atomic operation.
@@ -54,18 +54,18 @@
   * *intrinsic locks*: automatically acquired before entering a `synchronized` block and automatically released when control exits the block.
   * intrinsic locks in Java == *mutex* => at most one thread may own the lock.
 
-![c0025-01](images/2 Thread Safety/c0025-01.jpg)
+![c0025-01](images/2%20Thread%20Safety/c0025-01.jpg)
 
 * `SynchronizedFactorizer` => inhibit multiple clients from using the servlet simultaneously => thread-safe, but with poor responsiveness => performance problem.
 
-![c0026-01](images/2 Thread Safety/c0026-01.jpg)
+![c0026-01](images/2%20Thread%20Safety/c0026-01.jpg)
 
 * **Reentrancy**
   * intrinsic locks are *reentrant* => if a thread tries to acquire a lock that it already holds, the request succeeds => locks are acquired on a per-thread basis.
   * reentrancy implementation := an acquisition count + an owning thread.
   * reentrancy saves us from deadlock in situations like this:
 
-![c0027-01](images/2 Thread Safety/c0027-01.jpg)
+![c0027-01](images/2%20Thread%20Safety/c0027-01.jpg)
 
 ## 2.4 Guarding State with Locks
 
@@ -77,7 +77,7 @@
 * Merely synchronizing every method => not enough to render atomic compound actions.
   * This *put-if-absent* has a race condition => additional locking is required when multiple operations are combined into a compound action.
 
-![c0029-01](images/2 Thread Safety/c0029-01.jpg)
+![c0029-01](images/2%20Thread%20Safety/c0029-01.jpg)
 
 * Synchronizing every method can lead to liveness and performance problems.
 
@@ -90,6 +90,6 @@
   * the other updates both cached number and factors.
   * (synchronizing the entire method) *versus* (synchronizing the shortest possible code paths)
 
-![c0031-01](images/2 Thread Safety/c0031-01.jpg)
+![c0031-01](images/2%20Thread%20Safety/c0031-01.jpg)
 
 * Avoid holding locks during lengthy computations or operations at risk of not completing quicklt such as network or console I/O.

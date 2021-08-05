@@ -14,13 +14,13 @@
   * The `availableSpaces` represents how many items can be inserted into the buffer, and is initialized to the size of the buffer.
   * On exit from either the `put` or `take` methods, the sum of counts of both semaphores always equals the bound.
 
-![c0249-01](images/12 Testing Concurrent Programs/c0249-01.jpg)
+![c0249-01](images/12%20Testing%20Concurrent%20Programs/c0249-01.jpg)
 
 ### 12.1.1 Basic Unit Tests
 
 * Sequential tests => disclose when a problem is *not* related to concurrency issues before you start looking for data races.
 
-![c0250-01](images/12 Testing Concurrent Programs/c0250-01.jpg)
+![c0250-01](images/12%20Testing%20Concurrent%20Programs/c0250-01.jpg)
 
 ### 12.1.2 Testing Blocking Operations
 
@@ -35,7 +35,7 @@
   * The timed `join` ensures that the test completes even if `take` gets stuck in some unexpected way.
   * The same approach can be used to test that the taker thread unblocks after an element is placed in the queue by the main thread.
 
-![c0252-01](images/12 Testing Concurrent Programs/c0252-01.jpg)
+![c0252-01](images/12%20Testing%20Concurrent%20Programs/c0252-01.jpg)
 
 * The result of `Thread.getState` should not be used for concurrency control, and is of limited usefulness for testing.
   * Its primary utility is as a source of debugging information.
@@ -45,16 +45,16 @@
 * To test a concurrent class performing correctly => multiple threads performing `put` and `take` operations over some amount of time and then test that nothing went wrong.
 * Identify easily checked properties => checking the test property does not require any synchronization.
 
-![c0255-01](images/12 Testing Concurrent Programs/c0255-01.jpg)
+![c0255-01](images/12%20Testing%20Concurrent%20Programs/c0255-01.jpg)
 
-![c0256-01](images/12 Testing Concurrent Programs/c0256-01.jpg)
+![c0256-01](images/12%20Testing%20Concurrent%20Programs/c0256-01.jpg)
 
 ### 12.1.4 Testing Resource Management
 
 * Test it does *not* do things it is *not* supposed to do.
 * Undesirable memory retention can be easily tested with heap-inspection tools that measure application memory usage.
 
-![c0258-01](images/12 Testing Concurrent Programs/c0258-01.jpg)
+![c0258-01](images/12%20Testing%20Concurrent%20Programs/c0258-01.jpg)
 
 ### 12.1.5 Using Callbacks
 
@@ -64,9 +64,9 @@
   * If the core pool size is smaller than the maximum size, the thread pool should grow as demand for execution increases.
   * Submitting long-running tasks to thez pool makes the number of executing tasks stay constant for long enough to make a few assertions.
 
-![c0258-02](images/12 Testing Concurrent Programs/c0258-02.jpg)
+![c0258-02](images/12%20Testing%20Concurrent%20Programs/c0258-02.jpg)
 
-![c0259-01](images/12 Testing Concurrent Programs/c0259-01.jpg)
+![c0259-01](images/12%20Testing%20Concurrent%20Programs/c0259-01.jpg)
 
 ### 12.1.6 Generating More Interleavings
 
@@ -86,13 +86,13 @@
 * Timing the entire run and dividing by the number of operations to get a per-operation time.
   * Use `CyclicBarrier` to start and stop the worker thread => use a barrier action measuring the start and end time.
 
-![c0261-01](images/12 Testing Concurrent Programs/c0261-01.jpg)
+![c0261-01](images/12%20Testing%20Concurrent%20Programs/c0261-01.jpg)
 
-![c0262-01](images/12 Testing Concurrent Programs/c0262-01.jpg)
+![c0262-01](images/12%20Testing%20Concurrent%20Programs/c0262-01.jpg)
 
 * Test driver => running test for various combinations of parameters => throughput, how it scales with different numbers of threads, how we select the bound size.
 
-![c0262-02](images/12 Testing Concurrent Programs/c0262-02.jpg)
+![c0262-02](images/12%20Testing%20Concurrent%20Programs/c0262-02.jpg)
 
 * Be careful about concluding from testing data.
   * The test is fairly artificial in how it simulates the application.
@@ -101,7 +101,7 @@
 
 * `java.util.concurrent` => selected and tuned => more efficient than other implementations.
 
-![ch12fig02](images/12 Testing Concurrent Programs/ch12fig02.gif)
+![ch12fig02](images/12%20Testing%20Concurrent%20Programs/ch12fig02.gif)
 
 * The test suggests that `LinkedBlockingQueue` scales better than `ArrayBlockingQueue`.
   * Because it allows more concurrent access by `put`s and`take`s than an array-based queue because the best linked queue algorithms allow the head and tail to be updated independently.
@@ -136,7 +136,7 @@
   * compilation comsumes CPU resources.
   * measuring the run time of a combination of interpreted and compiled code is not a meaningful performance metric.
 
-![ch12fig05](images/12 Testing Concurrent Programs/ch12fig05.gif)
+![ch12fig05](images/12%20Testing%20Concurrent%20Programs/ch12fig05.gif)
 
 * Prevent compilation from biasing your results
   * => run your program for a long time so that compilation and interpreted execution represent a small fraction of the total run time.
@@ -159,7 +159,7 @@
 * Every computed result should be used somehow by your program => in a way that does not require synchronization or substantial computation.
 * A trick if to compute the `hashCode` and compare it to an arbitrary value such as the current value of `System.nanoTime`.
 
-![c0270-01](images/12 Testing Concurrent Programs/c0270-01.jpg)
+![c0270-01](images/12%20Testing%20Concurrent%20Programs/c0270-01.jpg)
 
 ## 12.4 Complementary Testing Approaches
 
