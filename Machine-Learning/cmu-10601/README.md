@@ -1,3 +1,3 @@
-# CMU Course 10601 Introduction to Machine Learning (Master's)
+# CMU Course 10-301/601 Introduction to Machine Learning
 
-Notes on CMU Course 10601 Introduction to Machine Learning (Master's).
+Note of CMU Course 10-301/601 Introduction to Machine Learning, including ML techniques such as Bayesian networks, decision tree learning, Support Vector Machines, statistical learning methods, unsupervised learning and reinforcement learning, and theoretical concepts (inductive bias, PAC learning framework, Bayesian learning methods, margin-based learning, Occam's Razor).

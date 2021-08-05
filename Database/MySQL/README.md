@@ -1,3 +1,3 @@
 # MySQL
 
-Notes on Relational Database Management System MySQL, including query statements and key features.
+Note of Relational Database Management System (RDBMS) MySQL, including query statements and key features.
