@@ -14,7 +14,7 @@
   * Changing the layout -> override and reimplement member function -> error-prone + doesn't promote reuse.
   * Creational patterns -> more flexible -> easy to change components of a maze.
 
-![pg82fig01](images/3 Creational Patterns/pg82fig01.jpg)
+![pg82fig01](images/3%20Creational%20Patterns/pg82fig01.jpg)
 
 ## Object Creational: Abstract Factory
 
@@ -35,7 +35,7 @@
     * “you want to provide a class library of products, and you want to reveal just their interfaces, not their implementations.”
 * **Structure**
 
-![pg88fig01](images/3 Creational Patterns/pg88fig01.jpg)
+![pg88fig01](images/3%20Creational%20Patterns/pg88fig01.jpg)
 
 * **Participants**
   * **AbstractFactory**
@@ -85,7 +85,7 @@
 
 * **Structure**
 
-![pg98fig01](images/3 Creational Patterns/pg98fig01.jpg)
+![pg98fig01](images/3%20Creational%20Patterns/pg98fig01.jpg)
 
 * **Participants**
   * **Builder**
@@ -105,7 +105,7 @@
   * Builder handles requests from the director and adds parts to the product.
   * The client retrieves the product from the builder.
 
-![pg99fig01](images/3 Creational Patterns/pg99fig01-6379149.jpg)
+![pg99fig01](images/3%20Creational%20Patterns/pg99fig01-6379149.jpg)
 
 * **Consequences**
   * It lets you vary a product's internal representation.
@@ -138,7 +138,7 @@
     * classes delegate responsibility to one of several helper subclasses, and you want to localize the knowledge of which helper subclass is the delegate.
 * **Structure**
 
-![pg108fig01](images/3 Creational Patterns/pg108fig01.jpg)
+![pg108fig01](images/3%20Creational%20Patterns/pg108fig01.jpg)
 
 * **Participants**
   * **Product**
@@ -158,7 +158,7 @@
   * Provides hooks for subclasses.
   * Connects parallel class hierarchies.
 
-![pg110fig01](images/3 Creational Patterns/pg110fig01.jpg)
+![pg110fig01](images/3%20Creational%20Patterns/pg110fig01.jpg)
 
 * **Implementation**
   * Two major varieties.
@@ -184,7 +184,7 @@
   * Solution -> make GraphicTool create a new Graphic by copying or cloning an instance of a Graphic subclass.
   * GraphicTool is parameterized by the prototype it should clone and add to the document.
 
-![pg118fig01](images/3 Creational Patterns/pg118fig01.jpg)
+![pg118fig01](images/3%20Creational%20Patterns/pg118fig01.jpg)
 
 * **Applicability**
   * Use when a system should be independent of how its products are created, composed, and represented; and
@@ -193,7 +193,7 @@
     * when instances of a class can have one of only a few different combinations of state.
 * **Structure**
 
-![pg119fig01](images/3 Creational Patterns/pg119fig01.jpg)
+![pg119fig01](images/3%20Creational%20Patterns/pg119fig01.jpg)
 
 * **Participants**
   * **Prototype**
@@ -243,7 +243,7 @@
     * when the sole instance should be extensible by subclassing, and clients should be able to use an extended instance without modifying their code.
 * **Structure**
 
-![pg127fig01](images/3 Creational Patterns/pg127fig01.jpg)
+![pg127fig01](images/3%20Creational%20Patterns/pg127fig01.jpg)
 
 * **Participants**
   * **Singleton**
