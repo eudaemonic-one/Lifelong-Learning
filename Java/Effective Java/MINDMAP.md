@@ -1119,3 +1119,81 @@
     * Thread priorities are among the least portable features of Java.
   * Implementation
     * Do not use `Thread.yield` to fix starved threads problem and it has no testable semantics.
+
+## Serialization
+
+* **Prefer alternatives to Java serialization**
+  * Motivation
+    * *attack surface* is too big to protect => all types in bytestream that can be serialized.
+      * e.g., *deserialization bombs* => cost a long time to deserialize.
+  * Consequences
+    * The best way to avoid serialization exploits is never to deserialize anything.
+    * There is no reason to use Java serialization in any new system you write.
+      * => JSON => text-based, human-readable.
+      * => protobuf => binary, more efficient.
+    * Never deserialize untrusted data.
+    * If you can't avoid serialization, use the object deserialization filtering.
+      * Prefer whitelisting to blacklisting.
+* **Implement `Serializable` with great caution**
+  * Motivation
+    * implementing `Serializable`
+      * => decreases the flexibility to change a class's implementation once it has been released.
+        * default serialized form => original byte-stream encoding => exported API.
+        * fail to declare a *serial version UIDs* => compatibility broken.
+      * => increases the likelihood of bugs and security holes.
+        * serialization => *extralinguistic mechanism* => open to invariant corruption and illegal access.
+      * => increase the testing burden associated with releasing a new version of a class.
+  * Consequences
+    * Implementing `Serializable` is not a decision to be undertaken lightly.
+    * Classes designed for inheritance should rarely implement `Serializable`, and the interfaces should rarely extend it.
+    * Inner classes should not implement `Serializable`.
+      * A *static member class* can, however, implement `Serializable`.
+* Consider using a **custom serialized form**
+  * Consequences
+    * Do not accept the default serialized form without first considering whetehr it is appropriate.
+      * The ideal serialized form contains only the *logical* data => independent of the physical representation.
+    * The default serialized form is likely to be appropriate if an object's physical representation is identical to its logical content.
+    * Even if you decide that the default serialized form is appropriate, you often must provide a `readObject` method to ensure invariants and security.
+    * Using the default serialized form
+      * => It permanently ties the exported API to the current internal representation.
+      * => It can consume excessive space.
+      * => It can consume excessive time.
+      * => It can cause stack overflows.
+  * Implementation
+    * `@serial` tag => defines a public API, which is the serialized form of the class.
+    * `transient`: a modifier indicating that an instance field is to be omitted from a class's default serialized form.
+      * Make sure nontransient fields is part of the logical state of the object.
+    * The first thing `writeObject` does is to invoke `defaultWriteObject`; the first thing `readObject` does is to invoke `defaultReadObject`.
+    * You must impose any synchronization on object serialization that you would impose on any other method that reads the entire state of the object.
+    * Declare an explicit serial version UID in every serializable class you write.
+    * Do not change the serial version UID unless you want to break compatibility with all existing serialized instances of a class.
+* Write **`readObject`** methods defensively
+  * Consequences
+    * When an object is deserialized, it is critical to defensively copy any field containing an object reference that a client must not possess.
+    * Like a constructor, a `readObject` method must not invoke an overridable method, either directly or indirectly.
+  * Implementation
+    * For classes with object reference fields that must remain private, defensively copy each object in such a field. Mutable components of immutable classes fall into this category.
+    * Check any invariants and throw an `InvalidObjectException` if a check fails. The checks should follow any defensive copying.
+    * If an entire object graph must be validated after it is deserialized, use the `ObjectInputValidation` interface.
+    * Do not invoke any overridable methods in the class, directly or indirectly.
+* **For instance control, prefer enum types to `readResolve`**
+  * Motivation
+    * `readResolve` => allow you to substitute another instance for the one created by `readObject`.
+  * Consequences
+    * The accessibility of `readResolve` is significant.
+      * on a final class => it should be private.
+      * on a nonfinal class => you must carefully consider its accessibility.
+    * Use enum types to enforce instance control invariants wherever possible,
+      * enless instances are not known at compile time.
+  * Implementation
+    * If you depend on `readResolve` for instance control, all instance fields with object reference types *must* be declared `transient`.
+* Consider **serialization proxies** instead of serialized instances
+  * Implementation
+    * First, design a private static nested class that concisely represents the logical state of an instance of the enclosing class => *serialization proxy*.
+      * It should have a single constructor, whose parameter type is the enclosing class => merely copies the data from its argument.
+      * Both the enclosing class and its serialization proxy must be declared to implement `Serializable`.
+    * Next, add the `writeReplace` method to the enclosing class.
+      * => emit a `SerializationProxy` instance to replace the instance of the enclosing class.
+    * Then, add `readObject` method to the enclosing class to prevent generating a serialized instance of the enclosing class.
+    * Finally, provide a `readResolve` method on the `SerializationProxy` class that returns a logically equivalent instance of the enclosing class.
+      * => translate the serialization proxy back into an instance of the enclosing class upon deserialization.
