@@ -12,6 +12,7 @@ My personal notes on everything, from coding to philosophy.
   * [CMU Course 18441/741 Computer Networks](./Computer-Networks/cmu-18741/)
 * [Computer Systems](./Computer-Systems/): Note of Computer Systems, including machine basics, storage hierarchy, compilation system, memory management, exceptional control flow, I/O, networking programming, and synchronization.
   * [CMU Course 15-213/513/18-213/613 Introduction to Computer Systems (ICS)](./Computer-Systems/cmu-18613/)
+  * [CMU Course 15440/640 Distributed Systems](./Computer-Systems/cmu-15640/)
   * [CMU Course 18-746 Storage Systems](./Computer-Systems/cmu-18746/)
   * [Computer Systems: A Programmer's Perspective (aka CS:APP)](./Computer-Systems/CSAPP/)
 * [Cookbook](./Cookbook/): Note of how to cook delicious food and cookbooks.
@@ -19,8 +20,6 @@ My personal notes on everything, from coding to philosophy.
 * [Database](./Database/): Note of database theory and MySQL.
   * [CMU Course 15445/645 Database Systems](./Database/cmu-15645/)
   * [MySQL](./Database/MySQL/): Note of MySQL and InnoDB engine.
-* [Distributed Systems](./Distributed-Systems/): Note of distributed systems, including network knowledge, concurrency models, time synchronization methods, distributed file systems, fault-tolerance, replication, cluster computing, Spark, virtualization, and security protocols.
-  * [CMU Course 15440/640 Distributed Systems](./Distributed-Systems/cmu-15640/)
 * [Golang](./Golang/): Note of Go language and Gin framework.
   * [Golang go-to Guide](./Golang/Go-go-to-Guide/): Note of Go language basics and how to write Go programs.
   * [Gin](./Golang/Gin): Note of web framework Go-Gin.
