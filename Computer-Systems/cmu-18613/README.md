@@ -1,3 +1,3 @@
-# CMU Course 18613 Foundations of Computer Systems
+# CMU Course 15-213/513/18-213/613 Introduction to Computer Systems (ICS)
 
-Notes on CMU Course 18613 Foundations of Computer Systems, basically following CS:APP3e.
+Notes of CMU Course 15-213/513/18-213/613 Introduction to Computer Systems (ICS).

@@ -11,8 +11,9 @@ My personal notes on everything, from coding to philosophy.
 * [Computer-Network](./Computer-Networks/): Note of Computer Networks, including physical layer, link layer, ip layer, transport layer, and network applications.
   * [CMU Course 18441/741 Computer Networks](./Computer-Networks/cmu-18741/)
 * [Computer Systems](./Computer-Systems/): Note of Computer Systems, including machine basics, storage hierarchy, compilation system, memory management, exceptional control flow, I/O, networking programming, and synchronization.
+  * [CMU Course 15-213/513/18-213/613 Introduction to Computer Systems (ICS)](./Computer-Systems/cmu-18613/)
+  * [CMU Course 18-746 Storage Systems](./Computer-Systems/cmu-18746/)
   * [Computer Systems: A Programmer's Perspective (aka CS:APP)](./Computer-Systems/CSAPP/)
-  * [CMU Course 15213/15513/18213/18613 Foundations of Computer Systems](./Computer-Systems/cmu-18613/)
 * [Cookbook](./Cookbook/): Note of how to cook delicious food and cookbooks.
 * [Data Structures](./Data-Structures/): Implementations of basic and advanced data structures and related algorithms.
 * [Database](./Database/): Note of database theory and MySQL.
@@ -34,8 +35,6 @@ My personal notes on everything, from coding to philosophy.
   * [CMU Course 17313 Foundations of Software Engineering](./Programming/cmu-17313/)
   * [CMU Course 17480/780 API Design And Implementation](./Programming/cmu-17780/) (Lectured by [Josh Bloch](https://www.isri.cmu.edu/people/affiliated-fac/bloch-josh.html))
   * [Design Patterns: Elements of Reusable Object-Oriented Software](./Programming/Design%20Patterns/)
-* [Storage Systems](./Storage-Systems): Note of storage systems, from physical media to I/O controller, and also file systems and user programs.
-  * [CMU Course 15746/18746 Storage Systems](./Storage-Systems/cmu-18746/)
 
 ## Milestones
 
