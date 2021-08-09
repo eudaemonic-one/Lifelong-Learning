@@ -9,3 +9,4 @@ Reading note of Nonviolent Communication: A Language of Life.
 * [5 Taking Responsibility for Our Feelings](./5%20Taking%20Responsibility%20for%20Our%20Feelings.md)
 * [6 Requesting That Which Would Enrich Life](./6%20Requesting%20That%20Which%20Would%20Enrich%20Life.md)
 * [7 Receiving Empathically](./7%20Receiving%20Empathically.md)
+* [8 The Power of Empathy](./8%20The%20Power%20of%20Empathy.md)

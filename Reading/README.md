@@ -10,3 +10,4 @@ Reading notes of books, papers, blogs, etc.
   * [5 Taking Responsibility for Our Feelings](./Nonviolent%20Communication/5%20Taking%20Responsibility%20for%20Our%20Feelings.md)
   * [6 Requesting That Which Would Enrich Life](./Nonviolent%20Communication/6%20Requesting%20That%20Which%20Would%20Enrich%20Life.md)
   * [7 Receiving Empathically](./Nonviolent%20Communication/7%20Receiving%20Empathically.md)
+  * [8 The Power of Empathy](./Nonviolent%20Communication/8%20The%20Power%20of%20Empathy.md)
