@@ -10,3 +10,4 @@ Part 4 => practical technical subjects.
 * Part I: Career
   * [Chapter 1: The Big Picture](./1%20The%20Big%20Picture.md)
   * [Chapter 2: Landing Jobs](./2%20Landing%20Jobs.md)
+  * [Chapter 3: Learning and Growing](./3%20Learning%20and%20Growing.md)
