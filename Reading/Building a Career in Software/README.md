@@ -6,3 +6,6 @@ Part 1 => careers: hiring, compensation, and promotion work in tech companies, h
 Part 2 => the nontechnical skills in your daily work: project management, running meetings, working with your boss and peers, recovering from mistakes, team citizenship, etc.
 Part 3 => engineering communication: models of communicating at work, technical writing, email, and asking effective questions.
 Part 4 => practical technical subjects.
+
+* Part I: Career
+  * [Chapter 1: The Big Picture](./1%20The%20Big%20Picture.md)
