@@ -14,3 +14,4 @@ Part 4 => practical technical subjects.
   * [Chapter 4: Changes](./4%20Changes.md)
 * Part II: Day to Day at the Office
   * [Chapter 5: Professional Skills](./5%20Professional%20Skills.md)
+  * [Chapter 6: Working with Humans](./6%20Working%20with%20Humans.md)
