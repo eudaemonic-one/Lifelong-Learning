@@ -12,3 +12,5 @@ Part 4 => practical technical subjects.
   * [Chapter 2: Landing Jobs](./2%20Landing%20Jobs.md)
   * [Chapter 3: Learning and Growing](./3%20Learning%20and%20Growing.md)
   * [Chapter 4: Changes](./4%20Changes.md)
+* Part II: Day to Day at the Office
+  * [Chapter 5: Professional Skills](./5%20Professional%20Skills.md)
