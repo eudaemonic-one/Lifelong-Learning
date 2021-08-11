@@ -161,3 +161,74 @@ Finally, we’ll have open discussion on the preceding points in that order.
     * Not dominating the conversation
     * Giving everyone a chance to say their piece; making space for the shy or quiet and soliciting their opinions.
   * People shouldn't open their laptops if it can be avoided.
+
+## Productivity and Organization
+
+* **Time Management and To-Do Lists**
+  * To-do app
+    * Data must be shared between phone and desktop, so you can create to-dos wherever you are.
+    * Creating a simple to do should be frictionless, so you do it.
+  * Get Things Done
+    * Keeping contextual lists
+    * Regularly reviewing and prioritizing your list of tasks => so that you can quickly find the most urgent ones.
+* **Effective Calendaring**
+  * Always include a video conference link.
+  * Give your attendees edit permissions on the invite.
+  * Include a crisp agenda in your meeting invite; mention each topic you plan to cover and what the *goals* of the meeting should be.
+  * Defragment other people's time; if they have a packed calendar, try to find a slot adjacent to their other meetings, and especially try to avoid creating small gaps between meetings.
+  * When scheduling by email, always offer a mewnu of acceptable times.
+    * “Meeting next week sounds great. Would one of the following slots work?”
+* **Caching Knowledge**
+  * An infinitely scrolling Google Doc, your cheat sheet, with a little section for each neat trick you figure out.
+  * A text file on your computer, your command cache, with commands you've been using particularly recently.
+* **Scripting Everything**
+  * If you type a command more than five times, you should script it.
+* **Living in the Cloud**
+  * All your dot files and scripts in a private Git repository
+  * All the documents safely striped to a hundred servers (Google Docs)
+  * Never restore from backup.
+* **Just Do Something**
+
+| Issue                                                        | Why I Can't Do Something                   | Yes You Can! Try This                                        |
+| ------------------------------------------------------------ | ------------------------------------------ | ------------------------------------------------------------ |
+| We're blocked waiting for another team's bugfix.             | They haven't commented on the bug.         | Email the engineer or their manager. Chat someone. Call them on the phone. Ask your manager or a more senior person to escalate. |
+| Requests are failing.                                        | I don't know what dashboard to look at.    | Search for the service name on the metrics home page. Look at a global dashboard. Call someone and ask. @here in a chat room and ask. Page someone else. |
+| We can't land changes because the build is broken.           | I don't know how the build works.          | Figure it out. Ask someone. Go to the Jenkins page and find the logs. Use git bisect, which lets you find the culprit even without semantic understanding. |
+| My colleague blocked my diff with code review comments I disagree with. | He's too obstinate, I can't make progress. | Meet face to face with the colleague, and try to understand teh feedback better. Get a second opinion from a colleague you trust, and ask if they have an idea for how to handle it tactfully. Ask your manager for advice or to intervene. Just go around them. |
+
+* **Keep a Worklog**
+  * Log every single thing you do at work
+    * every bug I fix
+    * every proposal I write
+    * every outage I work on
+    * every presentation I give
+    * every person I mentor and what I mentor them about
+  * Asynchronously process to-dos and put them into doc.
+    * “worklog: incident commander for configuration service outage 10/14”
+
+## Hiring Engineers: Interviewing from the Other Side of the Table
+
+* **Interview Focus Areas**
+  * **Coding**
+  * **Architecture**
+  * **Communication**
+  * **Domain Knowledge**
+  * **Organized Thinking**
+* **The Nuts and Bolts of Interviewing**
+* **Decisions**
+
+## Software Methodologies and the Generality of Good Engineering
+
+* Project management is always about understanding dependencies, staying organized, and conservative estimation; collaboration is always about crisp communication, empathy, and efficient use of your colleagues' time; software that works is software that works.
+* When you finish something, you absolutely must go find something else to do, asking your boss if necessary.
+* **Agile Software Development**
+  * short development cycles that integrate requirements gathering, design, and development, constantly shipping small increments of working software, bringing together stakeholders and developers to review and access, and replanning as circumstances change.
+* **Scrum**
+  * a rhythm of self-contained "sprints", typically periods of 1-4 weeks, and codifies specific roles and meetings to structure those sprints.
+  * => collaboration with all team members contributing to planning, implementation.
+  * => team introspection and daily heping each other overcome blockers.
+  * Structure
+    * First, a Sprint Planning Meeting where the team works together to set tractable goals for the sprint.
+    * For the duration of the sprint, a short daily "scrum" or "stand-up", help each other resolve "blockers" and cross-pollinate useful information.
+    * At the end of the sprint, a Sprint Review and a Retrospective for reviewing progress, demoting results, and identifying opportunities to improve.
+    * Asynchronously, the team regularly reviews and prioritizes a "backlog" of future work.
