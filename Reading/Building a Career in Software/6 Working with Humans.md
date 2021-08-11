@@ -90,3 +90,66 @@
   * “Do you mind reading this email and seeing if it’s clear for this audience?”
   * “Do you have any feedback on my presentation? I’d appreciate a second opinion.”
   * “Do you think my question was reasonable in that meeting?”
+
+## Working With Your Manager
+
+* **The Nature of the Relationship**
+  * You should view your interaction with your employer dispassionately but not cynically; you deliver on your commitments, they deliver on theirs, and you both profit.
+  * Managers are representatives of the company and your interests are aligned.
+  * We should respect ourselves and our partners, keep our cool, and express our opinions honestly and courteously.
+  * We should pretty much do what our boss tells us to do to the extent that ethics allow.
+* **Managers Have Their Own Problems: Optimizing the Collaboration**
+  * Managers are accountable for goals - shipping software, maintaining reliability, and driving business metrics.
+  * The most important thing you can for your relationship with your manager is give them confidence that you are going to come through for them.
+  * The most important thing you can do is build a track record of delivering
+  * Proactive, well-organized communication about project status helps put your manager at ease.
+    * with a list of project areas and a clear story for each, and you deliver that story with authority.
+* **Upward Feedback**
+  * Express minimal anger or frustration, and don't get personal; remember, this is work, not family. Try to make a specific, actionable request or suggestion.
+    * “I’ve appreciated that you’re staying very tuned in to what’s happening on this project, but I’ve been thinking that it might be good to batch our communication a bit to reduce the overhead. Would you be open to a brief daily summary email at the end of the day?”
+    * Pace yourself. Too much at a time will make them feel beaten down and less receptive to you.
+    * Pay attention to the response; if they become defensive, ease off the gas and save it for another day.
+* **Going Over Your Manager's Head**
+  * Raising a concern about them directly with their boss is a drastic measure; it harms your trust with your manager, and, if not well justified, your second-level manager will have their own doubts about your judgment.
+* **Tricky Subjects**
+  * **Disagreement About Technology or Process**
+    * Keep it to yourself, or offer constructive feedback.
+      * “I’ve been thinking we might want to consider doing X instead of Y. X has benefits, but Y has other benefits.”
+  * **You Want More Feedback**
+    * If you're not sure where you stand, you can just directly ask for feedback.
+      * “I’ve been thinking that it could be beneficial for me get some more feedback on my work. Do you think we could try to have a regular cadence of feedback? It doesn’t need to be too heavyweight—maybe once every two weeks, or once a month, you could give me some feedback?”
+  * **Slow Advancement**
+    * You can say, "I'd like to talk about my goals for the next year," and then, in that discussion, say, "I'm starting to thinking about promotion to Level X. What do you think I should do to position myself for that? How do you think I'm doing against that standard?"
+    * You can try to get a consistent check from a senior colleague, emphasizing that you appreciate candor.
+    * **You can be patient** if your boss says that you just need to wait a little longer and your situation is otherwise good.
+    * **You can have a direct, professional conversation with your manager.**
+      * “I’ve been thinking about my timeline for promotion. I respect what you’ve told me about this, but if you don’t mind, I want to make a case that I’m ready sooner than we’ve discussed.”
+      * “I think that on Project X, I needed to step into a leadership role that’s appropriate for Level Y. That was a virtual team with four junior people, and they needed a lot of guidance; I also did all the project management, including sending the updates and maintaining the tracker, and the project shipped on time. The Level Y guidelines say that you need to be able to coordinate projects of two to three engineers. I thought that it may not have been obvious externally, because it was a virtual team, but this work met that standard. Of course, I understand that the promotion process might be more nuanced than I realized. What do you think?”
+    * **You can quietly, responsibly leave.**
+  * **Project Dissatisfaction**
+    * The first step is to make it extremely clear that you're going to deliver your current work and that you understand you're not entitled to just do whatever your heart desires. Then, you can ask about the future. You should prepare the most specific idea you can and justify it in terms of business value.
+      * “We’re almost getting to the end of Project Jellybean. I’ve been thinking about what comes next after we’ve shipped. I’d really like to do a performance project if that’s possible; I think we have a lot of low-hanging fruit for performance, and it may improve the customer experience a lot.”
+      * “My last two projects have been a lot of plumbing. I think they added a lot of business value, and I’m glad to have done them, but I think I could use a change of pace soon—do you think I could tackle some infrastructure work when we finish Project Gumdrop?”
+
+## Working with Platform Owners
+
+* Platform Owners
+  * their responsibilities are broad-they have obligations to many users.
+  * show that you respect the difficulties of their job.
+  * build a partnership where their expertise and your feedback improve both teams' results.
+* **Feature Requests**
+  * First, it should be framed in terms of what you want to achieve rather than how it should be done.
+    * “Feature Request: a way to query a store’s most recent orders,” rather than “include recent orders in getStore API.”
+  * Second, it should explain the business purpose of your request.
+  * Third, you should describe any and all relevant technical context.
+  * Finally, it should be expressed humbly.
+* **Debugging and Technical Questions**
+  * **Going deep before you ask.**
+  * **Asking clear, context-rich questions.**
+* **Bug Reports**
+  * Structure
+    * What I'm tring to achieve.
+    * Exactly what I did, always including real commands or example requests, real version numbers or git hashes, and every possible bit of context.
+    * Exactly what I expected to see.
+    * Exactly what I saw, including real copy-pasted output.
+    * Ideally, some attempt at debugging the issue.
