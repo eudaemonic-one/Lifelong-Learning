@@ -96,3 +96,22 @@
     * **Transparency about your process** => active toward planning and discussion.
     * **Time thinking about your mentee on your own** => assessment.
     * **Regular replanning**
+
+## Onboarding Engineers
+
+* One-page document => links to key wikis and dashboards or a list of owners for key areas they may need to work in.
+* One-hour onboarding meeting.
+  * The team's mission.
+  * An overview of the team's architecture on a white board, with pictures taken at the end for posterity.
+  * A discussion of the major projects going on in the team.
+  * A discussion of any key principles, values, or practices on the team and any special gotchas.
+  * A review of your larger organization, including an overview of the key engineers and managers in the organization and their portfolio.
+  * A Q&A.
+
+## Interns
+
+* Internships => one project, assigned a fairly junior engineer as intern manager, far away from the team's critical path.
+  * They don't know anything.
+  * They aren't going to tell you when they're off track.
+* Proactive mentoring and monitoring are the key to managing interns.
+  * e.g., an early design review, a full design review, a prototype review, and projected completion.
