@@ -16,3 +16,4 @@ Part 4 => practical technical subjects.
   * [Chapter 5: Professional Skills](./5%20Professional%20Skills.md)
   * [Chapter 6: Working with Humans](./6%20Working%20with%20Humans.md)
   * [Chapter 7: Shining in an Engineering Organization](./7%20Shining%20in%20an%20Engineering%20Organization.md)
+  * [Chapter 8: Leading Others](./8%20Leading%20Others.md)
