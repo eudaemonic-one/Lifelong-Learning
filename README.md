@@ -32,6 +32,9 @@ My personal note of everything, from coding to philosophy.
   * [CMU Course 17-313 Foundations of Software Engineering](./Programming/cmu-17313/)
   * [CMU Course 17-480/780 API Design And Implementation](./Programming/cmu-17780/)
   * [Design Patterns: Elements of Reusable Object-Oriented Software](./Programming/Design%20Patterns/)
+* [Reading](./Reading/): Reading note of books, blogs, papers, and etc.
+  * [Nonviolent Communication: A Language of Life](./Reading/Nonviolent%20Communication/)
+  * [Building a Career in Software](./Reading/Building%20a%20Career%20in%20Software/)
 
 ## Milestones
 
@@ -46,3 +49,4 @@ My personal note of everything, from coding to philosophy.
 * 700 commits: Mar 28, 2021
 * 800 commits: Jul 13, 2021
 * 900 commits: Jul 23, 2021
+* 1,000 commits: Aug 13, 2021
