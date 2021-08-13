@@ -59,3 +59,70 @@
 ## Open Source Conservatism
 
 * Taking on an open source dependency is not much different from installing and frequently running a program written by some rando on the Internet.
+
+## Tests Should Be Fast (Never Sleep)
+
+* A slow test is an infuriating obstacle to development velocity.
+  * You can inject a clock interface everywhere, so you mock that clock and accelerate time for tests => not waiting for a condition like a timeout to occur.
+
+## Unit vs. Integration Testing
+
+* Integeration tests can be slow; unit tests can be incomplete.
+  * Unit tests let us itearate quickly on changes in a component, shaping our work with frequent testing.
+  * Integration tests run longer bug give us a higher degree of confidence that a component works with adjacent systems before we send it to customers.
+* A healthy test suite should have both.
+
+## Inject Dependencies
+
+* Dependency injection => decouple components, making it easy to change the implementation of a dependency.
+* If we inject an interface, we can swap in a mocked implementation, which is a lifesaver for testing.
+
+## Performance Last or a List of Priorities for Your Code
+
+* Default priorities for a codebase should be
+  * **Correctness**: The code does what it's supposed to do and is easy to verfiy.
+  * **Maintainability**: The code is simple, easy for ourselves and others to change, and is likely to work under reasonable changes in operating conditions.
+  * **Cost of development**: The code is fast to write, that is, minimizes engineering costs.
+  * **Performance**: The code run fast.
+* We should only pay readability for performance when performance really matters and we have data to suggest that the specific optimization in question will help.
+
+## Code Review
+
+* All production code changes are read by one or more other engineers to verify their correctness and quality.
+* It usually proceeds in cycles, with the reviewer asking questions and making suggestions, then the author answering those questions, accepting some suggestions, and pushing back on others.
+* **Receiving Code Reviews**
+  * Slow down today is better than writing a postmortem.
+  * Acknowledge and address every comment and never ignore any comment.
+  * Ask follow-up questiosn on feedback:
+    * Does the reviewer feel strongly about that suggestion?
+    * Do they think it's okay to defer some changes for later?
+    * Why do they think that using this pattern is better than the other?
+* **Reviewing Code**
+  * Ask myself about any diff:
+    * **Is it correct?**
+      * First understand exactly what a change is intended to do.
+      * Second understand the system.
+      * Finally read in detail, checking edge cases, error handling, threading, language usage.
+    * **Is it clear?**
+      * e.g., naming, commenting, simplicity, function length, commit messages, file layout.
+    * **Does it match the code around it?**
+      * e.g., code style, quality trade-offs.
+    * **Does it reinvent anything?**
+      * Duplication should be explained.
+    * **Is it well-tested?**
+      * Err toward asking for full coverage.
+    * **Is it idiomatic?**
+      * Mastering your team's languages.
+    * **Is the diff reasonably sized?**
+      * Large diffs are hard to review and hard to get right.
+      * You should discourage them and look for smaller atoms that could be delivered separately.
+* **Beyond the Code**
+  * First is the tone of feedback.
+    * Always be supportive; we err toward trusting our colleagues' diligence.
+  * Second is latency.
+    * Long waits are frustrating.
+    * Treating code reviews as top priority tasks and preempting any nonurgent work.
+  * Third, avoid the ping-pong review pair.
+    * Try to get some diversity of perspective in the code review stream.
+  * Finally, when to hold the line on quality and when to bend.
+    * When it comes to incorrectness, draw a hard line.
