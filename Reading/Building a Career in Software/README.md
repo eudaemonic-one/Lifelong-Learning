@@ -3,8 +3,11 @@
 Reading note of Building a Career in Software: A Comprehensive Guide to Success in the Software Industry.
 
 Part 1 => careers: hiring, compensation, and promotion work in tech companies, how to best naviagte those processes, and how to chart a course for growth and advancement.
+
 Part 2 => the nontechnical skills in your daily work: project management, running meetings, working with your boss and peers, recovering from mistakes, team citizenship, etc.
+
 Part 3 => engineering communication: models of communicating at work, technical writing, email, and asking effective questions.
+
 Part 4 => practical technical subjects.
 
 * Part I: Career
@@ -25,3 +28,5 @@ Part 4 => practical technical subjects.
   * [Chapter 13: Effective Email](./13%20Effective%20Email.md)
   * [Chapter 14: Describing Problems and Asking Questions](./14%20Describing%20Problems%20and%20Asking%20Questions.md)
   * [Chapter 15: Public Speaking](./15%20Public%20Speaking.md)
+* Part IV: Technical Skills
+  * [Chapter 16: Professional-Grade Code](./16%20Professional-Grade%20Code.md)
