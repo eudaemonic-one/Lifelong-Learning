@@ -21,3 +21,4 @@ Part 4 => practical technical subjects.
   * [Chapter 10: Professional Conduct](./10%20Professional%20Conduct.md)
 * Part III: Communication
   * [Chapter 11: A Holistic Look at Engineering Communication](11%20A%20Holistic%20Look%20at%20Engineering%20Communication.md)
+  * [Chapter 12: Technical Writing](./12%20Technical%20Writing.md)
