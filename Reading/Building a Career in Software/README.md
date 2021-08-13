@@ -24,3 +24,4 @@ Part 4 => practical technical subjects.
   * [Chapter 12: Technical Writing](./12%20Technical%20Writing.md)
   * [Chapter 13: Effective Email](./13%20Effective%20Email.md)
   * [Chapter 14: Describing Problems and Asking Questions](./14%20Describing%20Problems%20and%20Asking%20Questions.md)
+  * [Chapter 15: Public Speaking](./15%20Public%20Speaking.md)
