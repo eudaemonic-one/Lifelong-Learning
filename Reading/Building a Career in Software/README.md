@@ -23,3 +23,4 @@ Part 4 => practical technical subjects.
   * [Chapter 11: A Holistic Look at Engineering Communication](11%20A%20Holistic%20Look%20at%20Engineering%20Communication.md)
   * [Chapter 12: Technical Writing](./12%20Technical%20Writing.md)
   * [Chapter 13: Effective Email](./13%20Effective%20Email.md)
+  * [Chapter 14: Describing Problems and Asking Questions](./14%20Describing%20Problems%20and%20Asking%20Questions.md)
