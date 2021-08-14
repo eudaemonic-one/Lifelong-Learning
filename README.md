@@ -5,7 +5,7 @@ My personal note of everything, from coding to philosophy.
 ## Table of Contents
 
 * [Algorithms](./Algorithms/): Note of Algorithms.
-  * [Introduction to Algorithms (aka CLRS)](./CLRS/Algorithms/)
+  * [Introduction to Algorithms (aka CLRS)](./Algorithms/CLRS/)
 * [Computer Networks](./Computer-Networks/): Note of Computer Networks.
   * [CMU Course 18-441/741 Computer Networks](./Computer-Networks/cmu-18741/)
 * [Computer Systems](./Computer-Systems/): Note of Computer Systems, Distributed Systems, Storage Systems, Cloud Computing.
