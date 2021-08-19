@@ -30,3 +30,4 @@ Part 4 => practical technical subjects.
   * [Chapter 15: Public Speaking](./15%20Public%20Speaking.md)
 * Part IV: Technical Skills
   * [Chapter 16: Professional-Grade Code](./16%20Professional-Grade%20Code.md)
+  * [Chapter 17: Debugging](./17%20Debugging.md)
