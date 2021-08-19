@@ -31,3 +31,4 @@ Part 4 => practical technical subjects.
 * Part IV: Technical Skills
   * [Chapter 16: Professional-Grade Code](./16%20Professional-Grade%20Code.md)
   * [Chapter 17: Debugging](./17%20Debugging.md)
+  * [Chapter 18: Building for Reliability](./18%20Building%20for%20Reliability.md)
