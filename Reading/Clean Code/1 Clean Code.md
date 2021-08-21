@@ -42,3 +42,20 @@
   * “Duplication and expressiveness take me a very long way into what I consider clean code, and improving dirty code with just these two things in mind can make a huge difference. There is, however, one other thing that I’m aware of doing, which is a bit harder to explain.”
   * “Reduced duplication, high expressiveness, and early building of simple abstractions. That’s what makes clean code for me.”
 * Ward Cunningham - “You know you are working on clean code when each routine you read turns out to be pretty much what you expected. You can call it beautiful code when the code also makes it look like the language was made for the problem.”
+
+## Schools of Thought
+
+* The rightness within a school does not invalidate the teachings of a different school.
+
+## We Are Authors
+
+* Making it easy to read actually makes it easier to write.
+
+## The Boy Scout Rule
+
+* The cleanup of code doesn't have to be something big.
+
+## Prequel and Principles
+
+* This book is a prequel to a book Agile Software Development: Principles, Patterns, and Practices (PPP).
+* This book has references to the Single Responsibility Principles (SRP), the Open Closed Principle (OCP), and the Dependency Inversion Principle (DIP).
