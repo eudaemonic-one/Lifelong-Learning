@@ -30,3 +30,21 @@ public List<int[]> getFlaggedCells() {
   return flaggedCells;
 }
 ```
+
+## Avoid Disinformation
+
+* We should avoid words whose entrenched meanings vary from our intended meaning.
+  * Do not refer to a grouping of accounts as an `accountList` unless it's actually a `List`.
+* Beware of using names which vary in small ways.
+  * `XYZControllerForEfficientHandlingOfStrings` vs. `XYZControllerForEfficientStorageOfStrings`
+* A truly awful example of disinformative names would be the use of lower-case `L` or uppercase `O` as variable names.
+
+## Make Meaningful Distinctions
+
+* Number-series naming (`a1`, `a2`, ..., `aN`) is the opposite of intentional naming.
+* Noise words are another meaningless distinction.
+  * Imagine that you have a `Product` class. If you have another called `ProductInfo` or `ProductData`, you have made the name different without making them mean anything different.
+* Noise words are redundant.
+  * The word `variable` should never appear in a variable name. The word `table` should never appear in a table name.
+* Distinguish names in such a way that the reader knows what the differences offer.
+  * In the absence of specific conventions, the variable `moneyAmount` is indistinguishable from `money`, `customerInfo` is indistinguishable from `customer`, `accountData` is indistinguishable from `account`, `theMessage` is indistinguishable from `message`.
