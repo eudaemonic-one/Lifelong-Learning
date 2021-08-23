@@ -153,3 +153,82 @@ public class EmployeeFactoryImpl implements EmployeeFactory {
   * In OO languages `this` is *intended* to act as an output argument.
   * If your function must change the state of something, have it change the state of its owning object.
   * e.g., `public void appendFooter(StringBuffer report);` vs. `report.appendFooter();`
+
+## Command Query Separation
+
+* Functions should either do something or answer something, but nor both.
+  * Either your function should change the stage of an object, or it should return some information about that object.
+    * e.g., `public boolean set(String attribute, String value);` vs. `setAndCheckIfExists`.
+  * The real solution is to separate the command from the query so that the ambiguity cannot occur.
+    * e.g., `if (attributeExists("username")) setAttribute("username", "unclebob");`
+
+## Prefer Exceptions to Returning Error Codes
+
+* Returning error codes from command functions is a subtle violation of command query separation. It promotes commands being used as expressions in the predicates of `if` statements. It also leads to deeply nested structures becaue the caller must deal with error immediately.
+  * e.g., `if (deletePage(page) == E_OK)`
+
+```java
+“if (deletePage(page) == E_OK) {
+   if (registry.deleteReference(page.name) == E_OK) {
+     if (configKeys.deleteKey(page.name.makeKey()) == E_OK){
+       logger.log("page deleted");
+     } else {
+       logger.log("configKey not deleted");
+     }
+  } else {
+    logger.log("deleteReference from registry failed");
+  }
+} else {
+  logger.log("delete failed");
+  return E_ERROR;
+}
+```
+
+### Extract Try/Catch Blocks
+
+* It is better to extract the bodies of the `try` and `catch` blocks out into functions of their own to avoid mixing error processing with normal processings.
+
+```java
+public void delete(Page page) {
+  try {
+    deletePageAndAllReferences(page);
+  } catch (Exception e) {
+    logError(e);
+  }
+}
+
+private void deletePageAndAllReferences(Page page) throws Exception {
+  deletePage(page);
+  registry.deleteReference(page.name);
+  configKeys.deleteKey(page.name.makeKey());
+}
+
+private void logError(Exception e) {
+  logger.log(e.getMessage());
+}
+```
+
+### Error Handling Is One Thing
+
+* A function that handles errors should do nothing else.
+  * If the keyword `try` exists in a function, it should be the very first word in the function and that there should be nothing after the `catch`/`finally` blocks.
+* Returning error codes usually implies that there is some class or enum in which all the error codes are defined, which enforces other classes to be recomplied and redeployed when the `Error` enum changes.
+* When you use exceptions rather than error codes, then new exceptions are *derivatives* of the exception class, which can be added without recompilation or redeployment.
+
+## Don't Repeat Yourself
+
+* Duplication makes it hard to make modification and creates more opportunities for errors of omission.
+
+## Structured Programming
+
+* Dijkstra said that every function, and every block within a function, should have one entry and one exit.
+  * So if you keep functions small, then the occasional multiple `return`, `break`, or `continue` statement does no harm and can sometimes even be more expressive than the single-entry, single-exit rule.
+  * On the other hand, `goto` only makes sense in large functions, so it should be avoided.
+
+## How Do You Write Functions Like This
+
+* Refine the code, split out functions, change names, eliminate duplication.
+
+## Conclusion
+
+* “If you follow the rules herein, your functions will be short, well named, and nicely organized. But never forget that your real goal is to tell the story of the system, and that the functions you write need to fit cleanly together into a clear and precise language to help you with that telling.”
