@@ -115,3 +115,28 @@ public List<int[]> getFlaggedCells() {
 
 * Avoid using the same word for two purposes.
   * e.g., `add`, `insert`, `append`.
+
+## Use Solution Domain Names
+
+* Remember that the people who read your code will be programmers. So go ahead and use computer science terms, algorithm names, pattern names, math terms, and so forth.
+  * e.g., The name `AccountVisitor` means a great deal to a programmer who is familiar with the $$VISITOR$$ pattern.
+  * e.g., What programmer would not know what a `JobQueue` was?
+
+## Use Problem Domain Names
+
+* The code that has more to do with problem domain concepts should have names drawn from the problem domain.
+  * At least the programmer who maintains your code can ask a domain expert what it means.
+
+## Add Meaningful Context
+
+* You need to place names in context for your reader by enclosing them in well-named classes, functions, or namespaces.
+  * e.g., Imagine that you have variables named `firstName`, `lastName`, `street`, `houseNumber`, `city`, `state`, and `zipcode`. A better solution is to create a class named `Address`.
+
+## Don't Add Gratuitous Context
+
+* Add no more context to a name than is necessary.
+  * e.g., `GSDAccountAddress` vs. `AccountAddress` vs `Address`.
+
+## Final Words
+
+* “The hardest thing about choosing good names is that it requires good descriptive skills and a shared cultural background. This is a teaching issue rather than a technical, business, or management issue. As a result many people in this field don’t learn to do it very well.”
