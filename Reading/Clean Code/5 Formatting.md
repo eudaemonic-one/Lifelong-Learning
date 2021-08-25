@@ -63,3 +63,45 @@
 
 * Try to avoid dummy statements like `while` or `for`.
   * Unless you make that semicolon *visible* by indenting it on it's own line, it's just too hard to see.
+
+## Team Rules
+
+* A team of developers should agree upon a single formatting style, and then every member of that team should use that style.
+
+## Uncle Bob's Formatting Rules
+
+```java
+public int getWidestLineNumber() {
+  return widestLineNumber;
+}
+
+public LineWidthHistogram getLineWidthHistogram() {
+  return lineWidthHistogram;
+}
+
+public double getMeanLineWidth() {
+  return (double)totalChars/lineCount;
+}
+
+public int getMedianLineWidth() {
+  Integer[] sortedWidths = getSortedWidths();
+  int cumulativeLineCount = 0;
+  for (int width : sortedWidths) {
+    cumulativeLineCount += lineCountForWidth(width);
+    if (cumulativeLineCount > lineCount/2)
+      return width;
+  }
+  throw new Error(“Cannot get here”);
+}
+
+private int lineCountForWidth(int width) {
+  return lineWidthHistogram.getLinesforWidth(width).size();
+}
+
+private Integer[] getSortedWidths() {
+  Set<Integer> widths = lineWidthHistogram.getWidths();
+  Integer[] sortedWidths = (widths.toArray(new Integer[0]));
+  Arrays.sort(sortedWidths);
+  return sortedWidths;
+}
+```
