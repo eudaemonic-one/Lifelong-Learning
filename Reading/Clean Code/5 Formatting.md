@@ -37,3 +37,29 @@
 ### Vertical Ordering
 
 * A function that is called should be below a function that does the calling
+
+## Horizontal Formatting
+
+* We should strive to keep our lines short.
+  * Set line length limit to 120 is reasonable.
+
+### Horizontal Openness and Density
+
+* Use horizontal white spaces to associate things that are strongly related and disassociate things that are more weakly related.
+  * Surround the assignment operatos with white spaces to accentuate them.
+
+### Horizontal Alignment
+
+* If there are long lists that need to be aligned, the problem is the length of the lists, not the lack of alignment.
+
+### Indentation
+
+* There is information that pertains to the file as a whole, to the individual classes within the file, to the methods within the classes, to the blocks within the methods, and recursively to the blocks within the blocks.
+* Programmers visually line up lines on the left to see what scope they appear in.
+* **Breaking Indentation**
+  * Go back and put the indentation back if the indentation rule was broken.
+
+### Dummy Scopes
+
+* Try to avoid dummy statements like `while` or `for`.
+  * Unless you make that semicolon *visible* by indenting it on it's own line, it's just too hard to see.
