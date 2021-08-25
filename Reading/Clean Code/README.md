@@ -6,3 +6,4 @@ Reading note of Clean Code: A Handbook of Agile Software Craftmanship.
 * [Chapter 2: Meaningful Names](./2%20Meaningful%20Names.md)
 * [Chapter 3: Functions](./3%20Functions.md)
 * [Chapter 4: Comments](./4%20Comments.md)
+* [Chapter 5: Formatting](./5%20Formatting.md)
