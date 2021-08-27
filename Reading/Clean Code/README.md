@@ -7,3 +7,4 @@ Reading note of Clean Code: A Handbook of Agile Software Craftmanship.
 * [Chapter 3: Functions](./3%20Functions.md)
 * [Chapter 4: Comments](./4%20Comments.md)
 * [Chapter 5: Formatting](./5%20Formatting.md)
+* [Chapter 6: Objects and Data Structures](./6%20Objects%20and%20Data%20Structures.md)
