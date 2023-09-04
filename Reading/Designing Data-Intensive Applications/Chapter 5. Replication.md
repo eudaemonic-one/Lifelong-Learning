@@ -97,3 +97,89 @@ Make sure that any writes that are causally related to each other are written to
 *transaction* => provide stronger guarantees so that application can be simpler.
 
 > In the move to distributed (replicated and partitioned) databases, many systems have abandoned transactions, claiming that transactions are too expensive in terms of performance and availability, and asserting that eventual consistency is inevitable in a scalable system.
+
+## Multi-Leader Replication
+
+*multi-leader* (*master-master* or *active/active replication*): each leader simultaneously acts as a follower to the other leaders.
+
+### Use Cases for Multi-Leader Replication
+
+*Multi-datacenter operation*: have a leader in each datacenter; within each datacenter, regular leader-follower replication is used. Auto-incrementing keys, triggers, and integrity constraints can be problematic and is often considered dangerous territory that should be avoided iif possible.
+
+*Clients with offline operation*: if application needs to continue to work while it is disconnected from the internet. e.g., calendar system.
+
+*Collaborative editing*: multiple users edit a document simultaneously lead to multi-leader replication and conflict resolution.
+
+### Handling Write Conflicts
+
+*conflict avoidance*: if the application can ensure that all writes for a particular record go through the same leader, then conflicts cannot occur.
+
+*converging toward a consistent state*: the database must resolve the conflict across different replicas in a *convergent* way.
+
+* Give each write a unique ID (e.g., timestamp, UUID, hash), pick the write with the highest ID as the *winner*.
+* Give each replica a unique ID, and let writes that originated at a higher-numbered replica always take precedence over writes that originated at a lower-numbered replica.
+* Record the conflict in an explicit data structure that preserves all information, and write application code that resolves the conflict at some later time (perhaps by prompting the user).
+
+*customer conflict resolution logic*:
+
+* On write: Call the conflict handler in background process quickly.
+* On read: When a conflict is detected, all the conflicting writes are stored. The application may prompt the user or automatically resolve the conflict, and write the result back to the database.
+
+*conflict-free replicated datatypes* vs. *mergeable persistent data structures* vs. *operational transformation* for an ordered list of items
+
+### Multi-Leader Replication Topologies
+
+*replication topology* describes the communication paths along which writes are propagated from one node to another.
+
+* *all-to-all*
+* *circular*
+* *star* (*tree-like*)
+
+The topology could be reconfigured to work around the failed node, avoiding single-point-of-failure.
+
+## Leaderless Replication
+
+A leader determines the order in which writes should be processed, and followers apply the leader’s writes in the same order.
+
+### Writing to the Database When a Node Is Down
+
+The client sends the write to all replicas in parallel, read requests are sent to several nodes in parallel.
+
+*read repair*: the client sees specific replica has a stale value and writes the newer value back to that replica. This approach works well for values that are frequently read.
+
+*anti-entropy process*: a background process constantly looking for differences between replicas and copies any missing data from one replica to another.
+
+*quorums for reading and writing*: if there are `n` replicas, every write must be confirmed by `w` nodes to be considered successful, and we must query at least `r` nodes for each read, as long as `w + r > n`, we expect to get an up-to-date value when reading.
+
+### Limitations of Quorum Consistency
+
+Although quorums appear to guarantee that a read returns the latest written value, in practice it is not so simple. Dynamo-style databases are generally optimized for use cases that can tolerate eventual consistency. The parameters w and r allow you to adjust the probability of stale values being read, but it’s wise to not take them as absolute guarantees.
+
+*monitoring staleness*: monitor whether database is returning up-to-date results.
+
+### Sloppy Quorums and Hinted Handoff
+
+> A network interruption can easily cut off a client from a large number of database nodes.
+
+*sloppy quorum*: writes and reads still require w and r successful responses, but those may include nodes that are not among the designated *n* “home” nodes for a value.
+
+*hinted handoff*: once the network interruption is fixed, any writes that one node temporarily accepted on behalf of another node are sent to the appropriate “home” nodes.
+
+*Multi-datacenter operation*: in the configuration you can specify how many of the *n* replicas you want to have in each datacenter.
+
+### Detecting Concurrent Writes
+
+*Last write wins (discarding concurrent writes)*: each replica need only store the most “recent” value and allow “older” values to be overwritten and discarded. LWW is a poor choice for conflict resolution unless losing data is acceptable (e.g., caching).
+
+*"happens-before" relationship and concurrency*: An operation A *happens before* another operation B if B knows about A, or depends on A, or builds upon A in some way. In fact, we can simply say that two operations are concurrent if neither happens before the other.
+
+*Capturing the happens-before relationship*: When a write includes the version number from a prior read, that tells us which previous state the write is based on.
+
+*version vectors*: use a version number *per replica* as well as *per key*. The version vector allows the database to distinguish between overwrites and concurrent writes.
+
+## Summary
+
+* High availability
+* Disconnected operation
+* Latency
+* Scalability
