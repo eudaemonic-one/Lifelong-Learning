@@ -110,3 +110,51 @@ To store the indexed row value directly within an index is known as *clustered i
 *in-memory data structures* offer database interface like interfaces for priority queues or sets.
 
 *anti-caching* evicts the least recently used data from memory to disk when there is not enough memory, and loading it back when it it access in the future. It could support datasets larger than the availability memory.
+
+## Transaction Processing or Analytics?
+
+transaction == look up a small number of records by some key, using an index; records are inserted or updated => *online transaction processing* (OLTP)
+
+*data analytics* == scan over a huge number of records, only reading a few columns per record, and calculates aggregate statistics => *online analytics processing* (OLAP)
+
+### Data Warehousing
+
+data warehouse: separate database that analysts can query without affecting OLTP operations.
+
+Extract-Transform-Load (ETL): loading data from databases and transforming into analysis-friendly schema.
+
+### Schemas for Analytics
+
+*star schema* (*dimensional modeling*): *fact table* represents individual events; *dimension tables* represent who, what, where, when, how, and why of the event.
+
+*snowflake schema*: dimensions are further broken own into sub-dimensions.
+
+## Column-Oriented Storage
+
+row-oriented vs. column-oriented
+
+### Column Compression
+
+> Column-oriented storage lends itself very well to compression.
+
+*bitmap encoding*: using bits to represent *n* distinct values.
+
+*Memory bandwidth and vectorized processing*: the query engine can take a chunk of compressed column data that fits in the CPU's L1 cache and iterate through it in a tight loop (with no function calls).
+
+### Sort Order in Column Storage
+
+sorted order => sort by date key, tie-break by another sort key => help with compression of columns further
+
+several different sort orders => add data replicates while boosting other query patterns
+
+### Writing to Column-Oriented Storage
+
+LSM-tree is good fit for column writes, all writes go to an in-memory store, when enough writes have accumulated, merge with column files on disk.
+
+### Aggregation: Data Cubes and Materialized Views
+
+*materialized aggregates*: cache some counts or sums that queries use most often
+
+*materialized view*: a table-like object whose contents are the results of some query.
+
+*data cube* (*OLAP cube*): a grid of aggregates grouped by different dimensions => only serve as a performance boost for certain precomputed queries; no finer-granularity visibility into datasets.
