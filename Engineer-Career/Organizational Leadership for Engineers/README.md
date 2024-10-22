@@ -10,3 +10,4 @@ A foundation for engineers and scientists currently in, or seeking future, leade
 * [Read Article: "Boss VS Leader: 13 Key Differences & Characteristics"](./Read%20Article:%20"Boss%20VS%20Leader:%2013%20Key%20Differences%20&%20Characteristics".md)
 * [Different Types of Teams](./Different%20Types%20of%20Teams.md)
 * [Role and Responsibilities of Team Leaders](./Role%20and%20Responsibilities%20of%20Team%20Leaders.md)
+* [Read Article: "Inclusive leadership development for engineers".md](./Read%20Article:%20"Inclusive%20leadership%20development%20for%20engineers".md)
