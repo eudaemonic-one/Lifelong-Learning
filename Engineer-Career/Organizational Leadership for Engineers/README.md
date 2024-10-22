@@ -11,3 +11,4 @@ A foundation for engineers and scientists currently in, or seeking future, leade
 * [Different Types of Teams](./Different%20Types%20of%20Teams.md)
 * [Role and Responsibilities of Team Leaders](./Role%20and%20Responsibilities%20of%20Team%20Leaders.md)
 * [Read Article: "Inclusive leadership development for engineers".md](./Read%20Article:%20"Inclusive%20leadership%20development%20for%20engineers".md)
+* [Read Article: "Are You Prepared to Lead a Diverse Team?"](./Read%20Article:%20"Are%20You%20Prepared%20to%20Lead%20a%20Diverse%20Team?".md)
