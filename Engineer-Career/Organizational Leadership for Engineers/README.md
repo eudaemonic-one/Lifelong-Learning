@@ -9,3 +9,4 @@ A foundation for engineers and scientists currently in, or seeking future, leade
 * [Read Article: "20 Soft Skills Every Engineering Leader Should Have"](./Read%20Article:%20"20%20Soft%20Skills%20Every%20Engineering%20Leader%20Should%20Have".md)
 * [Read Article: "Boss VS Leader: 13 Key Differences & Characteristics"](./Read%20Article:%20"Boss%20VS%20Leader:%2013%20Key%20Differences%20&%20Characteristics".md)
 * [Different Types of Teams](./Different%20Types%20of%20Teams.md)
+* [Role and Responsibilities of Team Leaders](./Role%20and%20Responsibilities%20of%20Team%20Leaders.md)
