@@ -15,3 +15,4 @@ A foundation for engineers and scientists currently in, or seeking future, leade
 * [Team Formation, Team Management, and Project Leadership](./Team%20Formation,%20Team%20Management,%20and%20Project%20Leadership.md)
 * [Read Article: "Problem-solving activities quality improvement"](./Read%20Article:%20"Problem-solving%20activities%20quality%20improvement".md)
 * [Read Article: "8 Strategies for Group Problem Solving and Creativity"](./Read%20Article:%20"8%20Strategies%20for%20Group%20Problem%20Solving%20and%20Creativity".md)
+* [Read Article: "14 Effective Problem-Solving Strategies"](./Read%20Article:%20"14%20Effective%20Problem-Solving%20Strategies".md)
