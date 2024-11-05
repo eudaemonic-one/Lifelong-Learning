@@ -13,3 +13,4 @@ A foundation for engineers and scientists currently in, or seeking future, leade
 * [Read Article: "Inclusive leadership development for engineers".md](./Read%20Article:%20"Inclusive%20leadership%20development%20for%20engineers".md)
 * [Read Article: "Are You Prepared to Lead a Diverse Team?"](./Read%20Article:%20"Are%20You%20Prepared%20to%20Lead%20a%20Diverse%20Team?".md)
 * [Team Formation, Team Management, and Project Leadership](./Team%20Formation,%20Team%20Management,%20and%20Project%20Leadership.md)
+* [Read Article: "Problem-solving activities quality improvement"](./Read%20Article:%20"Problem-solving%20activities%20quality%20improvement".md)
