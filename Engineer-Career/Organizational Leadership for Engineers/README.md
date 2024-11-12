@@ -16,3 +16,4 @@ A foundation for engineers and scientists currently in, or seeking future, leade
 * [Read Article: "Problem-solving activities quality improvement"](./Read%20Article:%20"Problem-solving%20activities%20quality%20improvement".md)
 * [Read Article: "8 Strategies for Group Problem Solving and Creativity"](./Read%20Article:%20"8%20Strategies%20for%20Group%20Problem%20Solving%20and%20Creativity".md)
 * [Read Article: "14 Effective Problem-Solving Strategies"](./Read%20Article:%20"14%20Effective%20Problem-Solving%20Strategies".md)
+* [Read Article: "Breaking down inter-team & departmental barriers"](./Read%20Article:%20"Breaking%20down%20inter-team%20&%20departmental%20barriers".md)
