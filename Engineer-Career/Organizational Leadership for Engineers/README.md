@@ -18,3 +18,4 @@ A foundation for engineers and scientists currently in, or seeking future, leade
 * [Read Article: "14 Effective Problem-Solving Strategies"](./Read%20Article:%20"14%20Effective%20Problem-Solving%20Strategies".md)
 * [Read Article: "Breaking down inter-team & departmental barriers"](./Read%20Article:%20"Breaking%20down%20inter-team%20&%20departmental%20barriers".md)
 * [Read Article: "Handling conflict"](./Read%20Article:%20"Handling%20conflict".md)
+* [Read Article: "How to Manage Stakeholder Conflict"](./Read%20Article:%20"How%20to%20Manage%20Stakeholder%20Conflict".md)
