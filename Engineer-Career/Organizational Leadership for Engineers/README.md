@@ -19,3 +19,4 @@ A foundation for engineers and scientists currently in, or seeking future, leade
 * [Read Article: "Breaking down inter-team & departmental barriers"](./Read%20Article:%20"Breaking%20down%20inter-team%20&%20departmental%20barriers".md)
 * [Read Article: "Handling conflict"](./Read%20Article:%20"Handling%20conflict".md)
 * [Read Article: "How to Manage Stakeholder Conflict"](./Read%20Article:%20"How%20to%20Manage%20Stakeholder%20Conflict".md)
+* [Read Article: "5 ways to motivate technical employees"](./Read%20Article:%20"5%20ways%20to%20motivate%20technical%20employees".md)
